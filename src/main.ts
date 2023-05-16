@@ -1,8 +1,37 @@
 import { NestFactory } from '@nestjs/core';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import helmet from 'helmet';
+import * as compression from 'compression';
+
 import { AppModule } from './app.module';
+import { APP_GLOBAL_PREFIX } from './constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+
+  app.setGlobalPrefix(APP_GLOBAL_PREFIX);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      forbidNonWhitelisted: true,
+      forbidUnknownValues: true,
+      whitelist: true,
+    }),
+  );
+
+  app.use(helmet());
+  app.enableCors();
+  app.use(compression());
+
+  const appConfig = await app.resolve(ConfigService);
+  const port = appConfig.getOrThrow<number>('app.port');
+
+  Logger.log(
+    `Server is running on: http://localhost:${port}/${APP_GLOBAL_PREFIX}`,
+  );
+
+  await app.listen(port);
 }
+
 bootstrap();

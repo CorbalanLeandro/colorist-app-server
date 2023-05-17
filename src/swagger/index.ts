@@ -18,8 +18,10 @@ export const UseSwagger = (
   }
 
   const config = new DocumentBuilder()
-    .setTitle('Colorist App.')
-    .setDescription('Colorist App server.')
+    .setTitle('Colorist App server.')
+    .setDescription(
+      'Server to manage users with clients and their color sheets..',
+    )
     .addBearerAuth()
     .build();
 

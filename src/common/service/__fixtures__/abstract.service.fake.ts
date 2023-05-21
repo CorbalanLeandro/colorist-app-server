@@ -1,7 +1,8 @@
-import { Model } from 'mongoose';
-import { AbstractService } from '../abstract.service';
-import { FakeDocument, FakeSymbol, IFake } from './model.fake';
 import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
+import { FakeDocument, FakeSymbol, IFake } from './model.fake';
+import { AbstractService } from '../abstract.service';
 
 export class AbstractServiceFake extends AbstractService<IFake, FakeDocument> {
   constructor(

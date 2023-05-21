@@ -1,12 +1,14 @@
+import { DeleteResult, UpdateResult } from 'mongodb';
+
 import {
+  Document,
   FilterQuery,
   Model,
   ProjectionType,
   QueryOptions,
   UpdateQuery,
-  Document,
 } from 'mongoose';
-import { DeleteResult, UpdateResult } from 'mongodb';
+
 import {
   InternalServerErrorException,
   Logger,
@@ -34,8 +36,8 @@ export abstract class AbstractService<T, DocumentType extends Document & T> {
       return await this.model.create<T>(data);
     } catch (error) {
       this.logger.error('An error ocurred while creating a mongo document', {
-        error,
         data,
+        error,
         modelName: this.model.modelName,
       });
 
@@ -106,9 +108,9 @@ export abstract class AbstractService<T, DocumentType extends Document & T> {
       this.logger.error('An error ocurred while finding the mongo documents', {
         error,
         filter,
-        projection,
-        options,
         modelName: this.model.modelName,
+        options,
+        projection,
       });
 
       throw new InternalServerErrorException();
@@ -135,9 +137,9 @@ export abstract class AbstractService<T, DocumentType extends Document & T> {
       this.logger.error('An error ocurred while finding a mongo document', {
         error,
         filter,
-        projection,
-        options,
         modelName: this.model.modelName,
+        options,
+        projection,
       });
 
       throw new InternalServerErrorException();
@@ -176,8 +178,8 @@ export abstract class AbstractService<T, DocumentType extends Document & T> {
     } catch (error) {
       this.logger.error('An error ocurred while updating a mongo document', {
         error,
-        updateQuery,
         modelName: this.model.modelName,
+        updateQuery,
       });
 
       throw new InternalServerErrorException();

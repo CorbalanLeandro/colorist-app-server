@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Document } from 'mongoose';
 
 import { NotImplementedError } from '../../errors';
 
 export interface IFake {
-  name: string;
   description: string;
+  name: string;
 }
 
 export const FakeSymbol = 'FakeSymbol';

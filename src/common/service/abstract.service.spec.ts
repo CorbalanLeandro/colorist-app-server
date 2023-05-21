@@ -9,10 +9,11 @@ import {
 import {
   FilterQuery,
   Model,
-  QueryOptions,
   ProjectionType,
+  QueryOptions,
   UpdateQuery,
 } from 'mongoose';
+
 import { DeleteResult, UpdateResult } from 'mongodb';
 
 import { AbstractServiceFake } from './__fixtures__/abstract.service.fake';
@@ -25,8 +26,8 @@ import {
 } from './__fixtures__/model.fake';
 
 const mockFakeDocument: IFake = {
-  name: 'mock-name',
   description: 'mock-description',
+  name: 'mock-name',
 };
 
 const mockFilter: FilterQuery<FakeDocument> = { _id: 'mock-id' };

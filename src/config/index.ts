@@ -7,10 +7,10 @@ export interface IAppConfig {
     port: number;
   };
   db: {
-    url: string;
     name: string;
     params: string;
     uri: string;
+    url: string;
   };
 }
 
@@ -25,10 +25,10 @@ export default (): IAppConfig => {
       port: parseInt(demandEnv('PORT', DEFAULT_APP_PORT), 10),
     },
     db: {
-      url: dbUrl,
       name: dbName,
       params: dbParams,
       uri: `${dbUrl}/${dbName}?${dbParams}`,
+      url: dbUrl,
     },
   };
 };

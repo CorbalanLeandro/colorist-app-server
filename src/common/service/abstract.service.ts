@@ -15,7 +15,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-export abstract class AbstractService<T, DocumentType extends Document & T> {
+export abstract class AbstractService<T, DocumentType extends Document> {
   protected constructor(name: string, model: Model<DocumentType>) {
     this.model = model;
     this.name = name;

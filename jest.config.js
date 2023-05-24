@@ -1,12 +1,5 @@
 module.exports = {
-  moduleFileExtensions: ['js', 'json', 'ts'],
-  roots: ['<rootDir>/src'],
-  testMatch: ['<rootDir>/src/**/*.spec.ts'],
-  testEnvironment: 'node',
-  testPathIgnorePatterns: ['dist'],
-  transform: {
-    '^.+\\.(t|j)s$': 'ts-jest',
-  },
+  collectCoverage: true,
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{js,ts}',
     '!<rootDir>/src/main.ts',
@@ -14,6 +7,7 @@ module.exports = {
     '!<rootDir>/**/swagger/*',
     '!<rootDir>/src/common/decorators/**/*',
     '!<rootDir>/src/common/errors/**/*',
+    '!<rootDir>/src/common/interfaces/**/*',
     '!<rootDir>/src/config/**/*',
     '!<rootDir>/src/constants/**/*',
     '!<rootDir>/src/**/__fixtures__/**/*',
@@ -22,13 +16,19 @@ module.exports = {
     '!<rootDir>/src/**/*.module.ts',
     '!<rootDir>/src/**/dtos/**',
   ],
+  coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [
     '<rootDir>/src/(sdk|swagger|schema|__fixtures__)/',
   ],
-  collectCoverage: true,
-  coverageDirectory: 'coverage',
   coverageReporters: ['html', 'lcov', 'text', 'text-summary'],
-  testEnvironment: 'node',
+  moduleFileExtensions: ['js', 'json', 'ts'],
+  roots: ['<rootDir>/src'],
   setupFiles: ['<rootDir>/jest-files/setup.ts'],
   setupFilesAfterEnv: ['<rootDir>/jest-files/__fixtures__/mock-logger.ts'],
+  testEnvironment: 'node',
+  testMatch: ['<rootDir>/src/**/*.spec.ts'],
+  testPathIgnorePatterns: ['dist'],
+  transform: {
+    '^.+\\.(t|j)s$': 'ts-jest',
+  },
 };

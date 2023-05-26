@@ -15,7 +15,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-export abstract class AbstractService<T, DocumentType extends Document> {
+export abstract class AbstractService<
+  CreateInterface,
+  DocumentType extends Document,
+> {
   protected constructor(name: string, model: Model<DocumentType>) {
     this.model = model;
     this.name = name;
@@ -28,12 +31,12 @@ export abstract class AbstractService<T, DocumentType extends Document> {
 
   /**
    * @async
-   * @param {T} data
+   * @param {CreateInterface} data
    * @returns {Promise<DocumentType>}
    */
-  async create(data: T): Promise<DocumentType> {
+  async create(data: CreateInterface): Promise<DocumentType> {
     try {
-      return await this.model.create<T>(data);
+      return await this.model.create<CreateInterface>(data);
     } catch (error) {
       this.logger.error('An error ocurred while creating a mongo document', {
         data,
@@ -98,7 +101,7 @@ export abstract class AbstractService<T, DocumentType extends Document> {
    * @returns {Promise<DocumentType[]>}
    */
   async find(
-    filter: FilterQuery<DocumentType> = {},
+    filter: FilterQuery<DocumentType>,
     projection?: ProjectionType<DocumentType>,
     options?: QueryOptions<DocumentType>,
   ): Promise<DocumentType[]> {
@@ -125,7 +128,7 @@ export abstract class AbstractService<T, DocumentType extends Document> {
    * @returns {Promise<DocumentType>}
    */
   async findOne(
-    filter: FilterQuery<DocumentType> = {},
+    filter: FilterQuery<DocumentType>,
     projection?: ProjectionType<DocumentType>,
     options?: QueryOptions<DocumentType>,
   ): Promise<DocumentType> {
@@ -154,19 +157,19 @@ export abstract class AbstractService<T, DocumentType extends Document> {
 
   /**
    * @async
-   * @param {string} _id
+   * @param {FilterQuery<DocumentType>} filter
    * @param {UpdateQuery<DocumentType>} updateQuery
    * @returns {Promise<UpdateResult>}
    */
   async updateOne(
-    _id: string,
+    filter: FilterQuery<DocumentType>,
     updateQuery: UpdateQuery<DocumentType>,
   ): Promise<UpdateResult> {
     let updateResult: UpdateResult;
 
     try {
       updateResult = await this.model.updateOne(
-        { _id },
+        filter,
         {
           ...updateQuery,
           $inc: { __v: 1 },

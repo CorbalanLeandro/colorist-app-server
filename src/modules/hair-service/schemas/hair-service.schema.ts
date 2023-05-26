@@ -1,7 +1,7 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-import { IId, ITimestamp, isMongoIdPropValidator } from '../../../common';
+import { IBacicDocument, isMongoIdPropValidator } from '../../../common';
 import { IHairService, IHairServiceIngredient } from '../interfaces';
 import { HairServiceIngredientSchema } from './hair-service-ingredient.schema';
 
@@ -10,7 +10,7 @@ import {
   HAIR_SERVICE_OBSERVATIONS_LENGHT,
 } from '../constants';
 
-export type HairServiceDocument = HairService & Document & ITimestamp & IId;
+export type HairServiceDocument = HairService & Document & IBacicDocument;
 
 @Schema({
   timestamps: true,
@@ -23,7 +23,7 @@ export class HairService implements IHairService {
   })
   coloristId: string;
 
-  @Prop({ required: true, type: HairServiceIngredientSchema })
+  @Prop([{ required: true, type: HairServiceIngredientSchema }])
   ingredients: IHairServiceIngredient[];
 
   @Prop({
@@ -42,4 +42,13 @@ export class HairService implements IHairService {
     type: String,
   })
   observations?: string;
+
+  @Prop({
+    required: true,
+    type: String,
+    validate: isMongoIdPropValidator,
+  })
+  sheet: string;
 }
+
+export const HairServiceSchema = SchemaFactory.createForClass(HairService);

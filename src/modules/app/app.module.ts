@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 
 import config from '../../config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { HairServiceModule } from '../hair-service/hair-service.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         useUnifiedTopology: true,
       }),
     }),
+    HairServiceModule,
   ],
 })
 export class AppModule {}

@@ -1,14 +1,19 @@
-export interface ICreatedAt {
+export interface ITimestamps {
   createdAt: Date;
-}
-export interface IUpdatedAt {
   updatedAt: Date;
 }
-export interface ITimestamp extends ICreatedAt, IUpdatedAt {}
+
+export interface ITimestampsDto {
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface IId {
   _id: string;
 }
+
+export interface IBacicDocument extends IId, ITimestamps {}
+export interface IBacicDocumentDto extends IId, ITimestampsDto {}
 
 export interface ICustomApiPropertyRequired {
   required?: boolean;
@@ -29,4 +34,8 @@ export interface ICustomApiProperty extends IRequired {
 export interface ICustomApiPropertyDto
   extends Omit<ICustomApiProperty, 'example' | 'description'> {
   dto: IClass;
+}
+
+export interface IApiResult {
+  result: true;
 }

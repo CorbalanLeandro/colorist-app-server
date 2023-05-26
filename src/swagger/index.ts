@@ -12,7 +12,7 @@ export const UseSwagger = (
   app: INestApplication,
   env: string,
   port: number,
-) => {
+): void | undefined => {
   if (env === ENVIRONMENT.PROD) {
     return;
   }

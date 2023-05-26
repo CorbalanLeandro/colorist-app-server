@@ -8,7 +8,7 @@ import { AppModule } from './modules/app/app.module';
 import { APP_GLOBAL_PREFIX } from './constants';
 import { UseSwagger } from './swagger';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix(APP_GLOBAL_PREFIX);

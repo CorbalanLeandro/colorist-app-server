@@ -1,11 +1,7 @@
-import { IBacicDocumentDto } from '../../../common';
+import { IBacicDocumentDto, IColoristId } from '../../../common';
 import { IHairServiceIngredient } from './hair-service-ingredient.interfaces';
 
-export interface IHairService {
-  /**
-   * will not be used as reference to the colorist schema, only for validation
-   */
-  coloristId: string;
+export interface IHairService extends IColoristId {
   ingredients: IHairServiceIngredient[];
   name: string;
   observations?: string;

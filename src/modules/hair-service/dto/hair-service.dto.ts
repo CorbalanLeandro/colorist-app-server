@@ -1,14 +1,16 @@
 import {
   ApiProperty,
   ApiPropertyOptional,
-  OmitType,
+  IntersectionType,
   PartialType,
 } from '@nestjs/swagger';
 
+import { IsMongoId, IsOptional, Length } from 'class-validator';
+
 import {
-  ApiPropertyColoristId,
   ApiPropertyDto,
   BasicDocumentDto,
+  ColoristIdDto,
 } from '../../../common';
 
 import {
@@ -18,19 +20,13 @@ import {
 } from '../interfaces';
 
 import { HairServiceIngredientsDto } from './hair-service-ingredient.dto';
+
 import {
   HAIR_SERVICE_NAME_LENGHT,
   HAIR_SERVICE_OBSERVATIONS_LENGHT,
 } from '../constants';
-import { IsMongoId, IsOptional, Length } from 'class-validator';
 
-export class HairServiceDto
-  extends BasicDocumentDto
-  implements IHairServiceDto
-{
-  @ApiPropertyColoristId()
-  coloristId: string;
-
+export class CreateHairServiceDto implements ICreateHairServiceDto {
   @ApiPropertyDto({ dto: HairServiceIngredientsDto, isArray: true })
   ingredients: IHairServiceIngredient[];
 
@@ -64,17 +60,14 @@ export class HairServiceDto
   sheet: string;
 }
 
-export class CreateHairServiceDto
-  extends OmitType(HairServiceDto, [
-    'coloristId',
-    '_id',
-    'createdAt',
-    'updatedAt',
-  ])
-  implements ICreateHairServiceDto {}
-
 export class UpdateHairServiceDto
-  extends PartialType(
-    OmitType(HairServiceDto, ['coloristId', '_id', 'createdAt', 'updatedAt']),
-  )
+  extends PartialType(CreateHairServiceDto)
   implements Partial<ICreateHairServiceDto> {}
+
+export class HairServiceDto
+  extends IntersectionType(
+    CreateHairServiceDto,
+    BasicDocumentDto,
+    ColoristIdDto,
+  )
+  implements IHairServiceDto {}

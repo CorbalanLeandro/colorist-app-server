@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import config from '../../config';
 import { HairServiceModule } from '../hair-service/hair-service.module';
+import { SheetModule } from '../sheet/sheet.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { HairServiceModule } from '../hair-service/hair-service.module';
       }),
     }),
     HairServiceModule,
+    SheetModule,
   ],
 })
 export class AppModule {}

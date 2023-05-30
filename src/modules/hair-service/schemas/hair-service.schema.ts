@@ -1,7 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-import { IBacicDocument, isMongoIdPropValidator } from '../../../common';
+import {
+  ColoristIdSchema,
+  IBacicDocument,
+  isMongoIdPropValidator,
+} from '../../../common';
+
 import { IHairService, IHairServiceIngredient } from '../interfaces';
 import { HairServiceIngredientSchema } from './hair-service-ingredient.schema';
 
@@ -15,14 +20,7 @@ export type HairServiceDocument = HairService & Document & IBacicDocument;
 @Schema({
   timestamps: true,
 })
-export class HairService implements IHairService {
-  @Prop({
-    required: true,
-    type: String,
-    validate: isMongoIdPropValidator,
-  })
-  coloristId: string;
-
+export class HairService extends ColoristIdSchema implements IHairService {
   @Prop([{ required: true, type: HairServiceIngredientSchema }])
   ingredients: IHairServiceIngredient[];
 

@@ -4,6 +4,7 @@ import { IsBoolean, IsDateString, IsMongoId } from 'class-validator';
 import {
   IApiResult,
   IBacicDocumentDto,
+  IColoristId,
   IId,
   ITimestampsDto,
 } from '../interfaces';
@@ -45,4 +46,15 @@ export class ResultResponseDto implements IApiResult {
   })
   @IsBoolean()
   result: true;
+}
+
+export class ColoristIdDto implements IColoristId {
+  @ApiProperty({
+    description:
+      'coloristId attribute, used to link the document to a colorist',
+    example: '6193e45824ec040624af509d',
+    type: String,
+  })
+  @IsMongoId()
+  coloristId: string;
 }

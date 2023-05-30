@@ -31,10 +31,10 @@ export class HairServiceController {
   @ApiOperationCreate(HairServiceDto)
   @Post()
   async create(
-    @Body() createHairServiceDto: CreateHairServiceDto,
+    @Body() createHairServiceData: CreateHairServiceDto,
   ): Promise<IHairService> {
     return this.hairServiceService.create({
-      ...createHairServiceDto,
+      ...createHairServiceData,
       coloristId: this.coloristId,
     });
   }
@@ -43,10 +43,10 @@ export class HairServiceController {
     HairServiceDto,
     'Finds all the hair services by sheet id',
   )
-  @ApiMongoIdParam()
-  @Get(`sheet/:${PARAM_ID}`)
+  @ApiMongoIdParam('sheet')
+  @Get('sheet/:sheet')
   async findAllBySheet(
-    @ParamMongoId() sheetId: string,
+    @ParamMongoId('sheet') sheetId: string,
   ): Promise<IHairService[]> {
     return this.hairServiceService.find({
       coloristId: this.coloristId,
@@ -59,14 +59,14 @@ export class HairServiceController {
   @Patch(`:${PARAM_ID}`)
   async update(
     @ParamMongoId() id: string,
-    @Body() updateHairServiceDto: UpdateHairServiceDto,
+    @Body() updateHairServiceData: UpdateHairServiceDto,
   ): Promise<IApiResult> {
     await this.hairServiceService.updateOne(
       {
         _id: id,
         coloristId: this.coloristId,
       },
-      updateHairServiceDto,
+      { $set: updateHairServiceData },
     );
 
     return { result: true };
@@ -75,7 +75,7 @@ export class HairServiceController {
   @ApiOperationDeleteOneById()
   @ApiMongoIdParam()
   @Delete(`:${PARAM_ID}`)
-  async delete(@ParamMongoId() id: string): Promise<IApiResult> {
+  async delete(@ParamMongoId(PARAM_ID) id: string): Promise<IApiResult> {
     await this.hairServiceService.deleteOne({
       _id: id,
       coloristId: this.coloristId,

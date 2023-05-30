@@ -12,6 +12,13 @@ export interface IId {
   _id: string;
 }
 
+export interface IColoristId {
+  /**
+   * will not be used as reference to the colorist schema, only for validation
+   */
+  coloristId: string;
+}
+
 export interface IBacicDocument extends IId, ITimestamps {}
 export interface IBacicDocumentDto extends IId, ITimestampsDto {}
 
@@ -34,6 +41,11 @@ export interface ICustomApiProperty extends IRequired {
 export interface ICustomApiPropertyDto
   extends Omit<ICustomApiProperty, 'example' | 'description'> {
   dto: IClass;
+}
+
+export interface ICustomMongoApiProperty
+  extends Omit<ICustomApiProperty, 'example' | 'description'> {
+  referenceName?: string;
 }
 
 export interface IApiResult {

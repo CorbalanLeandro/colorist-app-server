@@ -24,39 +24,38 @@ import {
 } from 'class-validator';
 
 import { Request } from 'express';
-
 import { Type } from 'class-transformer';
 
 import {
   IClass,
   ICustomApiPropertyDto,
-  ICustomApiPropertyRequired,
+  ICustomMongoApiProperty,
 } from '../interfaces';
 
 import { PARAM_ID } from '../constants';
 import { ResultResponseDto } from '../dtos';
 
-export const ApiMongoIdParam = (): MethodDecorator =>
+export const ApiMongoIdParam = (name = PARAM_ID): MethodDecorator =>
   ApiParam({
     description: 'Mongo Document _id',
     example: '627f2a3380912eba4cb481cd',
-    name: `${PARAM_ID}`,
+    name,
   });
 
-export const ParamMongoId = createParamDecorator((_, ctx: ExecutionContext) => {
-  const mongoIdParam = ctx.switchToHttp().getRequest<Request>().params[
-    PARAM_ID
-  ];
+export const ParamMongoId = createParamDecorator(
+  (data: string, ctx: ExecutionContext) => {
+    const mongoIdParam = ctx.switchToHttp().getRequest<Request>().params[data];
 
-  if (isMongoId(mongoIdParam)) {
-    return mongoIdParam;
-  }
+    if (isMongoId(mongoIdParam)) {
+      return mongoIdParam;
+    }
 
-  throw new BadRequestException(
-    'Invalid id',
-    `The value "${mongoIdParam}" is not a valid id`,
-  );
-});
+    throw new BadRequestException(
+      'Invalid id',
+      `The value "${mongoIdParam}" is not a valid id`,
+    );
+  },
+);
 
 export const ApiOperationCreate = (
   createdDto: IClass,
@@ -130,29 +129,6 @@ export const ApiOperationDeleteOneById = (): ReturnType<
     }),
   );
 
-export const ApiPropertyColoristId = ({
-  required = true,
-}: ICustomApiPropertyRequired = {}): ReturnType<typeof applyDecorators> => {
-  const validatorDecorators: PropertyDecorator[] = [];
-
-  if (!required) {
-    validatorDecorators.push(IsOptional());
-  }
-
-  validatorDecorators.push(IsMongoId());
-
-  return applyDecorators(
-    ApiProperty({
-      description:
-        'coloristId attribute, used to link the document to a colorist',
-      example: '6193e45824ec040624af509d',
-      required,
-      type: String,
-    }),
-    ...validatorDecorators,
-  );
-};
-
 export const ApiPropertyDto = ({
   isArray = false,
   required = true,
@@ -183,6 +159,40 @@ export const ApiPropertyDto = ({
       isArray,
       required,
       type: dto,
+    }),
+    ...validatorDecorators,
+  );
+};
+
+export const ApiPropertyMongoId = ({
+  isArray = false,
+  required = true,
+  referenceName,
+}: ICustomMongoApiProperty = {}): ReturnType<typeof applyDecorators> => {
+  let validatorOptions: ValidationOptions | undefined;
+
+  const validatorDecorators: PropertyDecorator[] = [];
+
+  if (!required) {
+    validatorDecorators.push(IsOptional());
+  }
+
+  if (isArray) {
+    validatorDecorators.push(IsArray());
+    validatorOptions = { each: true };
+  }
+
+  validatorDecorators.push(IsMongoId(validatorOptions));
+
+  const example = '5fda1492bbf9cb1bc4c4ed5c';
+
+  return applyDecorators(
+    ApiProperty({
+      description: `${referenceName} id attribute`,
+      example: isArray ? [example, example] : example,
+      isArray,
+      required,
+      type: String,
     }),
     ...validatorDecorators,
   );

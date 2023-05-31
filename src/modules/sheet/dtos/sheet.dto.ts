@@ -4,16 +4,19 @@ import { IsMongoId } from 'class-validator';
 import {
   ApiPropertyDto,
   BasicDocumentDto,
+  BasicQueryDto,
   ColoristIdDto,
 } from '../../../common';
 
 import {
   ICreateSheetDto,
   ICreateSheetResponseDto,
+  IFindSheetsQueryDto,
   ISheetDto,
 } from '../interfaces';
+
 import { IHairServiceDto } from '../../hair-service/interfaces';
-import { HairServiceDto } from '../../hair-service/dto';
+import { HairServiceDto } from '../../hair-service/dtos';
 import { IsSheetDate } from '../decorators';
 
 export class CreateSheetDto implements ICreateSheetDto {
@@ -40,10 +43,14 @@ export class SheetDto
   extends IntersectionType(CreateSheetDto, BasicDocumentDto, ColoristIdDto)
   implements ISheetDto
 {
-  @ApiPropertyDto({ dto: HairServiceDto })
+  @ApiPropertyDto({ dto: HairServiceDto, isArray: true })
   hairServices: IHairServiceDto[];
 }
 
 export class CreateSheetResponseDto
   extends IntersectionType(CreateSheetDto, BasicDocumentDto, ColoristIdDto)
   implements ICreateSheetResponseDto {}
+
+export class FindSheetsQueryDto
+  extends BasicQueryDto
+  implements IFindSheetsQueryDto {}

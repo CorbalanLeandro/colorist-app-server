@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Get, Delete, Patch } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Get,
+  Delete,
+  Patch,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { SheetService } from './sheet.service';
@@ -18,11 +26,12 @@ import {
 import {
   CreateSheetDto,
   CreateSheetResponseDto,
+  FindSheetsQueryDto,
   SheetDto,
   UpdateSheetDto,
 } from './dtos';
 
-import { ISheet } from './interfaces';
+import { SheetDocument } from './schemas';
 
 @ApiTags('Sheet')
 @Controller('sheet')
@@ -33,7 +42,9 @@ export class SheetController {
 
   @ApiOperationCreate(CreateSheetResponseDto)
   @Post()
-  async create(@Body() createSheetData: CreateSheetDto): Promise<ISheet> {
+  async create(
+    @Body() createSheetData: CreateSheetDto,
+  ): Promise<SheetDocument> {
     return this.sheetService.create({
       ...createSheetData,
       coloristId: this.coloristId,
@@ -43,7 +54,7 @@ export class SheetController {
   @ApiOperationFindOneById(SheetDto)
   @ApiMongoIdParam(`${PARAM_ID}`)
   @Get(`/:${PARAM_ID}`)
-  async findOne(@ParamMongoId(PARAM_ID) _id: string): Promise<ISheet[]> {
+  async findOne(@ParamMongoId(PARAM_ID) _id: string): Promise<SheetDocument[]> {
     return this.sheetService.find(
       {
         _id,
@@ -57,11 +68,14 @@ export class SheetController {
   }
 
   @ApiOperationFindAll(SheetDto, 'Finds all the sheets by client id')
-  @ApiMongoIdParam('client')
-  @Get(`client/:client`)
+  @ApiMongoIdParam('clientId')
+  @Get(`client/:clientId`)
   async findAllBySheet(
-    @ParamMongoId('client') clientId: string,
-  ): Promise<ISheet[]> {
+    @ParamMongoId('clientId') clientId: string,
+    @Query() query: FindSheetsQueryDto,
+  ): Promise<SheetDocument[]> {
+    const { limit, skip } = query;
+
     return this.sheetService.find(
       {
         client: clientId,
@@ -69,7 +83,9 @@ export class SheetController {
       },
       undefined,
       {
+        limit,
         populate: 'hairServices',
+        skip,
       },
     );
   }
@@ -78,12 +94,12 @@ export class SheetController {
   @ApiMongoIdParam()
   @Patch(`:${PARAM_ID}`)
   async update(
-    @ParamMongoId(PARAM_ID) id: string,
+    @ParamMongoId(PARAM_ID) _id: string,
     @Body() updateSheetData: UpdateSheetDto,
   ): Promise<IApiResult> {
     await this.sheetService.updateOne(
       {
-        _id: id,
+        _id,
         coloristId: this.coloristId,
       },
       { $set: updateSheetData },
@@ -95,9 +111,9 @@ export class SheetController {
   @ApiOperationDeleteOneById()
   @ApiMongoIdParam()
   @Delete(`:${PARAM_ID}`)
-  async delete(@ParamMongoId(PARAM_ID) id: string): Promise<IApiResult> {
+  async delete(@ParamMongoId(PARAM_ID) _id: string): Promise<IApiResult> {
     await this.sheetService.deleteOne({
-      _id: id,
+      _id,
       coloristId: this.coloristId,
     });
 

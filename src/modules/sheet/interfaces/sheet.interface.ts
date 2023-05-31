@@ -1,4 +1,8 @@
-import { IBacicDocumentDto, IColoristId } from '../../../common';
+import {
+  IBacicDocumentDto,
+  IBasicQueryDto,
+  IColoristId,
+} from '../../../common';
 import { IHairService, IHairServiceDto } from '../../hair-service/interfaces';
 
 interface ISheetObjectIdAttributes {
@@ -38,3 +42,5 @@ export interface ICreateSheetResponseDto
   extends ICreateSheet,
     IBacicDocumentDto,
     IColoristId {}
+
+export type IFindSheetsQueryDto = IBasicQueryDto;

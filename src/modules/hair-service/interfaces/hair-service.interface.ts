@@ -1,5 +1,5 @@
 import { IBacicDocumentDto, IColoristId } from '../../../common';
-import { IHairServiceIngredient } from './hair-service-ingredient.interfaces';
+import { IHairServiceIngredient } from './hair-service-ingredient.interface';
 
 export interface IHairService extends IColoristId {
   ingredients: IHairServiceIngredient[];

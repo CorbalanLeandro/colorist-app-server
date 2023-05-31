@@ -1,1 +1,1 @@
-export * from './sheet.decorators';
+export * from './sheet.decorator';

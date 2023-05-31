@@ -1,13 +1,27 @@
-import { ApiProperty, IntersectionType } from '@nestjs/swagger';
-import { IsBoolean, IsDateString, IsMongoId } from 'class-validator';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  IntersectionType,
+} from '@nestjs/swagger';
+
+import {
+  IsBoolean,
+  IsDateString,
+  IsMongoId,
+  IsOptional,
+} from 'class-validator';
 
 import {
   IApiResult,
   IBacicDocumentDto,
+  IBasicQueryDto,
   IColoristId,
   IId,
   ITimestampsDto,
 } from '../interfaces';
+
+import { IsQueryPositiveNumber } from '../decorators/validation.decorators';
+import { Transform } from 'class-transformer';
 
 export class IdResponseDto implements IId {
   @ApiProperty({
@@ -57,4 +71,24 @@ export class ColoristIdDto implements IColoristId {
   })
   @IsMongoId()
   coloristId: string;
+}
+
+export abstract class BasicQueryDto implements IBasicQueryDto {
+  @ApiPropertyOptional({
+    description: 'limit attribute (positive number with no decimals)',
+    example: 10,
+  })
+  @IsOptional()
+  @IsQueryPositiveNumber()
+  @Transform(({ value }) => Number(value))
+  limit?: number;
+
+  @ApiPropertyOptional({
+    description: 'skip attribute (positive number with no decimals)',
+    example: 10,
+  })
+  @IsOptional()
+  @IsQueryPositiveNumber()
+  @Transform(({ value }) => Number(value))
+  skip?: number;
 }

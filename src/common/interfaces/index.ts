@@ -51,3 +51,8 @@ export interface ICustomMongoApiProperty
 export interface IApiResult {
   result: true;
 }
+
+export interface IBasicQueryDto {
+  limit?: number;
+  skip?: number;
+}

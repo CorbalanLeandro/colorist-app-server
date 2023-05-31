@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import config from '../../config';
 import { HairServiceModule } from '../hair-service/hair-service.module';
 import { SheetModule } from '../sheet/sheet.module';
+import { ClientModule } from '../client/client.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { SheetModule } from '../sheet/sheet.module';
         useUnifiedTopology: true,
       }),
     }),
+    ClientModule,
     HairServiceModule,
     SheetModule,
   ],

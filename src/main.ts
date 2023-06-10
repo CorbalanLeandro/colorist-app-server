@@ -31,11 +31,11 @@ async function bootstrap(): Promise<void> {
 
   UseSwagger(app, env, port);
 
+  await app.listen(port);
+
   Logger.log(
     `Server is running on: http://localhost:${port}/${APP_GLOBAL_PREFIX}`,
   );
-
-  await app.listen(port);
 }
 
 bootstrap();

@@ -38,7 +38,7 @@ import { SheetDocument } from './schemas';
 export class SheetController {
   constructor(private readonly sheetService: SheetService) {}
 
-  private readonly coloristId = '6193e45824ec040624af509d'; // TODO get this from the request (auth);
+  private readonly coloristId = '6483c569deebac0864aa2b28'; // TODO get this from the request (auth);
 
   @ApiOperationCreate(CreateSheetResponseDto)
   @Post()

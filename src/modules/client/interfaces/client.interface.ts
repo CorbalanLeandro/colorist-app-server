@@ -3,6 +3,7 @@ import {
   IBasicQueryDto,
   IColoristId,
 } from '../../../common';
+
 import { ISheet, ISheetDto } from '../../sheet/interfaces';
 
 export interface IClientAttributes extends IColoristId {
@@ -40,7 +41,9 @@ export type ICreateClientDto = Omit<IClientAttributes, 'coloristId'>;
 export interface ICreateClientResponseDto
   extends ICreateClient,
     IBacicDocumentDto,
-    IColoristId {}
+    IColoristId {
+  sheets: string[];
+}
 
 export interface IFindClientsQueryDto extends IBasicQueryDto {
   lastName?: string;

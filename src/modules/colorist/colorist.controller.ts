@@ -1,17 +1,5 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Patch,
-  Post,
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common';
-
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import {
   ApiOperationCreate,
@@ -32,14 +20,16 @@ import {
   CreateColoristDto,
   ColoristDto,
   UpdateColoristDto,
-  ColoristSignInDto,
 } from './dtos';
 
-import { Colorist, ColoristDocument } from './schemas';
+import { ColoristDocument } from './schemas';
+
 import {
   COLORIST_BASE_PROJECTIONS,
   COLORIST_POPULATE_OPTIONS,
 } from './constants';
+
+import { Public } from '../auth/decorators';
 
 @ApiTags('Colorist')
 @Controller('colorist')
@@ -47,13 +37,16 @@ export class ColoristController {
   constructor(private readonly coloristService: ColoristService) {}
 
   @ApiOperationCreate(CreateColoristResponseDto)
+  @Public()
   @Post()
   async create(
     @Body() createColoristData: CreateColoristDto,
   ): Promise<ColoristDocument> {
+    // TODO createColorist where we encrypt the password with the salt from the config
     return this.coloristService.create(createColoristData);
   }
 
+  @ApiBearerAuth()
   @ApiOperationFindAll(ColoristDto, 'Finds all the Colorists')
   @Get()
   async findAll(): Promise<ColoristDocument[]> {
@@ -64,6 +57,7 @@ export class ColoristController {
     );
   }
 
+  @ApiBearerAuth()
   @ApiOperationFindOneById(ColoristDto)
   @ApiMongoIdParam(PARAM_ID)
   @Get(`:${PARAM_ID}`)
@@ -79,6 +73,7 @@ export class ColoristController {
     );
   }
 
+  @ApiBearerAuth()
   @ApiOperationUpdateOneById()
   @ApiMongoIdParam()
   @Patch(`:${PARAM_ID}`)
@@ -96,6 +91,7 @@ export class ColoristController {
     return { result: true };
   }
 
+  @ApiBearerAuth()
   @ApiOperationDeleteOneById()
   @ApiMongoIdParam()
   @Delete(`:${PARAM_ID}`)
@@ -105,52 +101,5 @@ export class ColoristController {
     });
 
     return { result: true };
-  }
-
-  @ApiOperation({
-    description:
-      'Finds a colorist by email or username and return it if the password is correct.',
-    summary: 'Finds a colorist and sign in.',
-  })
-  @ApiOkResponse({
-    description: 'The Colorist singed in.',
-    type: ColoristDto,
-  })
-  @HttpCode(HttpStatus.OK)
-  @Post('sign-in')
-  async signIn(
-    @Body() signInData: ColoristSignInDto,
-  ): Promise<ColoristDocument> {
-    const { emailOrUsername, password } = signInData;
-
-    try {
-      return await this.coloristService.findOne(
-        {
-          $or: [
-            {
-              username: {
-                $options: 'i',
-                $regex: `^${emailOrUsername}$`,
-              },
-            },
-            {
-              email: {
-                $options: 'i',
-                $regex: `^${emailOrUsername}$`,
-              },
-            },
-          ],
-          password: Colorist.encryptPassword(password),
-        },
-        COLORIST_BASE_PROJECTIONS,
-        COLORIST_POPULATE_OPTIONS,
-      );
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new BadRequestException('Credentials are invalid.');
-      }
-
-      throw error;
-    }
   }
 }

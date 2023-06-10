@@ -7,7 +7,8 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { ClientService } from './client.service';
 
@@ -32,22 +33,24 @@ import {
 } from '../../common';
 
 import { ClientDocument } from './schemas';
+import { ColoristId } from '../auth/decorators';
+import { CLIENT_POPULATE_OPTIONS } from './constants';
 
 @ApiTags('Client')
+@ApiBearerAuth()
 @Controller('client')
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
-
-  private readonly coloristId = '6483c569deebac0864aa2b28'; // TODO get this from the request (auth);
 
   @ApiOperationCreate(CreateClientResponseDto)
   @Post()
   async create(
     @Body() createClientData: CreateClientDto,
+    @ColoristId() coloristId: string,
   ): Promise<ClientDocument> {
     return this.clientService.create({
       ...createClientData,
-      coloristId: this.coloristId,
+      coloristId,
     });
   }
 
@@ -58,12 +61,13 @@ export class ClientController {
   @Get()
   async findAll(
     @Query() query: FindClientsQueryDto,
+    @ColoristId() coloristId: string,
   ): Promise<ClientDocument[]> {
     const { lastName, limit, name, skip } = query;
 
     return this.clientService.find(
       {
-        coloristId: this.coloristId,
+        coloristId,
         ...(name && {
           name: {
             $options: 'i',
@@ -79,6 +83,7 @@ export class ClientController {
       },
       undefined,
       {
+        ...CLIENT_POPULATE_OPTIONS,
         limit,
         skip,
       },
@@ -90,11 +95,16 @@ export class ClientController {
   @Get(`:${PARAM_ID}`)
   async findOneById(
     @ParamMongoId(PARAM_ID) _id: string,
+    @ColoristId() coloristId: string,
   ): Promise<ClientDocument> {
-    return this.clientService.findOne({
-      _id,
-      coloristId: this.coloristId,
-    });
+    return this.clientService.findOne(
+      {
+        _id,
+        coloristId,
+      },
+      undefined,
+      CLIENT_POPULATE_OPTIONS,
+    );
   }
 
   @ApiOperationUpdateOneById()
@@ -103,11 +113,12 @@ export class ClientController {
   async update(
     @ParamMongoId(PARAM_ID) _id: string,
     @Body() updateClientData: UpdateClientDto,
+    @ColoristId() coloristId: string,
   ): Promise<IApiResult> {
     await this.clientService.updateOne(
       {
         _id,
-        coloristId: this.coloristId,
+        coloristId,
       },
       { $set: updateClientData },
     );
@@ -118,10 +129,13 @@ export class ClientController {
   @ApiOperationDeleteOneById()
   @ApiMongoIdParam()
   @Delete(`:${PARAM_ID}`)
-  async delete(@ParamMongoId(PARAM_ID) _id: string): Promise<IApiResult> {
+  async delete(
+    @ParamMongoId(PARAM_ID) _id: string,
+    @ColoristId() coloristId: string,
+  ): Promise<IApiResult> {
     await this.clientService.deleteOne({
       _id,
-      coloristId: this.coloristId,
+      coloristId,
     });
 
     return { result: true };

@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { HairServiceService } from './hair-service.service';
 
@@ -22,22 +22,23 @@ import {
 } from '../../common';
 
 import { HairServiceDocument } from './schemas';
+import { ColoristId } from '../auth/decorators';
 
 @ApiTags('Hair service')
+@ApiBearerAuth()
 @Controller('hair-service')
 export class HairServiceController {
   constructor(private readonly hairServiceService: HairServiceService) {}
-
-  private readonly coloristId = '6483c569deebac0864aa2b28'; // TODO get this from the request (auth);
 
   @ApiOperationCreate(HairServiceDto)
   @Post()
   async create(
     @Body() createHairServiceData: CreateHairServiceDto,
+    @ColoristId() coloristId: string,
   ): Promise<HairServiceDocument> {
     return this.hairServiceService.create({
       ...createHairServiceData,
-      coloristId: this.coloristId,
+      coloristId,
     });
   }
 
@@ -49,9 +50,10 @@ export class HairServiceController {
   @Get('sheet/:sheetId')
   async findAllBySheet(
     @ParamMongoId('sheetId') sheetId: string,
+    @ColoristId() coloristId: string,
   ): Promise<HairServiceDocument[]> {
     return this.hairServiceService.find({
-      coloristId: this.coloristId,
+      coloristId,
       sheet: sheetId,
     });
   }
@@ -61,10 +63,11 @@ export class HairServiceController {
   @Get(`:${PARAM_ID}`)
   async findOneById(
     @ParamMongoId(PARAM_ID) _id: string,
+    @ColoristId() coloristId: string,
   ): Promise<HairServiceDocument> {
     return this.hairServiceService.findOne({
       _id,
-      coloristId: this.coloristId,
+      coloristId,
     });
   }
 
@@ -74,11 +77,12 @@ export class HairServiceController {
   async update(
     @ParamMongoId(PARAM_ID) _id: string,
     @Body() updateHairServiceData: UpdateHairServiceDto,
+    @ColoristId() coloristId: string,
   ): Promise<IApiResult> {
     await this.hairServiceService.updateOne(
       {
         _id,
-        coloristId: this.coloristId,
+        coloristId,
       },
       { $set: updateHairServiceData },
     );
@@ -89,10 +93,13 @@ export class HairServiceController {
   @ApiOperationDeleteOneById()
   @ApiMongoIdParam()
   @Delete(`:${PARAM_ID}`)
-  async delete(@ParamMongoId(PARAM_ID) _id: string): Promise<IApiResult> {
+  async delete(
+    @ParamMongoId(PARAM_ID) _id: string,
+    @ColoristId() coloristId: string,
+  ): Promise<IApiResult> {
     await this.hairServiceService.deleteOne({
       _id,
-      coloristId: this.coloristId,
+      coloristId,
     });
 
     return { result: true };

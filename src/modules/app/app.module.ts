@@ -7,9 +7,11 @@ import { HairServiceModule } from '../hair-service/hair-service.module';
 import { SheetModule } from '../sheet/sheet.module';
 import { ClientModule } from '../client/client.module';
 import { ColoristModule } from '../colorist/colorist.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

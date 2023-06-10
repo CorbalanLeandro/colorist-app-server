@@ -7,7 +7,8 @@ import {
   Patch,
   Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { SheetService } from './sheet.service';
 
@@ -32,38 +33,41 @@ import {
 } from './dtos';
 
 import { SheetDocument } from './schemas';
+import { ColoristId } from '../auth/decorators';
+import { SHEET_POPULATE_OPTIONS } from './constants';
 
 @ApiTags('Sheet')
+@ApiBearerAuth()
 @Controller('sheet')
 export class SheetController {
   constructor(private readonly sheetService: SheetService) {}
-
-  private readonly coloristId = '6483c569deebac0864aa2b28'; // TODO get this from the request (auth);
 
   @ApiOperationCreate(CreateSheetResponseDto)
   @Post()
   async create(
     @Body() createSheetData: CreateSheetDto,
+    @ColoristId() coloristId: string,
   ): Promise<SheetDocument> {
     return this.sheetService.create({
       ...createSheetData,
-      coloristId: this.coloristId,
+      coloristId,
     });
   }
 
   @ApiOperationFindOneById(SheetDto)
   @ApiMongoIdParam(`${PARAM_ID}`)
   @Get(`/:${PARAM_ID}`)
-  async findOne(@ParamMongoId(PARAM_ID) _id: string): Promise<SheetDocument[]> {
+  async findOne(
+    @ParamMongoId(PARAM_ID) _id: string,
+    @ColoristId() coloristId: string,
+  ): Promise<SheetDocument[]> {
     return this.sheetService.find(
       {
         _id,
-        coloristId: this.coloristId,
+        coloristId,
       },
       undefined,
-      {
-        populate: 'hairServices',
-      },
+      SHEET_POPULATE_OPTIONS,
     );
   }
 
@@ -73,18 +77,19 @@ export class SheetController {
   async findAllBySheet(
     @ParamMongoId('clientId') clientId: string,
     @Query() query: FindSheetsQueryDto,
+    @ColoristId() coloristId: string,
   ): Promise<SheetDocument[]> {
     const { limit, skip } = query;
 
     return this.sheetService.find(
       {
         client: clientId,
-        coloristId: this.coloristId,
+        coloristId,
       },
       undefined,
       {
         limit,
-        populate: 'hairServices',
+        ...SHEET_POPULATE_OPTIONS,
         skip,
       },
     );
@@ -96,11 +101,12 @@ export class SheetController {
   async update(
     @ParamMongoId(PARAM_ID) _id: string,
     @Body() updateSheetData: UpdateSheetDto,
+    @ColoristId() coloristId: string,
   ): Promise<IApiResult> {
     await this.sheetService.updateOne(
       {
         _id,
-        coloristId: this.coloristId,
+        coloristId,
       },
       { $set: updateSheetData },
     );
@@ -111,10 +117,13 @@ export class SheetController {
   @ApiOperationDeleteOneById()
   @ApiMongoIdParam()
   @Delete(`:${PARAM_ID}`)
-  async delete(@ParamMongoId(PARAM_ID) _id: string): Promise<IApiResult> {
+  async delete(
+    @ParamMongoId(PARAM_ID) _id: string,
+    @ColoristId() coloristId: string,
+  ): Promise<IApiResult> {
     await this.sheetService.deleteOne({
       _id,
-      coloristId: this.coloristId,
+      coloristId,
     });
 
     return { result: true };

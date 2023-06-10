@@ -1,4 +1,4 @@
-import { DEFAULT_APP_PORT, ENVIRONMENT } from '../constants';
+import { DEFAULT_APP_PORT } from '../constants';
 import { demandEnv } from '../utils';
 
 export interface IAppConfig {
@@ -12,6 +12,10 @@ export interface IAppConfig {
     uri: string;
     url: string;
   };
+  jwt: {
+    expiresIn: string;
+    secret: string;
+  };
 }
 
 export default (): IAppConfig => {
@@ -21,7 +25,7 @@ export default (): IAppConfig => {
 
   return {
     app: {
-      env: demandEnv('ENV', ENVIRONMENT.DEV),
+      env: demandEnv('ENV'),
       port: parseInt(demandEnv('PORT', DEFAULT_APP_PORT), 10),
     },
     db: {
@@ -29,6 +33,10 @@ export default (): IAppConfig => {
       params: dbParams,
       uri: `${dbUrl}/${dbName}?${dbParams}`,
       url: dbUrl,
+    },
+    jwt: {
+      expiresIn: demandEnv('JWT_EXPIRES_IN'),
+      secret: demandEnv('JWT_SECRET'),
     },
   };
 };

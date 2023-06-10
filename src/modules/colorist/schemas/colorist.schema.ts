@@ -96,6 +96,7 @@ export class Colorist implements IColorist {
   })
   username: string;
 
+  // TODO remove and encrypt within the colorist service
   static encryptPassword(password: string): string {
     return pbkdf2Sync(
       password,
@@ -109,6 +110,7 @@ export class Colorist implements IColorist {
 
 export const ColoristSchema = SchemaFactory.createForClass(Colorist);
 
+// TODO remove and encrypt within the colorist service
 ColoristSchema.pre('save', function (next) {
   try {
     if (!this.isModified('password')) {

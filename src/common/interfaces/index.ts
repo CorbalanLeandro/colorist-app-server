@@ -45,7 +45,7 @@ export interface ICustomApiPropertyDto
 
 export interface ICustomMongoApiProperty
   extends Omit<ICustomApiProperty, 'example' | 'description'> {
-  referenceName?: string;
+  referenceName: string;
 }
 
 export interface IApiResult {

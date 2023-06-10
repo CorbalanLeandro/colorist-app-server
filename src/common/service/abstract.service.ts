@@ -101,7 +101,7 @@ export abstract class AbstractService<
    * @returns {Promise<DocumentType[]>}
    */
   async find(
-    filter: FilterQuery<DocumentType>,
+    filter: FilterQuery<DocumentType> = {},
     projection?: ProjectionType<DocumentType>,
     options?: QueryOptions<DocumentType>,
   ): Promise<DocumentType[]> {

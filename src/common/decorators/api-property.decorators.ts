@@ -66,7 +66,7 @@ export const ApiPropertyMongoId = ({
   isArray = false,
   required = true,
   referenceName,
-}: ICustomMongoApiProperty = {}): ReturnType<typeof applyDecorators> => {
+}: ICustomMongoApiProperty): ReturnType<typeof applyDecorators> => {
   let validatorOptions: ValidationOptions | undefined;
 
   const validatorDecorators: PropertyDecorator[] = [];

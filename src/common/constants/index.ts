@@ -13,6 +13,11 @@ export enum ATTRIBUTE_NAME_LENGTH {
   MAX = 256,
 }
 
+export enum ATTRIBUTE_USERNAME_LENGTH {
+  MIN = 3,
+  MAX = 60,
+}
+
 export enum ATTRIBUTE_LAST_NAME_LENGTH {
   MIN = 3,
   MAX = 256,

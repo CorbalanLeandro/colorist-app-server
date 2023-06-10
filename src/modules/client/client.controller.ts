@@ -38,7 +38,7 @@ import { ClientDocument } from './schemas';
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
-  private readonly coloristId = '6193e45824ec040624af509d'; // TODO get this from the request (auth);
+  private readonly coloristId = '6483c569deebac0864aa2b28'; // TODO get this from the request (auth);
 
   @ApiOperationCreate(CreateClientResponseDto)
   @Post()
@@ -102,14 +102,14 @@ export class ClientController {
   @Patch(`:${PARAM_ID}`)
   async update(
     @ParamMongoId(PARAM_ID) _id: string,
-    @Body() updateHairServiceData: UpdateClientDto,
+    @Body() updateClientData: UpdateClientDto,
   ): Promise<IApiResult> {
     await this.clientService.updateOne(
       {
         _id,
         coloristId: this.coloristId,
       },
-      { $set: updateHairServiceData },
+      { $set: updateClientData },
     );
 
     return { result: true };

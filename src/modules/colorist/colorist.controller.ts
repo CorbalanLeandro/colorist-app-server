@@ -30,6 +30,7 @@ import {
 } from './constants';
 
 import { Public } from '../auth/decorators';
+import { ICreateColoristResponseDto } from './interfaces';
 
 @ApiTags('Colorist')
 @Controller('colorist')
@@ -41,9 +42,8 @@ export class ColoristController {
   @Post()
   async create(
     @Body() createColoristData: CreateColoristDto,
-  ): Promise<ColoristDocument> {
-    // TODO createColorist where we encrypt the password with the salt from the config
-    return this.coloristService.create(createColoristData);
+  ): Promise<ICreateColoristResponseDto> {
+    return this.coloristService.createColorist(createColoristData);
   }
 
   @ApiBearerAuth()

@@ -6,15 +6,18 @@ export interface IAppConfig {
     env: string;
     port: number;
   };
+  auth: {
+    jwt: {
+      expiresIn: string;
+      secret: string;
+    };
+    passwordSalt: string;
+  };
   db: {
     name: string;
     params: string;
     uri: string;
     url: string;
-  };
-  jwt: {
-    expiresIn: string;
-    secret: string;
   };
 }
 
@@ -28,15 +31,18 @@ export default (): IAppConfig => {
       env: demandEnv('ENV'),
       port: parseInt(demandEnv('PORT', DEFAULT_APP_PORT), 10),
     },
+    auth: {
+      jwt: {
+        expiresIn: demandEnv('JWT_EXPIRES_IN'),
+        secret: demandEnv('JWT_SECRET'),
+      },
+      passwordSalt: demandEnv('PASSWORD_SALT'),
+    },
     db: {
       name: dbName,
       params: dbParams,
       uri: `${dbUrl}/${dbName}?${dbParams}`,
       url: dbUrl,
-    },
-    jwt: {
-      expiresIn: demandEnv('JWT_EXPIRES_IN'),
-      secret: demandEnv('JWT_SECRET'),
     },
   };
 };

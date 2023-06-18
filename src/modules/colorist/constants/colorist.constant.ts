@@ -13,8 +13,6 @@ export enum COLORIST_PASSWORD_LENGTH {
   MAX = 128,
 }
 
-export const COLORIST_PASSWORD_SALT = 'b1257947-7d0d-41a3-8dbb-3626e18742e0';
-
 export const COLORIST_POPULATE_OPTIONS: { populate: PopulateOptions } = {
   populate: {
     path: 'clients',

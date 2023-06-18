@@ -1,7 +1,5 @@
-import { Logger } from '@nestjs/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema, ValidatorProps } from 'mongoose';
-import { pbkdf2Sync } from 'crypto';
 
 import {
   ATTRIBUTE_EMAIL_LENGTH,
@@ -14,11 +12,7 @@ import {
 import { IColorist } from '../interfaces';
 import { isAlphanumeric, isEmail } from 'class-validator';
 import { Client } from '../../client/schemas';
-
-import {
-  COLORIST_HAIR_SALON_NAME_LENGTH,
-  COLORIST_PASSWORD_SALT,
-} from '../constants';
+import { COLORIST_HAIR_SALON_NAME_LENGTH } from '../constants';
 
 export type ColoristDocument = Colorist & Document & IBacicDocument;
 
@@ -90,44 +84,12 @@ export class Colorist implements IColorist {
     type: String,
     unique: true,
     validate: {
-      message: (props: ValidatorProps) => `${props.value} is an invalid email`,
+      message: (props: ValidatorProps) =>
+        `${props.value} is an invalid username`,
       validator: (value: unknown) => isAlphanumeric(value),
     },
   })
   username: string;
-
-  // TODO remove and encrypt within the colorist service
-  static encryptPassword(password: string): string {
-    return pbkdf2Sync(
-      password,
-      COLORIST_PASSWORD_SALT,
-      1000,
-      64,
-      'sha512',
-    ).toString('hex');
-  }
 }
 
 export const ColoristSchema = SchemaFactory.createForClass(Colorist);
-
-// TODO remove and encrypt within the colorist service
-ColoristSchema.pre('save', function (next) {
-  try {
-    if (!this.isModified('password')) {
-      next();
-    }
-
-    const hashedPassword = Colorist.encryptPassword(this.password);
-
-    this.password = hashedPassword;
-
-    next();
-  } catch (error: any) {
-    Logger.error('Could not encrypt password.', {
-      error,
-      username: this.username,
-    });
-
-    next(error);
-  }
-});

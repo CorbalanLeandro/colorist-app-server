@@ -181,6 +181,7 @@ export abstract class AbstractService<
     } catch (error) {
       this.logger.error('An error ocurred while updating a mongo document', {
         error,
+        filter,
         modelName: this.model.modelName,
         updateQuery,
       });

@@ -1,4 +1,7 @@
+import { PopulateOptions } from 'mongoose';
+
 import { IColorist } from '../interfaces';
+import { CLIENT_POPULATE_OPTIONS } from '../../client/constants';
 
 export enum COLORIST_HAIR_SALON_NAME_LENGTH {
   MIN = 3,
@@ -10,15 +13,10 @@ export enum COLORIST_PASSWORD_LENGTH {
   MAX = 128,
 }
 
-export const COLORIST_PASSWORD_SALT = 'b1257947-7d0d-41a3-8dbb-3626e18742e0';
-
-export const COLORIST_POPULATE_OPTIONS = {
+export const COLORIST_POPULATE_OPTIONS: { populate: PopulateOptions } = {
   populate: {
     path: 'clients',
-    populate: {
-      path: 'sheets',
-      populate: 'hairServices',
-    },
+    ...CLIENT_POPULATE_OPTIONS,
   },
 };
 

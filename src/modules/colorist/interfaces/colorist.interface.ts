@@ -23,7 +23,7 @@ export interface IColorist
     IColoristObjectIdAttributes {}
 
 export interface IColoristDto
-  extends IColoristAttributes,
+  extends Omit<IColoristAttributes, 'password'>,
     IColoristDtoObjectIdAttributes,
     IBacicDocumentDto {}
 
@@ -38,9 +38,9 @@ export type ICreateColorist = IColoristAttributes;
 export type ICreateColoristDto = IColoristAttributes;
 
 export interface ICreateColoristResponseDto
-  extends ICreateColorist,
+  extends Omit<ICreateColorist, 'password'>,
     IBacicDocumentDto {
-  clients: string[];
+  clients: IClientDto[];
 }
 
 export interface IColoristSignInDto {

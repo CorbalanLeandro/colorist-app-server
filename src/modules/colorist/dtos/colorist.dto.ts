@@ -2,6 +2,7 @@ import {
   ApiProperty,
   ApiPropertyOptional,
   IntersectionType,
+  OmitType,
   PartialType,
 } from '@nestjs/swagger';
 
@@ -11,7 +12,6 @@ import {
   ApiPropertyDto,
   ApiPropertyEmail,
   ApiPropertyLastName,
-  ApiPropertyMongoId,
   ApiPropertyName,
   BasicDocumentDto,
 } from '../../../common';
@@ -27,7 +27,6 @@ import { COLORIST_HAIR_SALON_NAME_LENGTH } from '../constants';
 import { Length } from 'class-validator';
 import { IClientDto } from '../../client/interfaces';
 import { ClientDto } from '../../client/dtos';
-import { Client } from '../../client/schemas';
 import { ApiPropertyColoristPassword } from '../decorators/colorist.decorator';
 
 export class CreateColoristDto implements ICreateColoristDto {
@@ -72,7 +71,10 @@ export class UpdateColoristDto
   implements Partial<ICreateColoristDto> {}
 
 export class ColoristDto
-  extends IntersectionType(CreateColoristDto, BasicDocumentDto)
+  extends IntersectionType(
+    OmitType(CreateColoristDto, ['password']),
+    BasicDocumentDto,
+  )
   implements IColoristDto
 {
   @ApiPropertyDto({ dto: ClientDto, isArray: true })
@@ -80,11 +82,11 @@ export class ColoristDto
 }
 
 export class CreateColoristResponseDto
-  extends IntersectionType(CreateColoristDto, BasicDocumentDto)
+  extends IntersectionType(ColoristDto, BasicDocumentDto)
   implements ICreateColoristResponseDto
 {
-  @ApiPropertyMongoId({ isArray: true, referenceName: Client.name })
-  clients: string[];
+  @ApiPropertyDto({ dto: ClientDto, isArray: true })
+  clients: IClientDto[];
 }
 
 export class ColoristSignInDto implements IColoristSignInDto {

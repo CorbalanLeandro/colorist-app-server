@@ -25,7 +25,6 @@ export class Client extends ColoristIdSchema implements IClient {
     mimlength: ATTRIBUTE_EMAIL_LENGTH.MIN,
     trim: true,
     type: String,
-    unique: true,
     validate: {
       message: (props: ValidatorProps) => `${props.value} is an invalid email`,
       validator: (value: unknown) => isEmail(value),
@@ -54,10 +53,8 @@ export class Client extends ColoristIdSchema implements IClient {
   @Prop({
     maxlength: ATTRIBUTE_PHONE_NUMBER_LENGTH.MAX,
     mimlength: ATTRIBUTE_PHONE_NUMBER_LENGTH.MIN,
-    required: true,
     trim: true,
     type: String,
-    unique: true,
   })
   phoneNumber?: string;
 

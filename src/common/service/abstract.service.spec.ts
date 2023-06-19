@@ -256,7 +256,10 @@ describe('AbstractService', () => {
       const mockUpdateResult = { modifiedCount: 1 } as UpdateResult;
       modelUpdateOneSpy.mockResolvedValueOnce(mockUpdateResult);
 
-      const updateResult = await service.updateOne(mockId, mockUpdateQuery);
+      const updateResult = await service.updateOne(
+        { _id: mockId },
+        mockUpdateQuery,
+      );
 
       expect(updateResult).toEqual(mockUpdateResult);
 
@@ -276,9 +279,9 @@ describe('AbstractService', () => {
       const mockUpdateResult = { modifiedCount: 0 } as UpdateResult;
       modelUpdateOneSpy.mockResolvedValueOnce(mockUpdateResult);
 
-      await expect(service.updateOne(mockId, mockUpdateQuery)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.updateOne({ _id: mockId }, mockUpdateQuery),
+      ).rejects.toThrow(NotFoundException);
 
       expect(modelUpdateOneSpy).toHaveBeenCalledWith(
         { _id: mockId },
@@ -295,9 +298,9 @@ describe('AbstractService', () => {
     it('should throw if an error occurs', async () => {
       modelUpdateOneSpy.mockRejectedValueOnce(new Error());
 
-      await expect(service.updateOne(mockId, mockUpdateQuery)).rejects.toThrow(
-        InternalServerErrorException,
-      );
+      await expect(
+        service.updateOne({ _id: mockId }, mockUpdateQuery),
+      ).rejects.toThrow(InternalServerErrorException);
 
       expect(modelUpdateOneSpy).toHaveBeenCalledWith(
         { _id: mockId },

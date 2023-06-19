@@ -96,9 +96,7 @@ export class ColoristController {
   @ApiMongoIdParam()
   @Delete(`:${PARAM_ID}`)
   async delete(@ParamMongoId(PARAM_ID) _id: string): Promise<IApiResult> {
-    await this.coloristService.deleteOne({
-      _id,
-    });
+    await this.coloristService.deleteColorist(_id);
 
     return { result: true };
   }

@@ -48,7 +48,7 @@ export class ClientController {
     @Body() createClientData: CreateClientDto,
     @ColoristId() coloristId: string,
   ): Promise<ClientDocument> {
-    return this.clientService.create({
+    return this.clientService.createClient({
       ...createClientData,
       coloristId,
     });

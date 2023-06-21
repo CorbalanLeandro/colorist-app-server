@@ -13,11 +13,11 @@ import { HairServiceModule } from '../hair-service/hair-service.module';
   exports: [ColoristService],
   imports: [
     forwardRef(() => ClientModule),
+    forwardRef(() => HairServiceModule),
+    forwardRef(() => SheetModule),
     MongooseModule.forFeature([
       { name: Colorist.name, schema: ColoristSchema },
     ]),
-    forwardRef(() => SheetModule),
-    HairServiceModule,
   ],
   providers: [ColoristService],
 })

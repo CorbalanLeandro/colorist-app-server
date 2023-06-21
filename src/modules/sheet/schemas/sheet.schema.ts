@@ -23,7 +23,7 @@ export class Sheet extends ColoristIdSchema implements ISheet {
     type: String,
     validate: isMongoIdPropValidator,
   })
-  client: string;
+  clientId: string;
 
   @Prop({
     required: true,
@@ -37,13 +37,15 @@ export class Sheet extends ColoristIdSchema implements ISheet {
   })
   date: string;
 
-  @Prop([
-    {
-      ref: HairService.name,
-      required: true,
-      type: MongooseSchema.Types.ObjectId,
-    },
-  ])
+  @Prop({
+    type: [
+      {
+        ref: HairService.name,
+        required: true,
+        type: MongooseSchema.Types.ObjectId,
+      },
+    ],
+  })
   hairServices: HairService[];
 }
 

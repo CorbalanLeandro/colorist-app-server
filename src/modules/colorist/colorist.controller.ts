@@ -29,7 +29,7 @@ import {
   COLORIST_POPULATE_OPTIONS,
 } from './constants';
 
-import { Public } from '../auth/decorators';
+import { ColoristId, Public } from '../auth/decorators';
 import { ICreateColoristResponseDto } from './interfaces';
 
 @ApiTags('Colorist')
@@ -93,10 +93,9 @@ export class ColoristController {
 
   @ApiBearerAuth()
   @ApiOperationDeleteOneById()
-  @ApiMongoIdParam()
-  @Delete(`:${PARAM_ID}`)
-  async delete(@ParamMongoId(PARAM_ID) _id: string): Promise<IApiResult> {
-    await this.coloristService.deleteColorist(_id);
+  @Delete()
+  async delete(@ColoristId() coloristId: string): Promise<IApiResult> {
+    await this.coloristService.deleteColorist(coloristId);
 
     return { result: true };
   }

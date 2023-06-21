@@ -21,6 +21,13 @@ export type HairServiceDocument = HairService & Document & IBacicDocument;
   timestamps: true,
 })
 export class HairService extends ColoristIdSchema implements IHairService {
+  @Prop({
+    required: true,
+    type: String,
+    validate: isMongoIdPropValidator,
+  })
+  clientId: string;
+
   @Prop([{ required: true, type: HairServiceIngredientSchema }])
   ingredients: IHairServiceIngredient[];
 
@@ -46,7 +53,7 @@ export class HairService extends ColoristIdSchema implements IHairService {
     type: String,
     validate: isMongoIdPropValidator,
   })
-  sheet: string;
+  sheetId: string;
 }
 
 export const HairServiceSchema = SchemaFactory.createForClass(HairService);

@@ -1,6 +1,7 @@
 import { DeleteResult, UpdateResult } from 'mongodb';
 
 import {
+  AnyKeys,
   Document,
   FilterQuery,
   Model,
@@ -19,33 +20,83 @@ export abstract class AbstractService<
   CreateInterface,
   DocumentType extends Document,
 > {
-  protected constructor(name: string, model: Model<DocumentType>) {
+  protected constructor(
+    protected readonly name: string,
+    protected readonly model: Model<DocumentType>,
+  ) {
     this.model = model;
     this.name = name;
     this.logger = new Logger(name);
   }
 
-  protected readonly model: Model<DocumentType>;
-  protected readonly name: string;
   protected readonly logger: Logger;
 
   /**
    * @async
-   * @param {CreateInterface} data
+   * @param {CreateInterface} createData
    * @returns {Promise<DocumentType>}
    */
-  async create(data: CreateInterface): Promise<DocumentType> {
+  async create(createData: CreateInterface): Promise<DocumentType> {
     try {
-      return await this.model.create<CreateInterface>(data);
+      return await this.model.create<CreateInterface>(createData);
     } catch (error) {
       this.logger.error('An error ocurred while creating a mongo document', {
-        data,
+        createData,
         error,
         modelName: this.model.modelName,
       });
 
       throw new InternalServerErrorException();
     }
+  }
+
+  /**
+   * Creates a document and updates the Parent document to have this new document as child
+   * on the given attribute.
+   *
+   * @async
+   * @param {CreateInterface} createData Data to create the child document
+   * @param {T} parentService Service to make the update with
+   * @param {string} parentId The parent's id which we are going to update
+   * @param {keyof D} attributeNameOnParent The parent's attribute where we will add the new child's id
+   * @returns {Promise<DocumentType>} The created document
+   */
+  async createAndUpdateParent<
+    K,
+    D extends Document,
+    T extends AbstractService<K, D>,
+  >(
+    createData: CreateInterface,
+    parentService: T,
+    parentId: string,
+    attributeNameOnParent: keyof D,
+  ): Promise<DocumentType> {
+    const newDocument = await this.create(createData);
+    const { _id: newDocumentId } = newDocument;
+
+    try {
+      await parentService.updateOne(
+        { _id: parentId },
+        { $push: { [attributeNameOnParent]: newDocumentId } as AnyKeys<D> },
+      );
+    } catch (error) {
+      this.logger.error(
+        'Could not add the new Document to the Parent Document',
+        {
+          createData,
+          error,
+          newDocumentId,
+        },
+      );
+
+      await this.deleteOne({ _id: newDocumentId });
+
+      throw new InternalServerErrorException(
+        'Something went wrong when creating the document.',
+      );
+    }
+
+    return newDocument;
   }
 
   /**
@@ -97,6 +148,7 @@ export abstract class AbstractService<
   /**
    * @async
    * @param {FilterQuery<DocumentType>} filter
+   * @param {ProjectionType<DocumentType>} projection
    * @param {QueryOptions<DocumentType>} options
    * @returns {Promise<DocumentType[]>}
    */

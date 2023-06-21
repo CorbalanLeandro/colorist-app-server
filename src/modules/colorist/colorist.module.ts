@@ -16,7 +16,7 @@ import { HairServiceModule } from '../hair-service/hair-service.module';
     MongooseModule.forFeature([
       { name: Colorist.name, schema: ColoristSchema },
     ]),
-    SheetModule,
+    forwardRef(() => SheetModule),
     HairServiceModule,
   ],
   providers: [ColoristService],

@@ -36,7 +36,7 @@ export class HairServiceController {
     @Body() createHairServiceData: CreateHairServiceDto,
     @ColoristId() coloristId: string,
   ): Promise<HairServiceDocument> {
-    return this.hairServiceService.create({
+    return this.hairServiceService.createHairService({
       ...createHairServiceData,
       coloristId,
     });

@@ -21,6 +21,7 @@ export class ClientService extends AbstractService<
     protected model: Model<ClientDocument>,
     @Inject(forwardRef(() => ColoristService))
     private readonly coloristService: ColoristService,
+    @Inject(forwardRef(() => HairServiceService))
     private readonly hairServiceService: HairServiceService,
     @Inject(forwardRef(() => SheetService))
     private readonly sheetService: SheetService,

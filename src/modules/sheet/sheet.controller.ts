@@ -121,10 +121,7 @@ export class SheetController {
     @ParamMongoId(PARAM_ID) _id: string,
     @ColoristId() coloristId: string,
   ): Promise<IApiResult> {
-    await this.sheetService.deleteOne({
-      _id,
-      coloristId,
-    });
+    await this.sheetService.deleteSheet(_id, coloristId);
 
     return { result: true };
   }

@@ -20,16 +20,19 @@ export type ColoristDocument = Colorist & Document & IBacicDocument;
   timestamps: true,
 })
 export class Colorist implements IColorist {
-  @Prop([
-    {
-      ref: Client.name,
-      required: true,
-      type: MongooseSchema.Types.ObjectId,
-    },
-  ])
+  @Prop({
+    type: [
+      {
+        ref: Client.name,
+        required: true,
+        type: MongooseSchema.Types.ObjectId,
+      },
+    ],
+  })
   clients: Client[];
 
   @Prop({
+    immutable: true,
     maxlength: ATTRIBUTE_EMAIL_LENGTH.MAX,
     mimlength: ATTRIBUTE_EMAIL_LENGTH.MIN,
     required: true,
@@ -77,6 +80,7 @@ export class Colorist implements IColorist {
   password: string;
 
   @Prop({
+    immutable: true,
     maxlength: ATTRIBUTE_USERNAME_LENGTH.MAX,
     mimlength: ATTRIBUTE_USERNAME_LENGTH.MIN,
     required: true,

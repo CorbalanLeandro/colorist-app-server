@@ -133,10 +133,7 @@ export class ClientController {
     @ParamMongoId(PARAM_ID) _id: string,
     @ColoristId() coloristId: string,
   ): Promise<IApiResult> {
-    await this.clientService.deleteOne({
-      _id,
-      coloristId,
-    });
+    await this.clientService.deleteClient(_id, coloristId);
 
     return { result: true };
   }

@@ -25,7 +25,7 @@ export class CreateSheetDto implements ICreateSheetDto {
     example: '6193e45824ec040624af509d',
   })
   @IsMongoId()
-  client: string;
+  clientId: string;
 
   @ApiProperty({
     description: 'date attribute, format dd/MM/yyyy',

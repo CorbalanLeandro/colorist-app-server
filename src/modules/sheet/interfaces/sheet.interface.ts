@@ -17,7 +17,7 @@ export interface ISheetAttributes extends IColoristId {
   /**
    * Clients's _id to which this sheet belongs
    */
-  client: string;
+  clientId: string;
   date: string;
 }
 

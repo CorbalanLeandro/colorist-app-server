@@ -27,6 +27,13 @@ import {
 } from '../constants';
 
 export class CreateHairServiceDto implements ICreateHairServiceDto {
+  @ApiProperty({
+    description: `Client's _id to which this hair service belongs`,
+    example: '6193e45824ec040624af509d',
+  })
+  @IsMongoId()
+  clientId: string;
+
   @ApiPropertyDto({ dto: HairServiceIngredientsDto, isArray: true })
   ingredients: IHairServiceIngredient[];
 
@@ -57,7 +64,7 @@ export class CreateHairServiceDto implements ICreateHairServiceDto {
     example: '6193e45824ec040624af509d',
   })
   @IsMongoId()
-  sheet: string;
+  sheetId: string;
 }
 
 export class UpdateHairServiceDto

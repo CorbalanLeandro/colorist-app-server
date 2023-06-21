@@ -58,13 +58,15 @@ export class Client extends ColoristIdSchema implements IClient {
   })
   phoneNumber?: string;
 
-  @Prop([
-    {
-      ref: Sheet.name,
-      required: true,
-      type: MongooseSchema.Types.ObjectId,
-    },
-  ])
+  @Prop({
+    type: [
+      {
+        ref: Sheet.name,
+        required: true,
+        type: MongooseSchema.Types.ObjectId,
+      },
+    ],
+  })
   sheets: Sheet[];
 }
 

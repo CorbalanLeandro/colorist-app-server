@@ -27,7 +27,22 @@ export const ParamMongoId = createParamDecorator(
 
     throw new BadRequestException(
       'Invalid id',
-      `The value "${mongoIdParam}" is not a valid id`,
+      `Path param "${data}": The value "${mongoIdParam}" is not a valid id`,
+    );
+  },
+);
+
+export const QueryMongoId = createParamDecorator(
+  (data: string, ctx: ExecutionContext) => {
+    const mongoIdParam = ctx.switchToHttp().getRequest<Request>().query[data];
+
+    if (isMongoId(mongoIdParam)) {
+      return mongoIdParam;
+    }
+
+    throw new BadRequestException(
+      'Invalid id',
+      `Query param "${data}": The value "${mongoIdParam}" is not a valid id`,
     );
   },
 );

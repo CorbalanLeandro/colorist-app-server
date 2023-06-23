@@ -20,8 +20,7 @@ export interface IHairServiceDto extends IHairService, IBacicDocumentDto {}
 export type ICreateHairService = IHairService;
 export type ICreateHairServiceDto = Omit<IHairService, 'coloristId'>;
 
-export interface IDeleteHairService {
-  coloristId: string;
+export interface IDeleteHairService extends IColoristId {
   hairServiceId: string;
   sheetId: string;
 }

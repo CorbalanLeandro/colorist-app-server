@@ -22,6 +22,8 @@ import {
   ApiOperationUpdateOneById,
   IApiResult,
   ApiOperationFindOneById,
+  QueryMongoId,
+  ApiMongoIdQuery,
 } from '../../common';
 
 import {
@@ -48,7 +50,7 @@ export class SheetController {
     @Body() createSheetData: CreateSheetDto,
     @ColoristId() coloristId: string,
   ): Promise<SheetDocument> {
-    return this.sheetService.create({
+    return this.sheetService.createSheet({
       ...createSheetData,
       coloristId,
     });
@@ -116,12 +118,14 @@ export class SheetController {
 
   @ApiOperationDeleteOneById()
   @ApiMongoIdParam()
+  @ApiMongoIdQuery('clientId', 'Sheet parent id')
   @Delete(`:${PARAM_ID}`)
   async delete(
     @ParamMongoId(PARAM_ID) _id: string,
     @ColoristId() coloristId: string,
+    @QueryMongoId('clientId') clientId: string,
   ): Promise<IApiResult> {
-    await this.sheetService.deleteSheet(_id, coloristId);
+    await this.sheetService.deleteSheet({ clientId, coloristId, sheetId: _id });
 
     return { result: true };
   }

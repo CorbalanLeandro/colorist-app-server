@@ -44,3 +44,8 @@ export interface ICreateSheetResponseDto
     IColoristId {}
 
 export type IFindSheetsQueryDto = IBasicQueryDto;
+
+export interface IDeleteSheet extends IColoristId {
+  clientId: string;
+  sheetId: string;
+}

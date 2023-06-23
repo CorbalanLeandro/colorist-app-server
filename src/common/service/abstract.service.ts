@@ -107,20 +107,24 @@ export abstract class AbstractService<
   async deleteOne(filter: FilterQuery<DocumentType>): Promise<DeleteResult> {
     let deleteResult: DeleteResult;
 
+    const logCtx = {
+      filter,
+      modelName: this.model.modelName,
+    };
+
     try {
       deleteResult = await this.model.deleteOne(filter);
     } catch (error) {
       this.logger.error('An error ocurred while deleting a mongo document', {
+        ...logCtx,
         error,
-        filter,
-        modelName: this.model.modelName,
       });
 
       throw new InternalServerErrorException();
     }
 
     if (deleteResult.deletedCount === 0) {
-      throw new NotFoundException();
+      this.handleDocumentNotFound('deleteOne', logCtx);
     }
 
     return deleteResult;
@@ -186,22 +190,26 @@ export abstract class AbstractService<
   ): Promise<DocumentType> {
     let document: DocumentType | null;
 
+    const logCtx = {
+      filter,
+      modelName: this.model.modelName,
+      options,
+      projection,
+    };
+
     try {
       document = await this.model.findOne(filter, projection, options);
     } catch (error) {
       this.logger.error('An error ocurred while finding a mongo document', {
+        ...logCtx,
         error,
-        filter,
-        modelName: this.model.modelName,
-        options,
-        projection,
       });
 
       throw new InternalServerErrorException();
     }
 
     if (!document) {
-      throw new NotFoundException();
+      this.handleDocumentNotFound('findOne', logCtx);
     }
 
     return document;
@@ -219,6 +227,12 @@ export abstract class AbstractService<
   ): Promise<UpdateResult> {
     let updateResult: UpdateResult;
 
+    const logCtx = {
+      filter,
+      modelName: this.model.modelName,
+      updateQuery,
+    };
+
     try {
       updateResult = await this.model.updateOne(
         filter,
@@ -232,19 +246,30 @@ export abstract class AbstractService<
       );
     } catch (error) {
       this.logger.error('An error ocurred while updating a mongo document', {
+        ...logCtx,
         error,
-        filter,
-        modelName: this.model.modelName,
-        updateQuery,
       });
 
       throw new InternalServerErrorException();
     }
 
     if (updateResult.modifiedCount === 0) {
-      throw new NotFoundException();
+      this.handleDocumentNotFound('updateOne', logCtx);
     }
 
     return updateResult;
+  }
+
+  /**
+   * Emits the log with the log context and throw a NotFoundException
+   *
+   * @param logCtx
+   */
+  private handleDocumentNotFound(
+    method: string,
+    logCtx: Record<string, any>,
+  ): never {
+    this.logger.error(`${method}: Document not found`, logCtx);
+    throw new NotFoundException();
   }
 }

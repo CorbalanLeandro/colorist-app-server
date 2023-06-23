@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { HairServiceService } from './hair-service.service';
 
@@ -11,6 +11,7 @@ import {
 
 import {
   ApiMongoIdParam,
+  ApiMongoIdQuery,
   ApiOperationCreate,
   ApiOperationDeleteOneById,
   ApiOperationFindAll,
@@ -93,11 +94,7 @@ export class HairServiceController {
 
   @ApiOperationDeleteOneById()
   @ApiMongoIdParam()
-  @ApiQuery({
-    description: 'Hair service parent id',
-    example: '627f2a3380912eba4cb481cd',
-    name: 'sheetId',
-  })
+  @ApiMongoIdQuery('sheetId', 'Hair service parent id')
   @Delete(`:${PARAM_ID}`)
   async delete(
     @ParamMongoId(PARAM_ID) _id: string,

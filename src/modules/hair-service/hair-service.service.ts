@@ -56,6 +56,11 @@ export class HairServiceService extends AbstractService<
     sheetId,
     coloristId,
   }: IDeleteHairService): Promise<void> {
+    await this.assertParentExist<ICreateSheet, SheetDocument, SheetService>(
+      sheetId,
+      this.sheetService,
+    );
+
     await this.deleteOne({ _id: hairServiceId });
 
     try {

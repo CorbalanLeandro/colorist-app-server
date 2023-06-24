@@ -11,6 +11,7 @@ import {
 } from 'mongoose';
 
 import {
+  BadRequestException,
   InternalServerErrorException,
   Logger,
   NotFoundException,
@@ -71,6 +72,8 @@ export abstract class AbstractService<
     parentId: string,
     attributeNameOnParent: keyof D,
   ): Promise<DocumentType> {
+    await this.assertParentExist<K, D, T>(parentId, parentService);
+
     const newDocument = await this.create(createData);
     const { _id: newDocumentId } = newDocument;
 
@@ -147,6 +150,15 @@ export abstract class AbstractService<
 
       throw new InternalServerErrorException();
     }
+  }
+
+  /**
+   * @async
+   * @param {FilterQuery<DocumentType>} filter
+   * @returns {Promise<boolean>} True if exists.
+   */
+  async exists(filter: FilterQuery<DocumentType>): Promise<boolean> {
+    return (await this.model.exists(filter)) != null;
   }
 
   /**
@@ -258,6 +270,37 @@ export abstract class AbstractService<
     }
 
     return updateResult;
+  }
+
+  /**
+   * If parent does not exists, throws a bad request exception
+   *
+   * @async
+   * @param {string} parentId
+   * @param {T} parentService
+   */
+  protected async assertParentExist<
+    K,
+    D extends Document,
+    T extends AbstractService<K, D>,
+  >(parentId: string, parentService: T): Promise<void> {
+    let parentExists: boolean;
+
+    try {
+      parentExists = await parentService.exists({ _id: parentId });
+    } catch (error) {
+      this.logger.error('Could not assert parent exists.', {
+        error,
+        modelName: this.model.modelName,
+        parentId,
+      });
+
+      throw new InternalServerErrorException('Could not assert parent exists.');
+    }
+
+    if (!parentExists) {
+      throw new BadRequestException('Parent does not exists.');
+    }
   }
 
   /**

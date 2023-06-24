@@ -54,6 +54,12 @@ export class ClientService extends AbstractService<
    * @returns {Promise<void>}
    */
   async deleteClient(clientId: string, coloristId: string): Promise<void> {
+    await this.assertParentExist<
+      ICreateColorist,
+      ColoristDocument,
+      ColoristService
+    >(coloristId, this.coloristService);
+
     await this.deleteOne({ _id: clientId, coloristId });
 
     const logCtx = {

@@ -51,6 +51,11 @@ export class SheetService extends AbstractService<ICreateSheet, SheetDocument> {
     coloristId,
     sheetId,
   }: IDeleteSheet): Promise<void> {
+    await this.assertParentExist<ICreateClient, ClientDocument, ClientService>(
+      clientId,
+      this.clientService,
+    );
+
     await this.deleteOne({ _id: sheetId, coloristId });
 
     const logCtx = {

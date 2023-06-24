@@ -45,27 +45,52 @@ export class ClientService extends AbstractService<
   }
 
   /**
-   * Deletes a Client and all its related data.
+   * Deletes a Client, its all its related data and updates the colorist
+   * to not have its _id anymore.
    *
    * @async
-   * @param {string} _id Client's _id
+   * @param {string} clientId
    * @param {string} coloristId
    * @returns {Promise<void>}
    */
-  async deleteClient(_id: string, coloristId: string): Promise<void> {
-    await this.deleteOne({ _id, coloristId });
+  async deleteClient(clientId: string, coloristId: string): Promise<void> {
+    await this.assertParentExist<
+      ICreateColorist,
+      ColoristDocument,
+      ColoristService
+    >(coloristId, this.coloristService);
+
+    await this.deleteOne({ _id: clientId, coloristId });
+
+    const logCtx = {
+      clientId,
+      coloristId,
+    };
 
     try {
       await Promise.all([
-        this.sheetService.deleteMany({ clientId: _id, coloristId }),
-        this.hairServiceService.deleteMany({ clientId: _id, coloristId }),
+        this.sheetService.deleteMany({ clientId, coloristId }),
+        this.hairServiceService.deleteMany({ clientId, coloristId }),
       ]);
     } catch (error) {
       this.logger.error('An error ocurred while deleting Client related data', {
-        _id,
-        coloristId,
+        ...logCtx,
         error,
       });
+    }
+
+    try {
+      await this.coloristService.updateOne(
+        { _id: coloristId },
+        { $pull: { clients: clientId } },
+      );
+    } catch (error) {
+      this.logger.error('Could not remove client from colorist', {
+        ...logCtx,
+        error,
+      });
+
+      throw error;
     }
   }
 }

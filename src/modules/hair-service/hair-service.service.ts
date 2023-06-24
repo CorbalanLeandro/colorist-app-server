@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { AbstractService } from '../../common';
-import { ICreateHairService } from './interfaces';
+import { ICreateHairService, IDeleteHairService } from './interfaces';
 import { HairService, HairServiceDocument } from './schemas';
 import { ICreateSheet } from '../sheet/interfaces';
 import { SheetDocument } from '../sheet/schemas';
@@ -43,5 +43,40 @@ export class HairServiceService extends AbstractService<
       hairServiceData.sheetId,
       'hairServices',
     );
+  }
+
+  /**
+   * Deletes a hair service by id and updates the parent sheet to not have this id anymore
+   *
+   * @param {IDeleteHairService} options
+   * @returns {Promise<void>}
+   */
+  async deleteHairService({
+    hairServiceId,
+    sheetId,
+    coloristId,
+  }: IDeleteHairService): Promise<void> {
+    await this.assertParentExist<ICreateSheet, SheetDocument, SheetService>(
+      sheetId,
+      this.sheetService,
+    );
+
+    await this.deleteOne({ _id: hairServiceId });
+
+    try {
+      await this.sheetService.updateOne(
+        { _id: sheetId, coloristId },
+        { $pull: { hairServices: hairServiceId } },
+      );
+    } catch (error) {
+      this.logger.error('Could not remove hair service from sheet', {
+        coloristId,
+        error,
+        hairServiceId,
+        sheetId,
+      });
+
+      throw error;
+    }
   }
 }

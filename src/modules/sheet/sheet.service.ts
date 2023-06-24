@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { AbstractService } from '../../common';
-import { ICreateSheet } from './interfaces';
+import { ICreateSheet, IDeleteSheet } from './interfaces';
 import { Sheet, SheetDocument } from './schemas';
 import { ClientService } from '../client/client.service';
 import { ICreateClient } from '../client/interfaces';
@@ -39,17 +39,57 @@ export class SheetService extends AbstractService<ICreateSheet, SheetDocument> {
   }
 
   /**
-   * Deletes a sheet and all the hair services that belongs to it.
+   * Deletes a sheet, all the hair services that belongs to it
+   * and updates the client to not have this id anymore.
    *
    * @async
-   * @param {string} _id Sheet's id
-   * @param {string} coloristId
+   * @param {IDeleteSheet} options
    * @returns {Promise<void>}
    */
-  async deleteSheet(_id: string, coloristId: string): Promise<void> {
-    await Promise.all([
-      this.deleteOne({ _id, coloristId }),
-      this.hairServiceService.deleteMany({ coloristId, sheetId: _id }),
-    ]);
+  async deleteSheet({
+    clientId,
+    coloristId,
+    sheetId,
+  }: IDeleteSheet): Promise<void> {
+    await this.assertParentExist<ICreateClient, ClientDocument, ClientService>(
+      clientId,
+      this.clientService,
+    );
+
+    await this.deleteOne({ _id: sheetId, coloristId });
+
+    const logCtx = {
+      clientId,
+      coloristId,
+      sheetId,
+    };
+
+    try {
+      await this.hairServiceService.deleteMany({
+        coloristId,
+        sheetId,
+      });
+    } catch (error) {
+      this.logger.error(`Could not delete sheet's hair services`, {
+        ...logCtx,
+        error,
+      });
+
+      throw error;
+    }
+
+    try {
+      await this.clientService.updateOne(
+        { _id: clientId, coloristId },
+        { $pull: { sheets: sheetId } },
+      );
+    } catch (error) {
+      this.logger.error('Could not remove sheet from client', {
+        ...logCtx,
+        error,
+      });
+
+      throw error;
+    }
   }
 }

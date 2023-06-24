@@ -11,6 +11,7 @@ import {
 
 import {
   ApiMongoIdParam,
+  ApiMongoIdQuery,
   ApiOperationCreate,
   ApiOperationDeleteOneById,
   ApiOperationFindAll,
@@ -19,6 +20,7 @@ import {
   IApiResult,
   PARAM_ID,
   ParamMongoId,
+  QueryMongoId,
 } from '../../common';
 
 import { HairServiceDocument } from './schemas';
@@ -92,14 +94,17 @@ export class HairServiceController {
 
   @ApiOperationDeleteOneById()
   @ApiMongoIdParam()
+  @ApiMongoIdQuery('sheetId', 'Hair service parent id')
   @Delete(`:${PARAM_ID}`)
   async delete(
     @ParamMongoId(PARAM_ID) _id: string,
     @ColoristId() coloristId: string,
+    @QueryMongoId('sheetId') sheetId: string,
   ): Promise<IApiResult> {
-    await this.hairServiceService.deleteOne({
-      _id,
+    await this.hairServiceService.deleteHairService({
       coloristId,
+      hairServiceId: _id,
+      sheetId,
     });
 
     return { result: true };

@@ -11,6 +11,7 @@ import {
 } from 'mongoose';
 
 import {
+  BadRequestException,
   InternalServerErrorException,
   Logger,
   NotFoundException,
@@ -71,6 +72,8 @@ export abstract class AbstractService<
     parentId: string,
     attributeNameOnParent: keyof D,
   ): Promise<DocumentType> {
+    await this.assertParentExist<K, D, T>(parentId, parentService);
+
     const newDocument = await this.create(createData);
     const { _id: newDocumentId } = newDocument;
 
@@ -107,20 +110,24 @@ export abstract class AbstractService<
   async deleteOne(filter: FilterQuery<DocumentType>): Promise<DeleteResult> {
     let deleteResult: DeleteResult;
 
+    const logCtx = {
+      filter,
+      modelName: this.model.modelName,
+    };
+
     try {
       deleteResult = await this.model.deleteOne(filter);
     } catch (error) {
       this.logger.error('An error ocurred while deleting a mongo document', {
+        ...logCtx,
         error,
-        filter,
-        modelName: this.model.modelName,
       });
 
       throw new InternalServerErrorException();
     }
 
     if (deleteResult.deletedCount === 0) {
-      throw new NotFoundException();
+      this.handleDocumentNotFound('deleteOne', logCtx);
     }
 
     return deleteResult;
@@ -143,6 +150,15 @@ export abstract class AbstractService<
 
       throw new InternalServerErrorException();
     }
+  }
+
+  /**
+   * @async
+   * @param {FilterQuery<DocumentType>} filter
+   * @returns {Promise<boolean>} True if exists.
+   */
+  async exists(filter: FilterQuery<DocumentType>): Promise<boolean> {
+    return (await this.model.exists(filter)) != null;
   }
 
   /**
@@ -186,22 +202,26 @@ export abstract class AbstractService<
   ): Promise<DocumentType> {
     let document: DocumentType | null;
 
+    const logCtx = {
+      filter,
+      modelName: this.model.modelName,
+      options,
+      projection,
+    };
+
     try {
       document = await this.model.findOne(filter, projection, options);
     } catch (error) {
       this.logger.error('An error ocurred while finding a mongo document', {
+        ...logCtx,
         error,
-        filter,
-        modelName: this.model.modelName,
-        options,
-        projection,
       });
 
       throw new InternalServerErrorException();
     }
 
     if (!document) {
-      throw new NotFoundException();
+      this.handleDocumentNotFound('findOne', logCtx);
     }
 
     return document;
@@ -219,6 +239,12 @@ export abstract class AbstractService<
   ): Promise<UpdateResult> {
     let updateResult: UpdateResult;
 
+    const logCtx = {
+      filter,
+      modelName: this.model.modelName,
+      updateQuery,
+    };
+
     try {
       updateResult = await this.model.updateOne(
         filter,
@@ -232,19 +258,61 @@ export abstract class AbstractService<
       );
     } catch (error) {
       this.logger.error('An error ocurred while updating a mongo document', {
+        ...logCtx,
         error,
-        filter,
-        modelName: this.model.modelName,
-        updateQuery,
       });
 
       throw new InternalServerErrorException();
     }
 
     if (updateResult.modifiedCount === 0) {
-      throw new NotFoundException();
+      this.handleDocumentNotFound('updateOne', logCtx);
     }
 
     return updateResult;
+  }
+
+  /**
+   * If parent does not exists, throws a bad request exception
+   *
+   * @async
+   * @param {string} parentId
+   * @param {T} parentService
+   */
+  protected async assertParentExist<
+    K,
+    D extends Document,
+    T extends AbstractService<K, D>,
+  >(parentId: string, parentService: T): Promise<void> {
+    let parentExists: boolean;
+
+    try {
+      parentExists = await parentService.exists({ _id: parentId });
+    } catch (error) {
+      this.logger.error('Could not assert parent exists.', {
+        error,
+        modelName: this.model.modelName,
+        parentId,
+      });
+
+      throw new InternalServerErrorException('Could not assert parent exists.');
+    }
+
+    if (!parentExists) {
+      throw new BadRequestException('Parent does not exists.');
+    }
+  }
+
+  /**
+   * Emits the log with the log context and throw a NotFoundException
+   *
+   * @param logCtx
+   */
+  private handleDocumentNotFound(
+    method: string,
+    logCtx: Record<string, any>,
+  ): never {
+    this.logger.error(`${method}: Document not found`, logCtx);
+    throw new NotFoundException(`${this.model.modelName} was not found.`);
   }
 }

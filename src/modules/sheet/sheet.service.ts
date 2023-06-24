@@ -43,7 +43,7 @@ export class SheetService extends AbstractService<ICreateSheet, SheetDocument> {
    * and updates the client to not have this id anymore.
    *
    * @async
-   * @param {IDeleteSheet} options Sheet's id
+   * @param {IDeleteSheet} options
    * @returns {Promise<void>}
    */
   async deleteSheet({

@@ -270,6 +270,6 @@ export abstract class AbstractService<
     logCtx: Record<string, any>,
   ): never {
     this.logger.error(`${method}: Document not found`, logCtx);
-    throw new NotFoundException();
+    throw new NotFoundException(`${this.model.modelName} was not found.`);
   }
 }

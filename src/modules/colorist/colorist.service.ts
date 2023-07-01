@@ -24,7 +24,7 @@ export class ColoristService extends AbstractService<
     private readonly clientService: ClientService,
     @Inject(forwardRef(() => HairServiceService))
     private readonly hairServiceService: HairServiceService,
-    @Inject(forwardRef(() => ClientService))
+    @Inject(forwardRef(() => SheetService))
     private readonly sheetService: SheetService,
   ) {
     super(ColoristService.name, model);

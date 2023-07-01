@@ -1,5 +1,5 @@
 import {
-  IBacicDocumentDto,
+  IBasicDocumentDto,
   IBasicQueryDto,
   IColoristId,
 } from '../../../common';
@@ -26,7 +26,7 @@ export interface IClient extends IClientAttributes, IClientObjectIdAttributes {}
 export interface IClientDto
   extends IClientAttributes,
     IClientDtoObjectIdAttributes,
-    IBacicDocumentDto {}
+    IBasicDocumentDto {}
 
 /**
  * when creating a client, we will always have the sheets array empty.
@@ -40,7 +40,7 @@ export type ICreateClientDto = Omit<IClientAttributes, 'coloristId'>;
 
 export interface ICreateClientResponseDto
   extends ICreateClient,
-    IBacicDocumentDto,
+    IBasicDocumentDto,
     IColoristId {
   sheets: string[];
 }

@@ -7,14 +7,14 @@ import {
   ATTRIBUTE_NAME_LENGTH,
   ATTRIBUTE_PHONE_NUMBER_LENGTH,
   ColoristIdSchema,
-  IBacicDocument,
+  IBasicDocument,
 } from '../../../common';
 
 import { IClient } from '../interfaces';
 import { Sheet } from '../../sheet/schemas';
 import { isEmail } from 'class-validator';
 
-export type ClientDocument = Client & Document & IBacicDocument;
+export type ClientDocument = Client & Document & IBasicDocument;
 
 @Schema({
   timestamps: true,

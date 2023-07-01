@@ -1,5 +1,5 @@
 import {
-  IBacicDocumentDto,
+  IBasicDocumentDto,
   IBasicQueryDto,
   IColoristId,
 } from '../../../common';
@@ -26,7 +26,7 @@ export interface ISheet extends ISheetAttributes, ISheetObjectIdAttributes {}
 export interface ISheetDto
   extends ISheetAttributes,
     ISheetDtoObjectIdAttributes,
-    IBacicDocumentDto {}
+    IBasicDocumentDto {}
 
 /**
  * when creating a sheet, we will always have the hair services array empty.
@@ -40,7 +40,7 @@ export type ICreateSheetDto = Omit<ICreateSheet, 'coloristId'>;
 
 export interface ICreateSheetResponseDto
   extends ICreateSheet,
-    IBacicDocumentDto,
+    IBasicDocumentDto,
     IColoristId {}
 
 export type IFindSheetsQueryDto = IBasicQueryDto;

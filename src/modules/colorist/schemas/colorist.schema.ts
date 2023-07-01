@@ -6,7 +6,7 @@ import {
   ATTRIBUTE_LAST_NAME_LENGTH,
   ATTRIBUTE_NAME_LENGTH,
   ATTRIBUTE_USERNAME_LENGTH,
-  IBacicDocument,
+  IBasicDocument,
 } from '../../../common';
 
 import { IColorist } from '../interfaces';
@@ -14,7 +14,7 @@ import { isAlphanumeric, isEmail } from 'class-validator';
 import { Client } from '../../client/schemas';
 import { COLORIST_HAIR_SALON_NAME_LENGTH } from '../constants';
 
-export type ColoristDocument = Colorist & Document & IBacicDocument;
+export type ColoristDocument = Colorist & Document & IBasicDocument;
 
 @Schema({
   timestamps: true,

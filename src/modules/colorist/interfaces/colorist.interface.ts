@@ -1,4 +1,4 @@
-import { IBacicDocumentDto } from '../../../common';
+import { IBasicDocumentDto } from '../../../common';
 import { IClient, IClientDto } from '../../client/interfaces';
 
 export interface IColoristAttributes {
@@ -25,7 +25,7 @@ export interface IColorist
 export interface IColoristDto
   extends Omit<IColoristAttributes, 'password'>,
     IColoristDtoObjectIdAttributes,
-    IBacicDocumentDto {}
+    IBasicDocumentDto {}
 
 /**
  * when creating a Colorist, we will always have the clients array empty.
@@ -39,7 +39,7 @@ export type ICreateColoristDto = IColoristAttributes;
 
 export interface ICreateColoristResponseDto
   extends Omit<ICreateColorist, 'password'>,
-    IBacicDocumentDto {
+    IBasicDocumentDto {
   clients: IClientDto[];
 }
 

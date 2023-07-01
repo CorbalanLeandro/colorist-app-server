@@ -33,6 +33,7 @@ export class Colorist implements IColorist {
 
   @Prop({
     immutable: true,
+    lowercase: true,
     maxlength: ATTRIBUTE_EMAIL_LENGTH.MAX,
     mimlength: ATTRIBUTE_EMAIL_LENGTH.MIN,
     required: true,
@@ -81,6 +82,7 @@ export class Colorist implements IColorist {
 
   @Prop({
     immutable: true,
+    lowercase: true,
     maxlength: ATTRIBUTE_USERNAME_LENGTH.MAX,
     mimlength: ATTRIBUTE_USERNAME_LENGTH.MIN,
     required: true,

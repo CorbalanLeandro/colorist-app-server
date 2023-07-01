@@ -12,6 +12,10 @@ export interface IId {
   _id: string;
 }
 
+export interface IVersion {
+  __v: number;
+}
+
 export interface IColoristId {
   /**
    * will not be used as reference to the colorist schema, only for validation
@@ -19,8 +23,8 @@ export interface IColoristId {
   coloristId: string;
 }
 
-export interface IBacicDocument extends IId, ITimestamps {}
-export interface IBacicDocumentDto extends IId, ITimestampsDto {}
+export interface IBasicDocument extends IId, ITimestamps, IVersion {}
+export interface IBasicDocumentDto extends IId, ITimestampsDto, IVersion {}
 
 export interface ICustomApiPropertyRequired {
   required?: boolean;

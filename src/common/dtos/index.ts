@@ -9,15 +9,17 @@ import {
   IsDateString,
   IsMongoId,
   IsOptional,
+  IsPositive,
 } from 'class-validator';
 
 import {
   IApiResult,
-  IBacicDocumentDto,
+  IBasicDocumentDto,
   IBasicQueryDto,
   IColoristId,
   IId,
   ITimestampsDto,
+  IVersion,
 } from '../interfaces';
 
 import { IsQueryPositiveNumber } from '../decorators/validation.decorators';
@@ -30,6 +32,15 @@ export class IdResponseDto implements IId {
   })
   @IsMongoId()
   _id: string;
+}
+
+export class VersionDto implements IVersion {
+  @ApiProperty({
+    description: 'Document version',
+    example: 2,
+  })
+  @IsPositive()
+  __v: number;
 }
 
 export class TimestampsDto implements ITimestampsDto {
@@ -49,8 +60,8 @@ export class TimestampsDto implements ITimestampsDto {
 }
 
 export class BasicDocumentDto
-  extends IntersectionType(TimestampsDto, IdResponseDto)
-  implements IBacicDocumentDto {}
+  extends IntersectionType(TimestampsDto, IdResponseDto, VersionDto)
+  implements IBasicDocumentDto {}
 
 export class ResultResponseDto implements IApiResult {
   @ApiProperty({

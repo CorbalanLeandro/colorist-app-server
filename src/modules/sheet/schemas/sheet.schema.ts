@@ -1,24 +1,28 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema, ValidatorProps } from 'mongoose';
 
-import {
-  ColoristIdSchema,
-  IBasicDocument,
-  isMongoIdPropValidator,
-} from '../../../common';
+import { ColoristIdSchema, isMongoIdPropValidator } from '../../../common';
 
-import { ISheet } from '../interfaces';
+import {
+  ISheet,
+  ISheetAttributes,
+  ISheetObjectIdAttributes,
+} from '../interfaces';
+
 import { HairService } from '../../hair-service/schemas';
 import { SHEET_DATE_FORMAT } from '../constants';
 import { isSheetDate } from '../utils';
 import { IHairService } from '../../hair-service/interfaces';
 
-export type SheetDocument = Sheet & Document & IBasicDocument;
+export type SheetDocument = ISheet & Document;
 
 @Schema({
   timestamps: true,
 })
-export class Sheet extends ColoristIdSchema implements ISheet {
+export class Sheet
+  extends ColoristIdSchema
+  implements ISheetAttributes, ISheetObjectIdAttributes
+{
   @Prop({
     required: true,
     type: String,

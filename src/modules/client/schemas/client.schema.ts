@@ -13,6 +13,7 @@ import {
 import { IClient } from '../interfaces';
 import { Sheet } from '../../sheet/schemas';
 import { isEmail } from 'class-validator';
+import { ISheet } from '../../sheet/interfaces';
 
 export type ClientDocument = Client & Document & IBasicDocument;
 
@@ -67,7 +68,7 @@ export class Client extends ColoristIdSchema implements IClient {
       },
     ],
   })
-  sheets: Sheet[];
+  sheets: ISheet[];
 }
 
 export const ClientSchema = SchemaFactory.createForClass(Client);

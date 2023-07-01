@@ -1,11 +1,12 @@
 import {
+  IBasicDocument,
   IBasicDocumentDto,
   IBasicQueryDto,
   IColoristId,
 } from '../../../common';
 import { IHairService, IHairServiceDto } from '../../hair-service/interfaces';
 
-interface ISheetObjectIdAttributes {
+export interface ISheetObjectIdAttributes {
   hairServices: IHairService[];
 }
 
@@ -21,7 +22,10 @@ export interface ISheetAttributes extends IColoristId {
   date: string;
 }
 
-export interface ISheet extends ISheetAttributes, ISheetObjectIdAttributes {}
+export interface ISheet
+  extends ISheetAttributes,
+    ISheetObjectIdAttributes,
+    IBasicDocument {}
 
 export interface ISheetDto
   extends ISheetAttributes,

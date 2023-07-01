@@ -3,7 +3,7 @@ import { Document, Schema as MongooseSchema, ValidatorProps } from 'mongoose';
 
 import {
   ColoristIdSchema,
-  IBacicDocument,
+  IBasicDocument,
   isMongoIdPropValidator,
 } from '../../../common';
 
@@ -11,8 +11,9 @@ import { ISheet } from '../interfaces';
 import { HairService } from '../../hair-service/schemas';
 import { SHEET_DATE_FORMAT } from '../constants';
 import { isSheetDate } from '../utils';
+import { IHairService } from '../../hair-service/interfaces';
 
-export type SheetDocument = Sheet & Document & IBacicDocument;
+export type SheetDocument = Sheet & Document & IBasicDocument;
 
 @Schema({
   timestamps: true,
@@ -46,7 +47,7 @@ export class Sheet extends ColoristIdSchema implements ISheet {
       },
     ],
   })
-  hairServices: HairService[];
+  hairServices: IHairService[];
 }
 
 export const SheetSchema = SchemaFactory.createForClass(Sheet);

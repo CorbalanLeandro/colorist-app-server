@@ -3,7 +3,7 @@ import {
   registerDecorator,
   ValidationArguments,
   isNumber,
-  isPositive,
+  min,
 } from 'class-validator';
 
 export function IsQueryPositiveNumber(validationOptions?: ValidationOptions) {
@@ -23,7 +23,7 @@ export function IsQueryPositiveNumber(validationOptions?: ValidationOptions) {
               allowInfinity: false,
               allowNaN: false,
               maxDecimalPlaces: 0,
-            }) && isPositive(value)
+            }) && min(value, 0)
           );
         },
       },

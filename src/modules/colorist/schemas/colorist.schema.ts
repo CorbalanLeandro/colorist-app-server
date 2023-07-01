@@ -1,25 +1,35 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema, ValidatorProps } from 'mongoose';
+import {
+  Schema as MongooseSchema,
+  ValidatorProps,
+  HydratedDocument,
+} from 'mongoose';
 
 import {
   ATTRIBUTE_EMAIL_LENGTH,
   ATTRIBUTE_LAST_NAME_LENGTH,
   ATTRIBUTE_NAME_LENGTH,
   ATTRIBUTE_USERNAME_LENGTH,
-  IBacicDocument,
 } from '../../../common';
 
-import { IColorist } from '../interfaces';
+import {
+  IColorist,
+  IColoristAttributes,
+  IColoristObjectIdAttributes,
+} from '../interfaces';
 import { isAlphanumeric, isEmail } from 'class-validator';
 import { Client } from '../../client/schemas';
 import { COLORIST_HAIR_SALON_NAME_LENGTH } from '../constants';
+import { IClient } from '../../client/interfaces';
 
-export type ColoristDocument = Colorist & Document & IBacicDocument;
+export type ColoristDocument = HydratedDocument<IColorist>;
 
 @Schema({
   timestamps: true,
 })
-export class Colorist implements IColorist {
+export class Colorist
+  implements IColoristAttributes, IColoristObjectIdAttributes
+{
   @Prop({
     type: [
       {
@@ -29,7 +39,7 @@ export class Colorist implements IColorist {
       },
     ],
   })
-  clients: Client[];
+  clients: IClient[];
 
   @Prop({
     immutable: true,

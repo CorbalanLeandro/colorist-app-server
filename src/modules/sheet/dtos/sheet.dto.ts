@@ -1,4 +1,4 @@
-import { ApiProperty, IntersectionType, PartialType } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
 import { IsMongoId } from 'class-validator';
 
 import {
@@ -35,9 +35,14 @@ export class CreateSheetDto implements ICreateSheetDto {
   date: string;
 }
 
+/**
+ * Only Date available to update on a Sheet.
+ * TODO: Sheet's client change.
+ */
+
 export class UpdateSheetDto
-  extends PartialType(CreateSheetDto)
-  implements Partial<ICreateSheetDto> {}
+  extends PickType(CreateSheetDto, ['date'])
+  implements Pick<ICreateSheetDto, 'date'> {}
 
 export class SheetDto
   extends IntersectionType(CreateSheetDto, BasicDocumentDto, ColoristIdDto)

@@ -24,7 +24,7 @@ export class ColoristService extends AbstractService<
     private readonly clientService: ClientService,
     @Inject(forwardRef(() => HairServiceService))
     private readonly hairServiceService: HairServiceService,
-    @Inject(forwardRef(() => ClientService))
+    @Inject(forwardRef(() => SheetService))
     private readonly sheetService: SheetService,
   ) {
     super(ColoristService.name, model);
@@ -44,9 +44,10 @@ export class ColoristService extends AbstractService<
     const createdColorist = await this.create(coloristData);
     const createdColoristObject = createdColorist.toObject();
 
-    delete createdColoristObject.password;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...coloristToReturn } = createdColoristObject;
 
-    return createdColoristObject as ICreateColoristResponseDto;
+    return coloristToReturn;
   }
 
   /**

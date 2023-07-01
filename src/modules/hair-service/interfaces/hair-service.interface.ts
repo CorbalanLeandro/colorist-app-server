@@ -1,7 +1,7 @@
-import { IBacicDocumentDto, IColoristId } from '../../../common';
+import { IBasicDocument, IColoristId } from '../../../common';
 import { IHairServiceIngredient } from './hair-service-ingredient.interface';
 
-export interface IHairService extends IColoristId {
+export interface IHairServiceAttributes extends IColoristId {
   /**
    * Clients's _id to which this hair service belongs
    */
@@ -15,10 +15,14 @@ export interface IHairService extends IColoristId {
   sheetId: string;
 }
 
-export interface IHairServiceDto extends IHairService, IBacicDocumentDto {}
+export interface IHairService extends IHairServiceAttributes, IBasicDocument {}
 
-export type ICreateHairService = IHairService;
-export type ICreateHairServiceDto = Omit<IHairService, 'coloristId'>;
+export interface IHairServiceDto
+  extends IHairServiceAttributes,
+    IBasicDocument {}
+
+export type ICreateHairService = IHairServiceAttributes;
+export type ICreateHairServiceDto = Omit<IHairServiceAttributes, 'coloristId'>;
 
 export interface IDeleteHairService extends IColoristId {
   hairServiceId: string;

@@ -13,6 +13,7 @@ import { IColorist } from '../interfaces';
 import { isAlphanumeric, isEmail } from 'class-validator';
 import { Client } from '../../client/schemas';
 import { COLORIST_HAIR_SALON_NAME_LENGTH } from '../constants';
+import { IClient } from '../../client/interfaces';
 
 export type ColoristDocument = Colorist & Document & IBasicDocument;
 
@@ -29,7 +30,7 @@ export class Colorist implements IColorist {
       },
     ],
   })
-  clients: Client[];
+  clients: IClient[];
 
   @Prop({
     immutable: true,

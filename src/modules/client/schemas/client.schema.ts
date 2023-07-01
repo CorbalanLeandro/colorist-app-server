@@ -7,20 +7,26 @@ import {
   ATTRIBUTE_NAME_LENGTH,
   ATTRIBUTE_PHONE_NUMBER_LENGTH,
   ColoristIdSchema,
-  IBasicDocument,
 } from '../../../common';
 
-import { IClient } from '../interfaces';
+import {
+  IClient,
+  IClientAttributes,
+  IClientObjectIdAttributes,
+} from '../interfaces';
 import { Sheet } from '../../sheet/schemas';
 import { isEmail } from 'class-validator';
 import { ISheet } from '../../sheet/interfaces';
 
-export type ClientDocument = Client & Document & IBasicDocument;
+export type ClientDocument = IClient & Document;
 
 @Schema({
   timestamps: true,
 })
-export class Client extends ColoristIdSchema implements IClient {
+export class Client
+  extends ColoristIdSchema
+  implements IClientAttributes, IClientObjectIdAttributes
+{
   @Prop({
     maxlength: ATTRIBUTE_EMAIL_LENGTH.MAX,
     mimlength: ATTRIBUTE_EMAIL_LENGTH.MIN,

@@ -1,4 +1,5 @@
 import {
+  IBasicDocument,
   IBasicDocumentDto,
   IBasicQueryDto,
   IColoristId,
@@ -13,7 +14,7 @@ export interface IClientAttributes extends IColoristId {
   phoneNumber?: string;
 }
 
-interface IClientObjectIdAttributes {
+export interface IClientObjectIdAttributes {
   sheets: ISheet[];
 }
 
@@ -21,7 +22,10 @@ interface IClientDtoObjectIdAttributes {
   sheets: ISheetDto[];
 }
 
-export interface IClient extends IClientAttributes, IClientObjectIdAttributes {}
+export interface IClient
+  extends IClientAttributes,
+    IClientObjectIdAttributes,
+    IBasicDocument {}
 
 export interface IClientDto
   extends IClientAttributes,

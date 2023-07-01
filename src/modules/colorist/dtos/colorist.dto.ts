@@ -68,8 +68,11 @@ export class CreateColoristDto implements ICreateColoristDto {
 }
 
 export class UpdateColoristDto
-  extends PartialType(CreateColoristDto)
-  implements Partial<ICreateColoristDto> {}
+  extends PartialType(
+    OmitType(CreateColoristDto, ['username', 'email', 'password']),
+  )
+  implements
+    Partial<Omit<ICreateColoristDto, 'username' | 'email' | 'password'>> {}
 
 export class ColoristDto
   extends IntersectionType(

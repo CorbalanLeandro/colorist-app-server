@@ -1,4 +1,4 @@
-import { IBasicDocumentDto } from '../../../common';
+import { IBasicDocument, IBasicDocumentDto } from '../../../common';
 import { IClient, IClientDto } from '../../client/interfaces';
 
 export interface IColoristAttributes {
@@ -10,7 +10,7 @@ export interface IColoristAttributes {
   username: string;
 }
 
-interface IColoristObjectIdAttributes {
+export interface IColoristObjectIdAttributes {
   clients: IClient[];
 }
 
@@ -20,7 +20,8 @@ interface IColoristDtoObjectIdAttributes {
 
 export interface IColorist
   extends IColoristAttributes,
-    IColoristObjectIdAttributes {}
+    IColoristObjectIdAttributes,
+    IBasicDocument {}
 
 export interface IColoristDto
   extends Omit<IColoristAttributes, 'password'>,

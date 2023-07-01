@@ -1,8 +1,4 @@
-import {
-  IBasicDocument,
-  IBasicDocumentDto,
-  IColoristId,
-} from '../../../common';
+import { IBasicDocument, IColoristId } from '../../../common';
 import { IHairServiceIngredient } from './hair-service-ingredient.interface';
 
 export interface IHairServiceAttributes extends IColoristId {
@@ -23,7 +19,7 @@ export interface IHairService extends IHairServiceAttributes, IBasicDocument {}
 
 export interface IHairServiceDto
   extends IHairServiceAttributes,
-    IBasicDocumentDto {}
+    IBasicDocument {}
 
 export type ICreateHairService = IHairServiceAttributes;
 export type ICreateHairServiceDto = Omit<IHairServiceAttributes, 'coloristId'>;

@@ -10,7 +10,6 @@ import {
   ApiPropertyDto,
   ApiPropertyEmail,
   ApiPropertyLastName,
-  ApiPropertyMongoId,
   ApiPropertyName,
   ApiPropertyPhoneNumber,
   BasicDocumentDto,
@@ -20,7 +19,6 @@ import {
 
 import {
   ICreateClientDto,
-  ICreateClientResponseDto,
   IClientDto,
   IFindClientsQueryDto,
 } from '../interfaces';
@@ -28,7 +26,6 @@ import {
 import { ISheetDto } from '../../sheet/interfaces';
 import { SheetDto } from '../../sheet/dtos';
 import { IsOptional, MaxLength } from 'class-validator';
-import { Sheet } from '../../sheet/schemas';
 
 export class CreateClientDto implements ICreateClientDto {
   @ApiPropertyEmail({ required: false })
@@ -54,14 +51,6 @@ export class ClientDto
 {
   @ApiPropertyDto({ dto: SheetDto, isArray: true })
   sheets: ISheetDto[];
-}
-
-export class CreateClientResponseDto
-  extends IntersectionType(CreateClientDto, BasicDocumentDto, ColoristIdDto)
-  implements ICreateClientResponseDto
-{
-  @ApiPropertyMongoId({ isArray: true, referenceName: Sheet.name })
-  sheets: string[];
 }
 
 export class FindClientsQueryDto

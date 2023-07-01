@@ -3,11 +3,6 @@ export interface ITimestamps {
   updatedAt: Date;
 }
 
-export interface ITimestampsDto {
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface IId {
   _id: string;
 }
@@ -24,7 +19,6 @@ export interface IColoristId {
 }
 
 export interface IBasicDocument extends IId, ITimestamps, IVersion {}
-export interface IBasicDocumentDto extends IId, ITimestampsDto, IVersion {}
 
 export interface ICustomApiPropertyRequired {
   required?: boolean;

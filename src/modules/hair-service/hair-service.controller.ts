@@ -56,7 +56,7 @@ export class HairServiceController {
   ): Promise<HairServiceDocument[]> {
     return this.hairServiceService.find({
       coloristId,
-      sheet: sheetId,
+      sheetId,
     });
   }
 

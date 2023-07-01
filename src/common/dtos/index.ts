@@ -6,7 +6,7 @@ import {
 
 import {
   IsBoolean,
-  IsDateString,
+  IsDate,
   IsMongoId,
   IsOptional,
   IsPositive,
@@ -14,11 +14,11 @@ import {
 
 import {
   IApiResult,
-  IBasicDocumentDto,
+  IBasicDocument,
   IBasicQueryDto,
   IColoristId,
   IId,
-  ITimestampsDto,
+  ITimestamps,
   IVersion,
 } from '../interfaces';
 
@@ -43,25 +43,25 @@ export class VersionDto implements IVersion {
   __v: number;
 }
 
-export class TimestampsDto implements ITimestampsDto {
+export class TimestampsDto implements ITimestamps {
   @ApiProperty({
-    description: 'Document createdAt property (ISO8601 date string)',
+    description: 'Document createdAt property',
     example: '2023-05-26T18:14:13.293Z',
   })
-  @IsDateString()
-  createdAt: string;
+  @IsDate()
+  createdAt: Date;
 
   @ApiProperty({
-    description: 'Document updatedAt property (ISO8601 date string)',
+    description: 'Document updatedAt property',
     example: '2023-05-26T18:14:13.293Z',
   })
-  @IsDateString()
-  updatedAt: string;
+  @IsDate()
+  updatedAt: Date;
 }
 
 export class BasicDocumentDto
   extends IntersectionType(TimestampsDto, IdResponseDto, VersionDto)
-  implements IBasicDocumentDto {}
+  implements IBasicDocument {}
 
 export class ResultResponseDto implements IApiResult {
   @ApiProperty({

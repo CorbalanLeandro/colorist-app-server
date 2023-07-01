@@ -1,5 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema, ValidatorProps } from 'mongoose';
+import {
+  Schema as MongooseSchema,
+  ValidatorProps,
+  HydratedDocument,
+} from 'mongoose';
 
 import {
   ATTRIBUTE_EMAIL_LENGTH,
@@ -18,7 +22,7 @@ import { Client } from '../../client/schemas';
 import { COLORIST_HAIR_SALON_NAME_LENGTH } from '../constants';
 import { IClient } from '../../client/interfaces';
 
-export type ColoristDocument = IColorist & Document;
+export type ColoristDocument = HydratedDocument<IColorist>;
 
 @Schema({
   timestamps: true,

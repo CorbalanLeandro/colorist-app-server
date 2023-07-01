@@ -85,7 +85,7 @@ export class SheetController {
 
     return this.sheetService.find(
       {
-        client: clientId,
+        clientId,
         coloristId,
       },
       undefined,

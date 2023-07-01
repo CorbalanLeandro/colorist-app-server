@@ -1,5 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema, ValidatorProps } from 'mongoose';
+import {
+  Schema as MongooseSchema,
+  ValidatorProps,
+  HydratedDocument,
+} from 'mongoose';
 
 import {
   ATTRIBUTE_EMAIL_LENGTH,
@@ -18,7 +22,7 @@ import { Sheet } from '../../sheet/schemas';
 import { isEmail } from 'class-validator';
 import { ISheet } from '../../sheet/interfaces';
 
-export type ClientDocument = IClient & Document;
+export type ClientDocument = HydratedDocument<IClient>;
 
 @Schema({
   timestamps: true,

@@ -1,5 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema, ValidatorProps } from 'mongoose';
+import {
+  Schema as MongooseSchema,
+  ValidatorProps,
+  HydratedDocument,
+} from 'mongoose';
 
 import { ColoristIdSchema, isMongoIdPropValidator } from '../../../common';
 
@@ -14,7 +18,7 @@ import { SHEET_DATE_FORMAT } from '../constants';
 import { isSheetDate } from '../utils';
 import { IHairService } from '../../hair-service/interfaces';
 
-export type SheetDocument = ISheet & Document;
+export type SheetDocument = HydratedDocument<ISheet>;
 
 @Schema({
   timestamps: true,

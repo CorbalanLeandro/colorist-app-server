@@ -13,9 +13,8 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ClientService } from './client.service';
 
 import {
-  ClientDto,
   CreateClientDto,
-  CreateClientResponseDto,
+  ClientDto,
   FindClientsQueryDto,
   UpdateClientDto,
 } from './dtos';
@@ -42,7 +41,7 @@ import { CLIENT_POPULATE_OPTIONS } from './constants';
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
-  @ApiOperationCreate(CreateClientResponseDto)
+  @ApiOperationCreate(ClientDto)
   @Post()
   async create(
     @Body() createClientData: CreateClientDto,

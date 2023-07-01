@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 
 import { ColoristIdSchema, isMongoIdPropValidator } from '../../../common';
 
@@ -16,7 +16,7 @@ import {
   HAIR_SERVICE_OBSERVATIONS_LENGHT,
 } from '../constants';
 
-export type HairServiceDocument = IHairService & Document;
+export type HairServiceDocument = HydratedDocument<IHairService>;
 
 @Schema({
   timestamps: true,

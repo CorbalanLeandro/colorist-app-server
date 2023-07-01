@@ -47,7 +47,9 @@ export abstract class AbstractService<
         modelName: this.model.modelName,
       });
 
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(
+        `Could not create a ${this.model.modelName}`,
+      );
     }
   }
 

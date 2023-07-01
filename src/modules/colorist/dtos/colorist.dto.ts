@@ -24,7 +24,7 @@ import {
 } from '../interfaces';
 
 import { COLORIST_HAIR_SALON_NAME_LENGTH } from '../constants';
-import { Length } from 'class-validator';
+import { IsAlphanumeric, Length } from 'class-validator';
 import { IClientDto } from '../../client/interfaces';
 import { ClientDto } from '../../client/dtos';
 import { ApiPropertyColoristPassword } from '../decorators/colorist.decorator';
@@ -63,6 +63,7 @@ export class CreateColoristDto implements ICreateColoristDto {
     type: String,
   })
   @Length(ATTRIBUTE_USERNAME_LENGTH.MIN, ATTRIBUTE_USERNAME_LENGTH.MAX)
+  @IsAlphanumeric()
   username: string;
 }
 

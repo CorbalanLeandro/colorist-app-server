@@ -31,6 +31,7 @@ import {
 
 import { ColoristId, Public } from '../auth/decorators';
 import { ICreateColoristResponseDto } from './interfaces';
+import { UniqueColoristValidationPipe } from './pipes/unique-colorist-validation.pipe';
 
 @ApiTags('Colorist')
 @Controller('colorist')
@@ -41,7 +42,7 @@ export class ColoristController {
   @Public()
   @Post()
   async create(
-    @Body() createColoristData: CreateColoristDto,
+    @Body(UniqueColoristValidationPipe) createColoristData: CreateColoristDto,
   ): Promise<ICreateColoristResponseDto> {
     return this.coloristService.createColorist(createColoristData);
   }

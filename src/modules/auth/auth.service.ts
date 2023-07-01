@@ -11,7 +11,7 @@ import { ColoristService } from '../colorist/colorist.service';
 import { IAuthColorist, ISignInResponse } from './interfaces';
 import { IColoristSignInDto } from '../colorist/interfaces';
 
-class BadCredentialsError extends BadRequestException {
+class BadCredentialsException extends BadRequestException {
   constructor() {
     super('Credentials are invalid.');
   }
@@ -39,7 +39,7 @@ export class AuthService {
         await this.findColorist(emailOrUsername);
 
       if (!this.isCorrectPassword(password, coloristPassword)) {
-        throw new BadCredentialsError();
+        throw new BadCredentialsException();
       }
 
       return {
@@ -48,9 +48,9 @@ export class AuthService {
     } catch (error) {
       if (
         error instanceof NotFoundException ||
-        error instanceof BadCredentialsError
+        error instanceof BadCredentialsException
       ) {
-        throw new BadCredentialsError();
+        throw new BadCredentialsException();
       }
 
       this.logger.error('Could not sign in', {
@@ -74,16 +74,10 @@ export class AuthService {
       {
         $or: [
           {
-            username: {
-              $options: 'i',
-              $regex: `^${emailOrUsername}$`,
-            },
+            username: emailOrUsername,
           },
           {
-            email: {
-              $options: 'i',
-              $regex: `^${emailOrUsername}$`,
-            },
+            email: emailOrUsername,
           },
         ],
       },

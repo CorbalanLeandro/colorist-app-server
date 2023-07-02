@@ -1,4 +1,4 @@
-import { IBasicDocument } from '../../../common';
+import { IBasicDocument, IColoristId } from '../../../common';
 import { IClient, IClientDto } from '../../client/interfaces';
 
 export interface IColoristAttributes {
@@ -48,3 +48,10 @@ export interface IColoristSignInDto {
   emailOrUsername: string;
   password: string;
 }
+
+export interface IChangePasswordDto {
+  newPassword: string;
+  oldPassword: string;
+}
+
+export interface IChangePassword extends IChangePasswordDto, IColoristId {}

@@ -17,6 +17,7 @@ import {
 } from '../../../common';
 
 import {
+  IChangePasswordDto,
   IColoristDto,
   IColoristSignInDto,
   ICreateColoristDto,
@@ -105,4 +106,12 @@ export class ColoristSignInDto implements IColoristSignInDto {
 
   @ApiPropertyColoristPassword()
   password: string;
+}
+
+export class ChangePasswordDto implements IChangePasswordDto {
+  @ApiPropertyColoristPassword()
+  newPassword: string;
+
+  @ApiPropertyColoristPassword()
+  oldPassword: string;
 }

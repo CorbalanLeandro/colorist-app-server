@@ -1,21 +1,15 @@
 import {
-  BadRequestException,
   Injectable,
+  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-
 import { JwtService } from '@nestjs/jwt';
 
 import { ColoristService } from '../colorist/colorist.service';
 import { IAuthColorist, ISignInResponse } from './interfaces';
 import { IColoristSignInDto } from '../colorist/interfaces';
-
-class BadCredentialsException extends BadRequestException {
-  constructor() {
-    super('Credentials are invalid.');
-  }
-}
+import { BadCredentialsException } from './errors';
 
 @Injectable()
 export class AuthService {
@@ -38,14 +32,17 @@ export class AuthService {
       const { _id: coloristId, password: coloristPassword } =
         await this.findColorist(emailOrUsername);
 
-      if (!this.isCorrectPassword(password, coloristPassword)) {
-        throw new BadCredentialsException();
-      }
+      this.coloristService.assertPassword(password, coloristPassword);
 
       return {
         access_token: await this.jwtService.signAsync({ sub: coloristId }),
       };
     } catch (error) {
+      this.logger.error('Could not sign in', {
+        error,
+        user: emailOrUsername,
+      });
+
       if (
         error instanceof NotFoundException ||
         error instanceof BadCredentialsException
@@ -53,12 +50,7 @@ export class AuthService {
         throw new BadCredentialsException();
       }
 
-      this.logger.error('Could not sign in', {
-        error,
-        user: signInData.emailOrUsername,
-      });
-
-      throw error;
+      throw new InternalServerErrorException();
     }
   }
 
@@ -82,27 +74,8 @@ export class AuthService {
         ],
       },
       {
-        _id: true,
         password: true,
       },
     );
-  }
-
-  /**
-   * Checks if the password provided on the input is the correct one for
-   * the colorist password on the database
-   *
-   * @param {strint} inputPassword
-   * @param {string} coloristPassword Colorist password in database
-   * @returns {boolean} A boolean indicating if the input password is correct.
-   */
-  private isCorrectPassword(
-    inputPassword: string,
-    coloristPassword: string,
-  ): boolean {
-    const encryptInputPassword =
-      this.coloristService.encryptPassword(inputPassword);
-
-    return coloristPassword === encryptInputPassword;
   }
 }

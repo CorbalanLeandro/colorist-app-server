@@ -1,16 +1,18 @@
 import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import {
   ApiOperationCreate,
   ApiOperationFindOneById,
-  ApiMongoIdParam,
-  PARAM_ID,
-  ParamMongoId,
   ApiOperationUpdateOneById,
   IApiResult,
   ApiOperationDeleteOneById,
-  ApiOperationFindAll,
+  ResultResponseDto,
 } from '../../common';
 
 import { ColoristService } from './colorist.service';
@@ -20,6 +22,7 @@ import {
   CreateColoristDto,
   ColoristDto,
   UpdateColoristDto,
+  ChangePasswordDto,
 } from './dtos';
 
 import { ColoristDocument } from './schemas';
@@ -48,26 +51,14 @@ export class ColoristController {
   }
 
   @ApiBearerAuth()
-  @ApiOperationFindAll(ColoristDto, 'Finds all the Colorists')
-  @Get()
-  async findAll(): Promise<ColoristDocument[]> {
-    return this.coloristService.find(
-      undefined,
-      COLORIST_BASE_PROJECTIONS,
-      COLORIST_POPULATE_OPTIONS,
-    );
-  }
-
-  @ApiBearerAuth()
   @ApiOperationFindOneById(ColoristDto)
-  @ApiMongoIdParam(PARAM_ID)
-  @Get(`:${PARAM_ID}`)
+  @Get()
   async findOneById(
-    @ParamMongoId(PARAM_ID) _id: string,
+    @ColoristId() coloristId: string,
   ): Promise<ColoristDocument> {
     return this.coloristService.findOne(
       {
-        _id,
+        _id: coloristId,
       },
       COLORIST_BASE_PROJECTIONS,
       COLORIST_POPULATE_OPTIONS,
@@ -76,18 +67,40 @@ export class ColoristController {
 
   @ApiBearerAuth()
   @ApiOperationUpdateOneById()
-  @ApiMongoIdParam()
-  @Patch(`:${PARAM_ID}`)
+  @Patch()
   async update(
-    @ParamMongoId(PARAM_ID) _id: string,
+    @ColoristId() coloristId: string,
     @Body() updateColoristData: UpdateColoristDto,
   ): Promise<IApiResult> {
     await this.coloristService.updateOne(
       {
-        _id,
+        _id: coloristId,
       },
       { $set: updateColoristData },
     );
+
+    return { result: true };
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Changes the colorist password checking the old one first.',
+    summary: 'Changes the colorist password.',
+  })
+  @ApiOkResponse({
+    description: 'Result response indicating all went fine.',
+    type: ResultResponseDto,
+  })
+  @Patch('change-password')
+  async changePassword(
+    @ColoristId() coloristId: string,
+    @Body() { newPassword, oldPassword }: ChangePasswordDto,
+  ): Promise<IApiResult> {
+    await this.coloristService.changePassword({
+      coloristId,
+      newPassword,
+      oldPassword,
+    });
 
     return { result: true };
   }

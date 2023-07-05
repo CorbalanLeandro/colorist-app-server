@@ -235,6 +235,39 @@ export abstract class AbstractService<
    * @param {UpdateQuery<DocumentType>} updateQuery
    * @returns {Promise<UpdateResult>}
    */
+  async updateMany(
+    filter: FilterQuery<DocumentType>,
+    updateQuery: UpdateQuery<DocumentType>,
+  ): Promise<UpdateResult> {
+    try {
+      return await this.model.updateMany(
+        filter,
+        {
+          ...updateQuery,
+          $inc: { __v: 1 },
+        },
+        {
+          runValidators: true,
+        },
+      );
+    } catch (error) {
+      this.logger.error('An error ocurred while updating a mongo documents', {
+        error,
+        filter,
+        modelName: this.model.modelName,
+        updateQuery,
+      });
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  /**
+   * @async
+   * @param {FilterQuery<DocumentType>} filter
+   * @param {UpdateQuery<DocumentType>} updateQuery
+   * @returns {Promise<UpdateResult>}
+   */
   async updateOne(
     filter: FilterQuery<DocumentType>,
     updateQuery: UpdateQuery<DocumentType>,

@@ -2,6 +2,7 @@ import {
   ApiProperty,
   ApiPropertyOptional,
   IntersectionType,
+  OmitType,
   PartialType,
 } from '@nestjs/swagger';
 
@@ -68,8 +69,8 @@ export class CreateHairServiceDto implements ICreateHairServiceDto {
 }
 
 export class UpdateHairServiceDto
-  extends PartialType(CreateHairServiceDto)
-  implements Partial<ICreateHairServiceDto> {}
+  extends PartialType(OmitType(CreateHairServiceDto, ['clientId', 'sheetId']))
+  implements Partial<Omit<ICreateHairServiceDto, 'clientId' | 'sheetId'>> {}
 
 export class HairServiceDto
   extends IntersectionType(

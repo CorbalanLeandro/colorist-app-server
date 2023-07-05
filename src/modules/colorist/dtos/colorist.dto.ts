@@ -17,6 +17,7 @@ import {
 } from '../../../common';
 
 import {
+  IChangePasswordDto,
   IColoristDto,
   IColoristSignInDto,
   ICreateColoristDto,
@@ -68,8 +69,11 @@ export class CreateColoristDto implements ICreateColoristDto {
 }
 
 export class UpdateColoristDto
-  extends PartialType(CreateColoristDto)
-  implements Partial<ICreateColoristDto> {}
+  extends PartialType(
+    OmitType(CreateColoristDto, ['username', 'email', 'password']),
+  )
+  implements
+    Partial<Omit<ICreateColoristDto, 'username' | 'email' | 'password'>> {}
 
 export class ColoristDto
   extends IntersectionType(
@@ -102,4 +106,12 @@ export class ColoristSignInDto implements IColoristSignInDto {
 
   @ApiPropertyColoristPassword()
   password: string;
+}
+
+export class ChangePasswordDto implements IChangePasswordDto {
+  @ApiPropertyColoristPassword()
+  newPassword: string;
+
+  @ApiPropertyColoristPassword()
+  oldPassword: string;
 }

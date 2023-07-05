@@ -54,6 +54,11 @@ export class ColoristService extends AbstractService<
     }
   }
 
+  /**
+   * @async
+   * @param {IChangePassword} options
+   * @returns {Promise<UpdateResult>}
+   */
   async changePassword({
     coloristId,
     newPassword,

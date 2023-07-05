@@ -1,5 +1,10 @@
 import { IBasicDocument, IBasicQueryDto, IColoristId } from '../../../common';
+import { IClientId } from '../../client/interfaces';
 import { IHairService, IHairServiceDto } from '../../hair-service/interfaces';
+
+export interface ISheetId {
+  sheetId: string;
+}
 
 export interface ISheetObjectIdAttributes {
   hairServices: IHairService[];
@@ -9,11 +14,7 @@ interface ISheetDtoObjectIdAttributes {
   hairServices: IHairServiceDto[];
 }
 
-export interface ISheetAttributes extends IColoristId {
-  /**
-   * Clients's _id to which this sheet belongs
-   */
-  clientId: string;
+export interface ISheetAttributes extends IColoristId, IClientId {
   date: string;
 }
 
@@ -44,7 +45,13 @@ export interface ICreateSheetResponseDto
 
 export type IFindSheetsQueryDto = IBasicQueryDto;
 
-export interface IDeleteSheet extends IColoristId {
-  clientId: string;
-  sheetId: string;
+export interface IDeleteSheet extends IColoristId, ISheetId, IClientId {}
+
+export interface IChangeClient extends IColoristId, ISheetId {
+  newClientId: string;
+  oldClientId: string;
 }
+export type IChangeClientDto = Pick<
+  IChangeClient,
+  'newClientId' | 'oldClientId'
+>;

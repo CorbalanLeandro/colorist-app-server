@@ -2,6 +2,10 @@ import { IBasicDocument, IBasicQueryDto, IColoristId } from '../../../common';
 
 import { ISheet, ISheetDto } from '../../sheet/interfaces';
 
+export interface IClientId {
+  clientId: string;
+}
+
 export interface IClientAttributes extends IColoristId {
   email?: string;
   lastName: string;

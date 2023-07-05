@@ -1,9 +1,10 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { UpdateResult } from 'mongodb';
 
 import { AbstractService } from '../../common';
-import { ICreateSheet, IDeleteSheet } from './interfaces';
+import { IChangeClient, ICreateSheet, IDeleteSheet } from './interfaces';
 import { Sheet, SheetDocument } from './schemas';
 import { ClientService } from '../client/client.service';
 import { ICreateClient } from '../client/interfaces';
@@ -21,6 +22,42 @@ export class SheetService extends AbstractService<ICreateSheet, SheetDocument> {
     private readonly hairServiceService: HairServiceService,
   ) {
     super(SheetService.name, model);
+  }
+
+  /**
+   * @async
+   * @param {IChangeClient} options
+   * @returns {Promise<UpdateResult>}
+   */
+  async changeClient({
+    coloristId,
+    newClientId,
+    oldClientId,
+    sheetId,
+  }: IChangeClient): Promise<UpdateResult> {
+    await this.assertParentExist<ICreateClient, ClientDocument, ClientService>(
+      newClientId,
+      this.clientService,
+    );
+
+    // set the sheet on the new client and change the hair services
+    // to the new client too
+    await Promise.all([
+      this.clientService.updateOne(
+        { _id: newClientId, coloristId },
+        { $push: { sheets: sheetId } },
+      ),
+      this.hairServiceService.updateMany(
+        { clientId: oldClientId, coloristId, sheetId },
+        { $set: { clientId: newClientId } },
+      ),
+    ]);
+
+    // once the new client has the sheet, we remove it from the "old" client
+    return this.clientService.updateOne(
+      { _id: oldClientId, coloristId },
+      { $pull: { sheets: sheetId } },
+    );
   }
 
   /**

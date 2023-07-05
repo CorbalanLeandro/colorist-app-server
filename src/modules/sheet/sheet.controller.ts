@@ -8,7 +8,12 @@ import {
   Query,
 } from '@nestjs/common';
 
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { SheetService } from './sheet.service';
 
@@ -24,9 +29,11 @@ import {
   ApiOperationFindOneById,
   QueryMongoId,
   ApiMongoIdQuery,
+  ResultResponseDto,
 } from '../../common';
 
 import {
+  ChangeClientDto,
   CreateSheetDto,
   CreateSheetResponseDto,
   FindSheetsQueryDto,
@@ -112,6 +119,31 @@ export class SheetController {
       },
       { $set: updateSheetData },
     );
+
+    return { result: true };
+  }
+
+  @ApiOperation({
+    description: 'Changes a Sheets client for another existent one.',
+    summary: 'Changes a Sheets client.',
+  })
+  @ApiOkResponse({
+    description: 'Result response indicating all went fine.',
+    type: ResultResponseDto,
+  })
+  @ApiMongoIdParam()
+  @Patch(`change-client/:${PARAM_ID}`)
+  async changeClient(
+    @ParamMongoId(PARAM_ID) _id: string,
+    @Body() { newClientId, oldClientId }: ChangeClientDto,
+    @ColoristId() coloristId: string,
+  ): Promise<IApiResult> {
+    await this.sheetService.changeClient({
+      coloristId,
+      newClientId,
+      oldClientId,
+      sheetId: _id,
+    });
 
     return { result: true };
   }

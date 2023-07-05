@@ -9,6 +9,7 @@ import {
 } from '../../../common';
 
 import {
+  IChangeClientDto,
   ICreateSheetDto,
   ICreateSheetResponseDto,
   IFindSheetsQueryDto,
@@ -39,7 +40,6 @@ export class CreateSheetDto implements ICreateSheetDto {
  * Only Date available to update on a Sheet.
  * TODO: Sheet's client change.
  */
-
 export class UpdateSheetDto
   extends PickType(CreateSheetDto, ['date'])
   implements Pick<ICreateSheetDto, 'date'> {}
@@ -59,3 +59,19 @@ export class CreateSheetResponseDto
 export class FindSheetsQueryDto
   extends BasicQueryDto
   implements IFindSheetsQueryDto {}
+
+export class ChangeClientDto implements IChangeClientDto {
+  @ApiProperty({
+    description: 'Client to change the sheet to.',
+    example: '64a0becfbf758de993d7fafd',
+  })
+  @IsMongoId()
+  newClientId: string;
+
+  @ApiProperty({
+    description: 'Client that have the sheet at the moment.',
+    example: '64a0becfbf758de993d7fafd',
+  })
+  @IsMongoId()
+  oldClientId: string;
+}

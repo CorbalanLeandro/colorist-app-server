@@ -1,4 +1,9 @@
-import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
+import {
+  ApiProperty,
+  IntersectionType,
+  OmitType,
+  PickType,
+} from '@nestjs/swagger';
 import { IsMongoId } from 'class-validator';
 
 import {
@@ -10,6 +15,7 @@ import {
 
 import {
   IChangeClientDto,
+  ICreateHairServiceInSheet,
   ICreateSheetDto,
   ICreateSheetResponseDto,
   IFindSheetsQueryDto,
@@ -17,10 +23,20 @@ import {
 } from '../interfaces';
 
 import { IHairServiceDto } from '../../hair-service/interfaces';
-import { HairServiceDto } from '../../hair-service/dtos';
+import { CreateHairServiceDto, HairServiceDto } from '../../hair-service/dtos';
 import { IsSheetDate } from '../decorators';
 
+class CreateHairServiceInSheetDto
+  extends OmitType(CreateHairServiceDto, ['clientId', 'sheetId'])
+  implements ICreateHairServiceInSheet {}
+
 export class CreateSheetDto implements ICreateSheetDto {
+  @ApiPropertyDto({
+    dto: CreateHairServiceInSheetDto,
+    isArray: true,
+  })
+  hairServices: ICreateHairServiceInSheet[];
+
   @ApiProperty({
     description: `Client's _id to which this sheet belongs`,
     example: '6193e45824ec040624af509d',

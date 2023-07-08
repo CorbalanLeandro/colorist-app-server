@@ -44,6 +44,7 @@ import {
 import { SheetDocument } from './schemas';
 import { ColoristId } from '../auth/decorators';
 import { SHEET_POPULATE_OPTIONS } from './constants';
+import { ISheet } from './interfaces';
 
 @ApiTags('Sheet')
 @ApiBearerAuth()
@@ -56,7 +57,7 @@ export class SheetController {
   async create(
     @Body() createSheetData: CreateSheetDto,
     @ColoristId() coloristId: string,
-  ): Promise<SheetDocument> {
+  ): Promise<ISheet> {
     return this.sheetService.createSheet({
       ...createSheetData,
       coloristId,

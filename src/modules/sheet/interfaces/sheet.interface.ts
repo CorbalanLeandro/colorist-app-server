@@ -1,6 +1,10 @@
 import { IBasicDocument, IBasicQueryDto, IColoristId } from '../../../common';
 import { IClientId } from '../../client/interfaces';
-import { IHairService, IHairServiceDto } from '../../hair-service/interfaces';
+import {
+  ICreateHairServiceDto,
+  IHairService,
+  IHairServiceDto,
+} from '../../hair-service/interfaces';
 
 export interface ISheetId {
   sheetId: string;
@@ -12,6 +16,15 @@ export interface ISheetObjectIdAttributes {
 
 interface ISheetDtoObjectIdAttributes {
   hairServices: IHairServiceDto[];
+}
+
+export type ICreateHairServiceInSheet = Omit<
+  ICreateHairServiceDto,
+  'clientId' | 'sheetId'
+>;
+
+interface ICreateSheetObjectIdAttributes {
+  hairServices: ICreateHairServiceInSheet[];
 }
 
 export interface ISheetAttributes extends IColoristId, IClientId {
@@ -28,15 +41,15 @@ export interface ISheetDto
     ISheetDtoObjectIdAttributes,
     IBasicDocument {}
 
-/**
- * when creating a sheet, we will always have the hair services array empty.
- */
 export type ICreateSheet = ISheetAttributes;
 
-/**
- * when creating a sheet, we will always have the hair services array empty.
- */
-export type ICreateSheetDto = Omit<ICreateSheet, 'coloristId'>;
+export interface ICreateSheetWithHairServices
+  extends ISheetAttributes,
+    ICreateSheetObjectIdAttributes {}
+
+export interface ICreateSheetDto
+  extends Omit<ICreateSheet, 'coloristId'>,
+    ICreateSheetObjectIdAttributes {}
 
 export interface ICreateSheetResponseDto
   extends ICreateSheet,

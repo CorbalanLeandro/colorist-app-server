@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import { AppModule } from './modules/app/app.module';
 import { APP_GLOBAL_PREFIX } from './constants';
 import { UseSwagger } from './swagger';
+import mongoose from 'mongoose';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -26,6 +27,8 @@ async function bootstrap(): Promise<void> {
   const appConfig = await app.resolve(ConfigService);
   const port = appConfig.getOrThrow<number>('app.port');
   const env = appConfig.getOrThrow<string>('app.env');
+
+  await mongoose.connect(appConfig.getOrThrow<string>('db.uri'));
 
   UseSwagger(app, env, port);
 

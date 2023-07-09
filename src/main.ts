@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import helmet from 'helmet';
 
 import { AppModule } from './modules/app/app.module';
 import { APP_GLOBAL_PREFIX } from './constants';
@@ -20,7 +19,6 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
-  app.use(helmet());
   app.enableCors();
 
   const appConfig = await app.resolve(ConfigService);

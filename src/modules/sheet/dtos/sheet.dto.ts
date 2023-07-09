@@ -61,7 +61,11 @@ export class UpdateSheetDto
   implements Pick<ICreateSheetDto, 'date'> {}
 
 export class SheetDto
-  extends IntersectionType(CreateSheetDto, BasicDocumentDto, ColoristIdDto)
+  extends IntersectionType(
+    OmitType(CreateSheetDto, ['hairServices']),
+    BasicDocumentDto,
+    ColoristIdDto,
+  )
   implements ISheetDto
 {
   @ApiPropertyDto({ dto: HairServiceDto, isArray: true })

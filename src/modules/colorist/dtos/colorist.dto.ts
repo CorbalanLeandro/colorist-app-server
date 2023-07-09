@@ -87,7 +87,7 @@ export class ColoristDto
 }
 
 export class CreateColoristResponseDto
-  extends IntersectionType(ColoristDto, BasicDocumentDto)
+  extends IntersectionType(OmitType(ColoristDto, ['clients']), BasicDocumentDto)
   implements ICreateColoristResponseDto
 {
   @ApiPropertyDto({ dto: ClientDto, isArray: true })

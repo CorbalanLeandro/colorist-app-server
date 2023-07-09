@@ -1,7 +1,7 @@
 {
   "version": 2,
   "env": {
-    "MONGO_URI": "@DB_URL"
+    "DB_URL": "@DB_URL"
 },
   "builds": [
       {

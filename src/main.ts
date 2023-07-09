@@ -29,7 +29,7 @@ async function bootstrap(): Promise<void> {
 
   UseSwagger(app, env, port);
 
-  await app.listen(port);
+  await app.listen(process.env.PORT || port);
 
   Logger.log(
     `Server is running on: http://localhost:${port}/${APP_GLOBAL_PREFIX}`,

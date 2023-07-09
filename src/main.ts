@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
-import * as compression from 'compression';
 
 import { AppModule } from './modules/app/app.module';
 import { APP_GLOBAL_PREFIX } from './constants';
@@ -23,7 +22,6 @@ async function bootstrap(): Promise<void> {
 
   app.use(helmet());
   app.enableCors();
-  app.use(compression());
 
   const appConfig = await app.resolve(ConfigService);
   const port = appConfig.getOrThrow<number>('app.port');

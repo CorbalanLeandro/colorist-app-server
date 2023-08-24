@@ -16,6 +16,7 @@ lerna-debug.log*
 
 # Files
 yarn.lock
+package-lock.json
 .env
 
 # Tests

@@ -6,6 +6,8 @@ import {
   PartialType,
 } from '@nestjs/swagger';
 
+import { IsAlphanumeric, Length, IsOptional } from 'class-validator';
+
 import {
   ATTRIBUTE_EMAIL_LENGTH,
   ATTRIBUTE_USERNAME_LENGTH,
@@ -25,7 +27,6 @@ import {
 } from '../interfaces';
 
 import { COLORIST_HAIR_SALON_NAME_LENGTH } from '../constants';
-import { IsAlphanumeric, Length } from 'class-validator';
 import { IClientDto } from '../../client/interfaces';
 import { ClientDto } from '../../client/dtos';
 import { ApiPropertyColoristPassword } from '../decorators/colorist.decorator';
@@ -41,6 +42,7 @@ export class CreateColoristDto implements ICreateColoristDto {
     minLength: COLORIST_HAIR_SALON_NAME_LENGTH.MIN,
     type: String,
   })
+  @IsOptional()
   @Length(
     COLORIST_HAIR_SALON_NAME_LENGTH.MIN,
     COLORIST_HAIR_SALON_NAME_LENGTH.MAX,

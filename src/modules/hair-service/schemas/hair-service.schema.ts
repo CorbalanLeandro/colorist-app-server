@@ -12,8 +12,8 @@ import {
 import { HairServiceIngredientSchema } from './hair-service-ingredient.schema';
 
 import {
-  HAIR_SERVICE_NAME_LENGHT,
-  HAIR_SERVICE_OBSERVATIONS_LENGHT,
+  HAIR_SERVICE_NAME_LENGTH,
+  HAIR_SERVICE_OBSERVATIONS_LENGTH,
 } from '../constants';
 
 export type HairServiceDocument = HydratedDocument<IHairService>;
@@ -36,8 +36,8 @@ export class HairService
   ingredients: IHairServiceIngredient[];
 
   @Prop({
-    maxlength: HAIR_SERVICE_NAME_LENGHT.MAX,
-    mimlength: HAIR_SERVICE_NAME_LENGHT.MIN,
+    maxlength: HAIR_SERVICE_NAME_LENGTH.MAX,
+    mimlength: HAIR_SERVICE_NAME_LENGTH.MIN,
     required: true,
     trim: true,
     type: String,
@@ -45,8 +45,8 @@ export class HairService
   name: string;
 
   @Prop({
-    maxlength: HAIR_SERVICE_OBSERVATIONS_LENGHT.MAX,
-    mimlength: HAIR_SERVICE_OBSERVATIONS_LENGHT.MIN,
+    maxlength: HAIR_SERVICE_OBSERVATIONS_LENGTH.MAX,
+    mimlength: HAIR_SERVICE_OBSERVATIONS_LENGTH.MIN,
     trim: true,
     type: String,
   })

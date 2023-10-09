@@ -23,8 +23,8 @@ import {
 import { HairServiceIngredientsDto } from './hair-service-ingredient.dto';
 
 import {
-  HAIR_SERVICE_NAME_LENGHT,
-  HAIR_SERVICE_OBSERVATIONS_LENGHT,
+  HAIR_SERVICE_NAME_LENGTH,
+  HAIR_SERVICE_OBSERVATIONS_LENGTH,
 } from '../constants';
 
 export class CreateHairServiceDto implements ICreateHairServiceDto {
@@ -41,22 +41,22 @@ export class CreateHairServiceDto implements ICreateHairServiceDto {
   @ApiProperty({
     description: 'Hair service name.',
     example: 'Balayage',
-    maxLength: HAIR_SERVICE_NAME_LENGHT.MAX,
-    minLength: HAIR_SERVICE_NAME_LENGHT.MIN,
+    maxLength: HAIR_SERVICE_NAME_LENGTH.MAX,
+    minLength: HAIR_SERVICE_NAME_LENGTH.MIN,
   })
-  @Length(HAIR_SERVICE_NAME_LENGHT.MIN, HAIR_SERVICE_NAME_LENGHT.MAX)
+  @Length(HAIR_SERVICE_NAME_LENGTH.MIN, HAIR_SERVICE_NAME_LENGTH.MAX)
   name: string;
 
   @ApiPropertyOptional({
     description: 'Hair service observations.',
     example: 'The hair is damage, use less oxidizing next time.',
-    maxLength: HAIR_SERVICE_OBSERVATIONS_LENGHT.MAX,
-    minLength: HAIR_SERVICE_OBSERVATIONS_LENGHT.MIN,
+    maxLength: HAIR_SERVICE_OBSERVATIONS_LENGTH.MAX,
+    minLength: HAIR_SERVICE_OBSERVATIONS_LENGTH.MIN,
   })
   @IsOptional()
   @Length(
-    HAIR_SERVICE_OBSERVATIONS_LENGHT.MIN,
-    HAIR_SERVICE_OBSERVATIONS_LENGHT.MAX,
+    HAIR_SERVICE_OBSERVATIONS_LENGTH.MIN,
+    HAIR_SERVICE_OBSERVATIONS_LENGTH.MAX,
   )
   observations?: string;
 

@@ -6,3 +6,5 @@ export const SHEET_DATE_FORMAT = 'dd/MM/yyyy';
 export const SHEET_POPULATE_OPTIONS: { populate: PopulateOptions } = {
   populate: { path: 'hairServices' },
 };
+
+export const SHEET_MAX_HAIR_SERVICES = 10;

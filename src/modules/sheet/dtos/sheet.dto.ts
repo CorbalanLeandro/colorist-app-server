@@ -4,7 +4,7 @@ import {
   OmitType,
   PickType,
 } from '@nestjs/swagger';
-import { IsMongoId } from 'class-validator';
+import { ArrayMaxSize, IsMongoId } from 'class-validator';
 
 import {
   ApiPropertyDto,
@@ -25,6 +25,7 @@ import {
 import { IHairServiceDto } from '../../hair-service/interfaces';
 import { CreateHairServiceDto, HairServiceDto } from '../../hair-service/dtos';
 import { IsSheetDate } from '../decorators';
+import { SHEET_MAX_HAIR_SERVICES } from '../constants';
 
 class CreateHairServiceInSheetDto
   extends OmitType(CreateHairServiceDto, ['clientId', 'sheetId'])
@@ -35,6 +36,7 @@ export class CreateSheetDto implements ICreateSheetDto {
     dto: CreateHairServiceInSheetDto,
     isArray: true,
   })
+  @ArrayMaxSize(SHEET_MAX_HAIR_SERVICES)
   hairServices: ICreateHairServiceInSheet[];
 
   @ApiProperty({
@@ -52,10 +54,6 @@ export class CreateSheetDto implements ICreateSheetDto {
   date: string;
 }
 
-/**
- * Only Date available to update on a Sheet.
- * TODO: Sheet's client change.
- */
 export class UpdateSheetDto
   extends PickType(CreateSheetDto, ['date'])
   implements Pick<ICreateSheetDto, 'date'> {}
@@ -69,8 +67,16 @@ export class SheetDto
 }
 
 export class CreateSheetResponseDto
-  extends IntersectionType(CreateSheetDto, BasicDocumentDto, ColoristIdDto)
-  implements ICreateSheetResponseDto {}
+  extends IntersectionType(
+    OmitType(CreateSheetDto, ['hairServices']),
+    BasicDocumentDto,
+    ColoristIdDto,
+  )
+  implements ICreateSheetResponseDto
+{
+  @ApiPropertyDto({ dto: HairServiceDto, isArray: true })
+  hairServices: IHairServiceDto[];
+}
 
 export class FindSheetsQueryDto
   extends BasicQueryDto

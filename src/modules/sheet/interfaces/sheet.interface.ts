@@ -52,7 +52,7 @@ export interface ICreateSheetDto
     ICreateSheetObjectIdAttributes {}
 
 export interface ICreateSheetResponseDto
-  extends ICreateSheet,
+  extends ISheetDto,
     IBasicDocument,
     IColoristId {}
 

@@ -61,13 +61,18 @@ export class HairServiceService extends AbstractService<
       this.sheetService,
     );
 
-    await this.deleteOne({ _id: hairServiceId });
+    const session = await this.model.startSession();
+    session.startTransaction();
 
     try {
+      await this.deleteOne({ _id: hairServiceId }, session);
       await this.sheetService.updateOne(
         { _id: sheetId, coloristId },
         { $pull: { hairServices: hairServiceId } },
+        session,
       );
+
+      await session.commitTransaction();
     } catch (error) {
       this.logger.error('Could not remove hair service from sheet', {
         coloristId,
@@ -76,7 +81,11 @@ export class HairServiceService extends AbstractService<
         sheetId,
       });
 
+      await session.abortTransaction();
+
       throw error;
+    } finally {
+      await session.endSession();
     }
   }
 }

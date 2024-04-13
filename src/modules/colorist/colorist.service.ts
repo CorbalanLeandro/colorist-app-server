@@ -122,19 +122,25 @@ export class ColoristService extends AbstractService<
    * @returns {Promise<void>}
    */
   async deleteColorist(_id: string): Promise<void> {
-    await this.deleteOne({ _id });
+    const session = await this.model.startSession();
+    session.startTransaction();
 
     try {
-      await Promise.all([
-        this.clientService.deleteMany({ coloristId: _id }),
-        this.hairServiceService.deleteMany({ coloristId: _id }),
-        this.sheetService.deleteMany({ coloristId: _id }),
-      ]);
+      await this.deleteOne({ _id }, session);
+      await this.clientService.deleteMany({ coloristId: _id }, session);
+      await this.hairServiceService.deleteMany({ coloristId: _id }, session);
+      await this.sheetService.deleteMany({ coloristId: _id }, session);
+
+      await session.commitTransaction();
     } catch (error) {
-      this.logger.error(
-        'An error ocurred while deleting Colorist related data',
-        { _id, error },
-      );
+      this.logger.error('An error occurred while deleting Colorist', {
+        _id,
+        error,
+      });
+
+      await session.abortTransaction();
+    } finally {
+      await session.endSession();
     }
   }
 }

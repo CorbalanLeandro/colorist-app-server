@@ -1,4 +1,9 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  forwardRef,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -45,7 +50,7 @@ export class ClientService extends AbstractService<
   }
 
   /**
-   * Deletes a Client, its all its related data and updates the colorist
+   * Deletes a Client, its related data and updates the colorist
    * to not have its _id anymore.
    *
    * @async
@@ -60,37 +65,34 @@ export class ClientService extends AbstractService<
       ColoristService
     >(coloristId, this.coloristService);
 
-    await this.deleteOne({ _id: clientId, coloristId });
-
-    const logCtx = {
-      clientId,
-      coloristId,
-    };
+    const session = await this.model.startSession();
+    session.startTransaction();
 
     try {
-      await Promise.all([
-        this.sheetService.deleteMany({ clientId, coloristId }),
-        this.hairServiceService.deleteMany({ clientId, coloristId }),
-      ]);
-    } catch (error) {
-      this.logger.error('An error ocurred while deleting Client related data', {
-        ...logCtx,
-        error,
-      });
-    }
-
-    try {
+      await this.deleteOne({ _id: clientId, coloristId }, session);
+      await this.sheetService.deleteMany({ clientId, coloristId }, session);
+      await this.hairServiceService.deleteMany(
+        { clientId, coloristId },
+        session,
+      );
       await this.coloristService.updateOne(
         { _id: coloristId },
         { $pull: { clients: clientId } },
+        session,
       );
+
+      await session.commitTransaction();
     } catch (error) {
-      this.logger.error('Could not remove client from colorist', {
-        ...logCtx,
+      this.logger.error('Could not delete client.', {
+        clientId,
+        coloristId,
         error,
       });
 
-      throw error;
+      await session.abortTransaction();
+      throw new InternalServerErrorException('Could not delete the client.');
+    } finally {
+      await session.endSession();
     }
   }
 }

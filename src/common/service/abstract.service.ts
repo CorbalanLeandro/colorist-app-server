@@ -105,7 +105,7 @@ export abstract class AbstractService<
 
       await session.abortTransaction();
       throw new InternalServerErrorException(
-        'Something went wrong when creating the document.',
+        `Something went wrong when creating the document ${this.model.modelName}`,
       );
     } finally {
       await session.endSession();
@@ -115,25 +115,32 @@ export abstract class AbstractService<
   /**
    * @async
    * @param {FilterQuery<DocumentType>} filter
+   * @param {ClientSession} session Mongodb session
    * @returns {Promise<DeleteResult>}
    */
-  async deleteOne(filter: FilterQuery<DocumentType>): Promise<DeleteResult> {
+  async deleteOne(
+    filter: FilterQuery<DocumentType>,
+    session?: ClientSession,
+  ): Promise<DeleteResult> {
     let deleteResult: DeleteResult;
 
+    const modelName = this.model.modelName;
     const logCtx = {
       filter,
-      modelName: this.model.modelName,
+      modelName,
     };
 
     try {
-      deleteResult = await this.model.deleteOne(filter);
+      deleteResult = await this.model.deleteOne(filter, { session });
     } catch (error) {
       this.logger.error('An error occurred while deleting a mongo document', {
         ...logCtx,
         error,
       });
 
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(
+        `Could not delete the ${modelName} document`,
+      );
     }
 
     if (deleteResult.deletedCount === 0) {
@@ -146,22 +153,29 @@ export abstract class AbstractService<
   /**
    * @async
    * @param {FilterQuery<DocumentType>} filter
+   * @param {ClientSession} session Mongodb session
    * @returns {Promise<DeleteResult>}
    */
-  async deleteMany(filter: FilterQuery<DocumentType>): Promise<DeleteResult> {
+  async deleteMany(
+    filter: FilterQuery<DocumentType>,
+    session?: ClientSession,
+  ): Promise<DeleteResult> {
     try {
-      return await this.model.deleteMany(filter);
+      return await this.model.deleteMany(filter, { session });
     } catch (error) {
+      const modelName = this.model.modelName;
       this.logger.error(
         'An error occurred while deleting the mongo documents',
         {
           error,
           filter,
-          modelName: this.model.modelName,
+          modelName,
         },
       );
 
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(
+        `Could not delete many ${modelName} documents`,
+      );
     }
   }
 
@@ -189,15 +203,18 @@ export abstract class AbstractService<
     try {
       return await this.model.find(filter, projection, options);
     } catch (error) {
+      const modelName = this.model.modelName;
       this.logger.error('An error occurred while finding the mongo documents', {
         error,
         filter,
-        modelName: this.model.modelName,
+        modelName,
         options,
         projection,
       });
 
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(
+        `Could not find the ${this.model.modelName} documents`,
+      );
     }
   }
 
@@ -215,9 +232,10 @@ export abstract class AbstractService<
   ): Promise<DocumentType> {
     let document: DocumentType | null;
 
+    const modelName = this.model.modelName;
     const logCtx = {
       filter,
-      modelName: this.model.modelName,
+      modelName,
       options,
       projection,
     };
@@ -230,7 +248,9 @@ export abstract class AbstractService<
         error,
       });
 
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(
+        `Could not find ${modelName} document`,
+      );
     }
 
     if (!document) {
@@ -262,14 +282,17 @@ export abstract class AbstractService<
         },
       );
     } catch (error) {
+      const modelName = this.model.modelName;
       this.logger.error('An error occurred while updating a mongo documents', {
         error,
         filter,
-        modelName: this.model.modelName,
+        modelName,
         updateQuery,
       });
 
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(
+        `Could not update many ${modelName} documents`,
+      );
     }
   }
 
@@ -287,9 +310,10 @@ export abstract class AbstractService<
   ): Promise<UpdateResult> {
     let updateResult: UpdateResult;
 
+    const modelName = this.model.modelName;
     const logCtx = {
       filter,
-      modelName: this.model.modelName,
+      modelName,
       updateQuery,
     };
 
@@ -311,7 +335,9 @@ export abstract class AbstractService<
         error,
       });
 
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(
+        `Could not update ${modelName} document`,
+      );
     }
 
     if (updateResult.modifiedCount === 0) {

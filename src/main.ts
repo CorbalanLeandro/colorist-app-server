@@ -6,9 +6,12 @@ import helmet from 'helmet';
 import { AppModule } from './modules/app/app.module';
 import { APP_GLOBAL_PREFIX } from './constants';
 import { UseSwagger } from './swagger';
+import { CustomLogger } from './logger';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: new CustomLogger(),
+  });
 
   app.setGlobalPrefix(APP_GLOBAL_PREFIX);
 

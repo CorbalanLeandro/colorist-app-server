@@ -132,7 +132,7 @@ export class ColoristService extends AbstractService<
       ]);
     } catch (error) {
       this.logger.error(
-        'An error ocurred while deleting Colorist related data',
+        'An error occurred while deleting Colorist related data',
         { _id, error },
       );
     }

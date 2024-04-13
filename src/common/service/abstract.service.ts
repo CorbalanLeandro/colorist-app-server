@@ -68,6 +68,7 @@ export abstract class AbstractService<
    * @param {T} parentService Service to make the update with
    * @param {string} parentId The parent's id which we are going to update
    * @param {keyof D} attributeNameOnParent The parent's attribute where we will add the new child's id
+   * @param {ClientSession} session Mongodb session
    * @returns {Promise<DocumentType>} The created document
    */
   async createAndUpdateParent<
@@ -79,11 +80,17 @@ export abstract class AbstractService<
     parentService: T,
     parentId: string,
     attributeNameOnParent: keyof D,
+    session?: ClientSession,
   ): Promise<DocumentType> {
     await this.assertParentExist<K, D, T>(parentId, parentService);
 
-    const session = await this.model.startSession();
-    session.startTransaction();
+    // if we don't receive a session, we start one.
+    let isLocalMongoDBSession = false;
+    if (!session) {
+      isLocalMongoDBSession = true;
+      session = await this.model.startSession();
+      session.startTransaction();
+    }
 
     try {
       const newDocument = await this.create(createData, session);
@@ -95,7 +102,10 @@ export abstract class AbstractService<
         session,
       );
 
-      await session.commitTransaction();
+      // only commit the transaction if it's local.
+      if (isLocalMongoDBSession) {
+        await session.commitTransaction();
+      }
       return newDocument;
     } catch (error) {
       this.logger.error('Could not create the new child Document.', {
@@ -105,10 +115,13 @@ export abstract class AbstractService<
 
       await session.abortTransaction();
       throw new InternalServerErrorException(
-        `Something went wrong when creating the document ${this.model.modelName}`,
+        `Something went wrong when creating the ${this.model.modelName} document`,
       );
     } finally {
-      await session.endSession();
+      // only end the session if it's local.
+      if (isLocalMongoDBSession) {
+        await session.endSession();
+      }
     }
   }
 
@@ -264,11 +277,13 @@ export abstract class AbstractService<
    * @async
    * @param {FilterQuery<DocumentType>} filter
    * @param {UpdateQuery<DocumentType>} updateQuery
+   * @param {ClientSession} session Mongodb session
    * @returns {Promise<UpdateResult>}
    */
   async updateMany(
     filter: FilterQuery<DocumentType>,
     updateQuery: UpdateQuery<DocumentType>,
+    session?: ClientSession,
   ): Promise<UpdateResult> {
     try {
       return await this.model.updateMany(
@@ -279,6 +294,7 @@ export abstract class AbstractService<
         },
         {
           runValidators: true,
+          session,
         },
       );
     } catch (error) {

@@ -2,6 +2,7 @@ import { DeleteResult, UpdateResult } from 'mongodb';
 
 import {
   AnyKeys,
+  ClientSession,
   Document,
   FilterQuery,
   Model,
@@ -35,13 +36,18 @@ export abstract class AbstractService<
   /**
    * @async
    * @param {CreateInterface} createData
+   * @param {ClientSession} session Mongodb session
    * @returns {Promise<DocumentType>}
    */
-  async create(createData: CreateInterface): Promise<DocumentType> {
+  async create(
+    createData: CreateInterface,
+    session?: ClientSession,
+  ): Promise<DocumentType> {
     try {
-      return await this.model.create<CreateInterface>(createData);
+      const newDocument = new this.model<CreateInterface>(createData);
+      return await newDocument.save({ session });
     } catch (error) {
-      this.logger.error('An error ocurred while creating a mongo document', {
+      this.logger.error('An error occurred while creating a mongo document', {
         createData,
         error,
         modelName: this.model.modelName,
@@ -76,32 +82,34 @@ export abstract class AbstractService<
   ): Promise<DocumentType> {
     await this.assertParentExist<K, D, T>(parentId, parentService);
 
-    const newDocument = await this.create(createData);
-    const { _id: newDocumentId } = newDocument;
+    const session = await this.model.startSession();
+    session.startTransaction();
 
     try {
+      const newDocument = await this.create(createData, session);
+      const { _id: newDocumentId } = newDocument;
+
       await parentService.updateOne(
         { _id: parentId },
         { $push: { [attributeNameOnParent]: newDocumentId } as AnyKeys<D> },
+        session,
       );
+
+      await session.commitTransaction();
+      return newDocument;
     } catch (error) {
-      this.logger.error(
-        'Could not add the new Document to the Parent Document',
-        {
-          createData,
-          error,
-          newDocumentId,
-        },
-      );
+      this.logger.error('Could not create the new child Document.', {
+        createData,
+        error,
+      });
 
-      await this.deleteOne({ _id: newDocumentId });
-
+      await session.abortTransaction();
       throw new InternalServerErrorException(
         'Something went wrong when creating the document.',
       );
+    } finally {
+      await session.endSession();
     }
-
-    return newDocument;
   }
 
   /**
@@ -120,7 +128,7 @@ export abstract class AbstractService<
     try {
       deleteResult = await this.model.deleteOne(filter);
     } catch (error) {
-      this.logger.error('An error ocurred while deleting a mongo document', {
+      this.logger.error('An error occurred while deleting a mongo document', {
         ...logCtx,
         error,
       });
@@ -144,11 +152,14 @@ export abstract class AbstractService<
     try {
       return await this.model.deleteMany(filter);
     } catch (error) {
-      this.logger.error('An error ocurred while deleting the mongo documents', {
-        error,
-        filter,
-        modelName: this.model.modelName,
-      });
+      this.logger.error(
+        'An error occurred while deleting the mongo documents',
+        {
+          error,
+          filter,
+          modelName: this.model.modelName,
+        },
+      );
 
       throw new InternalServerErrorException();
     }
@@ -178,7 +189,7 @@ export abstract class AbstractService<
     try {
       return await this.model.find(filter, projection, options);
     } catch (error) {
-      this.logger.error('An error ocurred while finding the mongo documents', {
+      this.logger.error('An error occurred while finding the mongo documents', {
         error,
         filter,
         modelName: this.model.modelName,
@@ -214,7 +225,7 @@ export abstract class AbstractService<
     try {
       document = await this.model.findOne(filter, projection, options);
     } catch (error) {
-      this.logger.error('An error ocurred while finding a mongo document', {
+      this.logger.error('An error occurred while finding a mongo document', {
         ...logCtx,
         error,
       });
@@ -251,7 +262,7 @@ export abstract class AbstractService<
         },
       );
     } catch (error) {
-      this.logger.error('An error ocurred while updating a mongo documents', {
+      this.logger.error('An error occurred while updating a mongo documents', {
         error,
         filter,
         modelName: this.model.modelName,
@@ -266,11 +277,13 @@ export abstract class AbstractService<
    * @async
    * @param {FilterQuery<DocumentType>} filter
    * @param {UpdateQuery<DocumentType>} updateQuery
+   * @param {ClientSession} session Mongodb session
    * @returns {Promise<UpdateResult>}
    */
   async updateOne(
     filter: FilterQuery<DocumentType>,
     updateQuery: UpdateQuery<DocumentType>,
+    session?: ClientSession,
   ): Promise<UpdateResult> {
     let updateResult: UpdateResult;
 
@@ -289,10 +302,11 @@ export abstract class AbstractService<
         },
         {
           runValidators: true,
+          session,
         },
       );
     } catch (error) {
-      this.logger.error('An error ocurred while updating a mongo document', {
+      this.logger.error('An error occurred while updating a mongo document', {
         ...logCtx,
         error,
       });
@@ -341,7 +355,8 @@ export abstract class AbstractService<
   /**
    * Emits the log with the log context and throw a NotFoundException
    *
-   * @param logCtx
+   * @param method method being invoked
+   * @param logCtx object to log
    */
   private handleDocumentNotFound(
     method: string,

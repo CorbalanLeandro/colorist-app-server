@@ -1,9 +1,10 @@
 import { ConsoleLogger } from '@nestjs/common';
+import { inspect } from 'util';
 
 interface ILogObjectWithError {
+  [key: string]: any;
   err: any;
   error: any;
-  [key: string]: any;
 }
 
 export class CustomLogger extends ConsoleLogger {
@@ -21,11 +22,8 @@ export class CustomLogger extends ConsoleLogger {
       if (logObjectWithError) {
         const { err: pureErr, error: pureError } = logObjectWithError;
 
-        const err = pureErr ? pureErr.stack || pureErr.toString() : undefined;
-
-        const error = pureError
-          ? pureError.stack || pureError.toString()
-          : undefined;
+        const err = pureErr ? inspect(pureErr) : undefined;
+        const error = pureError ? inspect(pureError) : undefined;
 
         logObjectWithError.err = err;
         logObjectWithError.error = error;

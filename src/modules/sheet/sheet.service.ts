@@ -1,5 +1,5 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { ClientSession, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UpdateResult } from 'mongodb';
 
@@ -7,9 +7,7 @@ import { AbstractService } from '../../common';
 
 import {
   IChangeClient,
-  ICreateHairServiceInSheet,
   ICreateSheet,
-  ICreateSheetWithHairServices,
   IDeleteSheet,
   ISheet,
 } from './interfaces';
@@ -18,8 +16,6 @@ import { Sheet, SheetDocument } from './schemas';
 import { ClientService } from '../client/client.service';
 import { ICreateClient } from '../client/interfaces';
 import { ClientDocument } from '../client/schemas';
-import { HairServiceService } from '../hair-service/hair-service.service';
-import { HairServiceDocument } from '../hair-service/schemas';
 
 @Injectable()
 export class SheetService extends AbstractService<ICreateSheet, SheetDocument> {
@@ -28,8 +24,6 @@ export class SheetService extends AbstractService<ICreateSheet, SheetDocument> {
     protected model: Model<SheetDocument>,
     @Inject(forwardRef(() => ClientService))
     private readonly clientService: ClientService,
-    @Inject(forwardRef(() => HairServiceService))
-    private readonly hairServiceService: HairServiceService,
   ) {
     super(SheetService.name, model);
   }
@@ -61,11 +55,6 @@ export class SheetService extends AbstractService<ICreateSheet, SheetDocument> {
         { $push: { sheets: sheetId } },
         session,
       );
-      await this.hairServiceService.updateMany(
-        { clientId: oldClientId, coloristId, sheetId },
-        { $set: { clientId: newClientId } },
-        session,
-      );
 
       // once the new client has the sheet, we remove it from the "old" client
       const updatedClient = await this.clientService.updateOne(
@@ -95,51 +84,15 @@ export class SheetService extends AbstractService<ICreateSheet, SheetDocument> {
    * Creates a sheet and updates the client document to have this new sheet.
    *
    * @async
-   * @param {ICreateSheetWithHairServices} sheetWithHairServicesData
+   * @param {ICreateSheet} sheetData
    * @returns {Promise<ISheet>} The created sheet
    */
-  async createSheet(
-    sheetWithHairServicesData: ICreateSheetWithHairServices,
-  ): Promise<ISheet> {
-    const session = await this.model.startSession();
-    session.startTransaction();
-
-    try {
-      const { hairServices: hairServicesData, ...sheetData } =
-        sheetWithHairServicesData;
-
-      const createdSheet = await this.createAndUpdateParent<
-        ICreateClient,
-        ClientDocument,
-        ClientService
-      >(sheetData, this.clientService, sheetData.clientId, 'sheets', session);
-
-      let createdHairServices: HairServiceDocument[] = [];
-
-      createdHairServices = await this.createSheetHairServices(
-        createdSheet,
-        hairServicesData,
-        session,
-      );
-
-      await session.commitTransaction();
-      return { ...createdSheet.toObject(), hairServices: createdHairServices };
-    } catch (error) {
-      this.logger.error('Could not create sheets hair services.', {
-        coloristId: sheetWithHairServicesData.coloristId,
-        createSheetData: sheetWithHairServicesData,
-        error,
-      });
-
-      if (session.inTransaction()) {
-        await session.abortTransaction();
-      }
-      throw error;
-    } finally {
-      if (!session.hasEnded) {
-        await session.endSession();
-      }
-    }
+  async createSheet(sheetData: ICreateSheet): Promise<ISheet> {
+    return this.createAndUpdateParent<
+      ICreateClient,
+      ClientDocument,
+      ClientService
+    >(sheetData, this.clientService, sheetData.clientId, 'sheets');
   }
 
   /**
@@ -165,13 +118,6 @@ export class SheetService extends AbstractService<ICreateSheet, SheetDocument> {
 
     try {
       await this.deleteOne({ _id: sheetId, coloristId }, session);
-      await this.hairServiceService.deleteMany(
-        {
-          coloristId,
-          sheetId,
-        },
-        session,
-      );
       await this.clientService.updateOne(
         { _id: clientId, coloristId },
         { $pull: { sheets: sheetId } },
@@ -192,47 +138,5 @@ export class SheetService extends AbstractService<ICreateSheet, SheetDocument> {
     } finally {
       await session.endSession();
     }
-  }
-
-  /**
-   * Creates the hair services for the provided Sheet and updates the sheet hair services array.
-   *
-   * @param {SheetDocument} createdSheet
-   * @param {ICreateHairServiceInSheet[]} hairServicesData
-   * @param {ClientSession} session Mongodb session
-   * @returns {Promise<HairServiceDocument[]>}
-   */
-  private async createSheetHairServices(
-    createdSheet: SheetDocument,
-    hairServicesData: ICreateHairServiceInSheet[],
-    session: ClientSession,
-  ): Promise<HairServiceDocument[]> {
-    const { clientId, _id: sheetId, coloristId } = createdSheet;
-
-    const createdHairServices: HairServiceDocument[] = [];
-    const createdHairServicesIds: string[] = [];
-
-    for (const hairServiceData of hairServicesData) {
-      const createdHairService = await this.hairServiceService.create(
-        {
-          ...hairServiceData,
-          clientId,
-          coloristId,
-          sheetId,
-        },
-        session,
-      );
-
-      createdHairServices.push(createdHairService);
-      createdHairServicesIds.push(createdHairService._id);
-    }
-
-    await this.updateOne(
-      { _id: sheetId },
-      { $push: { hairServices: createdHairServicesIds } },
-      session,
-    );
-
-    return createdHairServices;
   }
 }

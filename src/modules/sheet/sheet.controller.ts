@@ -35,7 +35,6 @@ import {
 import {
   ChangeClientDto,
   CreateSheetDto,
-  CreateSheetResponseDto,
   FindSheetsQueryDto,
   SheetDto,
   UpdateSheetDto,
@@ -52,7 +51,7 @@ import { ISheet } from './interfaces';
 export class SheetController {
   constructor(private readonly sheetService: SheetService) {}
 
-  @ApiOperationCreate(CreateSheetResponseDto)
+  @ApiOperationCreate(SheetDto)
   @Post()
   async create(
     @Body() createSheetData: CreateSheetDto,

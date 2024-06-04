@@ -1,32 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import {
-  Schema as MongooseSchema,
-  ValidatorProps,
-  HydratedDocument,
-} from 'mongoose';
+import { ValidatorProps, HydratedDocument } from 'mongoose';
 
 import { ColoristIdSchema, isMongoIdPropValidator } from '../../../common';
-
-import {
-  ISheet,
-  ISheetAttributes,
-  ISheetObjectIdAttributes,
-} from '../interfaces';
-
-import { HairService } from '../../hair-service/schemas';
-import { SHEET_DATE_FORMAT } from '../constants';
+import { IHairService, ISheet, ISheetAttributes } from '../interfaces';
+import { SHEET_DATE_FORMAT, SHEET_MAX_HAIR_SERVICES } from '../constants';
 import { isSheetDate } from '../utils';
-import { IHairService } from '../../hair-service/interfaces';
+import { HairServiceSchema } from './hair-service.schema';
 
 export type SheetDocument = HydratedDocument<ISheet>;
 
 @Schema({
   timestamps: true,
 })
-export class Sheet
-  extends ColoristIdSchema
-  implements ISheetAttributes, ISheetObjectIdAttributes
-{
+export class Sheet extends ColoristIdSchema implements ISheetAttributes {
   @Prop({
     required: true,
     type: String,
@@ -47,13 +33,13 @@ export class Sheet
   date: string;
 
   @Prop({
-    type: [
-      {
-        ref: HairService.name,
-        required: true,
-        type: MongooseSchema.Types.ObjectId,
+    type: [HairServiceSchema],
+    validate: {
+      message: `hairServices array cannot exceed ${SHEET_MAX_HAIR_SERVICES} items`,
+      validator: (value: unknown[]) => {
+        return value.length <= SHEET_MAX_HAIR_SERVICES;
       },
-    ],
+    },
   })
   hairServices: IHairService[];
 }

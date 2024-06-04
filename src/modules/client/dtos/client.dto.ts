@@ -23,7 +23,7 @@ import {
   IFindClientsQueryDto,
 } from '../interfaces';
 
-import { ISheetDto } from '../../sheet/interfaces';
+import { ISheet } from '../../sheet/interfaces';
 import { SheetDto } from '../../sheet/dtos';
 import { IsOptional, MaxLength } from 'class-validator';
 
@@ -50,7 +50,7 @@ export class ClientDto
   implements IClientDto
 {
   @ApiPropertyDto({ dto: SheetDto, isArray: true })
-  sheets: ISheetDto[];
+  sheets: ISheet[];
 }
 
 export class FindClientsQueryDto

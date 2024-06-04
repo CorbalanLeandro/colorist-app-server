@@ -70,8 +70,8 @@ export class SheetController {
   async findOne(
     @ParamMongoId(PARAM_ID) _id: string,
     @ColoristId() coloristId: string,
-  ): Promise<SheetDocument[]> {
-    return this.sheetService.find(
+  ): Promise<SheetDocument> {
+    return this.sheetService.findOne(
       {
         _id,
         coloristId,

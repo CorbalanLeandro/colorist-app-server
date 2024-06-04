@@ -12,7 +12,6 @@ import { ICreateClient } from './interfaces';
 import { Client, ClientDocument } from './schemas';
 import { ColoristService } from '../colorist/colorist.service';
 import { SheetService } from '../sheet/sheet.service';
-import { HairServiceService } from '../hair-service/hair-service.service';
 import { ICreateColorist } from '../colorist/interfaces';
 import { ColoristDocument } from '../colorist/schemas';
 
@@ -26,8 +25,6 @@ export class ClientService extends AbstractService<
     protected model: Model<ClientDocument>,
     @Inject(forwardRef(() => ColoristService))
     private readonly coloristService: ColoristService,
-    @Inject(forwardRef(() => HairServiceService))
-    private readonly hairServiceService: HairServiceService,
     @Inject(forwardRef(() => SheetService))
     private readonly sheetService: SheetService,
   ) {
@@ -71,10 +68,6 @@ export class ClientService extends AbstractService<
     try {
       await this.deleteOne({ _id: clientId, coloristId }, session);
       await this.sheetService.deleteMany({ clientId, coloristId }, session);
-      await this.hairServiceService.deleteMany(
-        { clientId, coloristId },
-        session,
-      );
       await this.coloristService.updateOne(
         { _id: coloristId },
         { $pull: { clients: clientId } },

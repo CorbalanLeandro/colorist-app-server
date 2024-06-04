@@ -45,7 +45,7 @@ export class Colorist
     immutable: true,
     lowercase: true,
     maxlength: ATTRIBUTE_EMAIL_LENGTH.MAX,
-    mimlength: ATTRIBUTE_EMAIL_LENGTH.MIN,
+    minlength: ATTRIBUTE_EMAIL_LENGTH.MIN,
     required: true,
     trim: true,
     type: String,
@@ -59,7 +59,7 @@ export class Colorist
 
   @Prop({
     maxlength: COLORIST_HAIR_SALON_NAME_LENGTH.MAX,
-    mimlength: COLORIST_HAIR_SALON_NAME_LENGTH.MIN,
+    minlength: COLORIST_HAIR_SALON_NAME_LENGTH.MIN,
     trim: true,
     type: String,
   })
@@ -67,7 +67,7 @@ export class Colorist
 
   @Prop({
     maxlength: ATTRIBUTE_LAST_NAME_LENGTH.MAX,
-    mimlength: ATTRIBUTE_LAST_NAME_LENGTH.MIN,
+    minlength: ATTRIBUTE_LAST_NAME_LENGTH.MIN,
     required: true,
     trim: true,
     type: String,
@@ -76,7 +76,7 @@ export class Colorist
 
   @Prop({
     maxlength: ATTRIBUTE_NAME_LENGTH.MAX,
-    mimlength: ATTRIBUTE_NAME_LENGTH.MIN,
+    minlength: ATTRIBUTE_NAME_LENGTH.MIN,
     required: true,
     trim: true,
     type: String,
@@ -94,7 +94,7 @@ export class Colorist
     immutable: true,
     lowercase: true,
     maxlength: ATTRIBUTE_USERNAME_LENGTH.MAX,
-    mimlength: ATTRIBUTE_USERNAME_LENGTH.MIN,
+    minlength: ATTRIBUTE_USERNAME_LENGTH.MIN,
     required: true,
     trim: true,
     type: String,

@@ -1,6 +1,6 @@
 import { IBasicDocument, IBasicQueryDto, IColoristId } from '../../../common';
 
-import { ISheet, ISheetDto } from '../../sheet/interfaces';
+import { ISheet } from '../../sheet/interfaces';
 
 export interface IClientId {
   clientId: string;
@@ -18,7 +18,7 @@ export interface IClientObjectIdAttributes {
 }
 
 interface IClientDtoObjectIdAttributes {
-  sheets: ISheetDto[];
+  sheets: ISheet[];
 }
 
 export interface IClient

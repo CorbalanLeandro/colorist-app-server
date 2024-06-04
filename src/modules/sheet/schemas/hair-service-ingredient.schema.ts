@@ -1,18 +1,17 @@
 import { Prop, Schema } from '@nestjs/mongoose';
-import { ValidatorProps } from 'mongoose';
-import { isNumber } from 'class-validator';
 
 import { IHairServiceIngredient } from '../interfaces';
 
 import {
   HAIR_SERVICE_INGREDIENT_BRAND_LENGTH,
-  HAIR_SERVICE_INGREDIENT_HEIGHT,
-  HAIR_SERVICE_INGREDIENT_HEIGHT_MAX_DECIMAL_PLACES,
-  HAIR_SERVICE_INGREDIENT_OXIDIZING,
-  HAIR_SERVICE_INGREDIENT_OXIDIZING_MAX_DECIMAL_PLACES,
+  HAIR_SERVICE_INGREDIENT_HEIGHT_LENGTH,
   HAIR_SERVICE_INGREDIENT_QUANTITY_LENGTH,
   HAIR_SERVICE_INGREDIENT_TONE_LENGTH,
+  OXIDIZING_REGEX_VALIDATION,
+  OXIDIZING_VALIDATION_ERROR_MESSAGE,
 } from '../constants';
+
+import { isString } from 'class-validator';
 
 @Schema({
   _id: false,
@@ -29,39 +28,24 @@ export class HairServiceIngredientSchema implements IHairServiceIngredient {
   brand: string;
 
   @Prop({
-    max: HAIR_SERVICE_INGREDIENT_HEIGHT.MAX,
-    min: HAIR_SERVICE_INGREDIENT_HEIGHT.MIN,
-    required: true,
+    maxlength: HAIR_SERVICE_INGREDIENT_HEIGHT_LENGTH.MAX,
+    minlength: HAIR_SERVICE_INGREDIENT_HEIGHT_LENGTH.MIN,
     trim: true,
-    type: Number,
-    validate: {
-      message: (props: ValidatorProps) =>
-        `${props.value} is not a valid height`,
-      validator: (value: unknown) =>
-        isNumber(value, {
-          maxDecimalPlaces: HAIR_SERVICE_INGREDIENT_HEIGHT_MAX_DECIMAL_PLACES,
-        }),
-    },
+    type: String,
   })
-  height: number;
+  height: string;
 
   @Prop({
-    max: HAIR_SERVICE_INGREDIENT_OXIDIZING.MAX,
-    min: HAIR_SERVICE_INGREDIENT_OXIDIZING.MIN,
     required: true,
     trim: true,
-    type: Number,
+    type: String,
     validate: {
-      message: (props: ValidatorProps) =>
-        `${props.value} is not a valid oxidizing percentage`,
+      message: OXIDIZING_VALIDATION_ERROR_MESSAGE,
       validator: (value: unknown) =>
-        isNumber(value, {
-          maxDecimalPlaces:
-            HAIR_SERVICE_INGREDIENT_OXIDIZING_MAX_DECIMAL_PLACES,
-        }),
+        isString(value) && OXIDIZING_REGEX_VALIDATION.test(value),
     },
   })
-  oxidizing: number;
+  oxidizing: string;
 
   @Prop({
     maxlength: HAIR_SERVICE_INGREDIENT_QUANTITY_LENGTH.MAX,

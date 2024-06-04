@@ -33,7 +33,7 @@ export class Client
 {
   @Prop({
     maxlength: ATTRIBUTE_EMAIL_LENGTH.MAX,
-    mimlength: ATTRIBUTE_EMAIL_LENGTH.MIN,
+    minlength: ATTRIBUTE_EMAIL_LENGTH.MIN,
     trim: true,
     type: String,
     validate: {
@@ -45,7 +45,7 @@ export class Client
 
   @Prop({
     maxlength: ATTRIBUTE_LAST_NAME_LENGTH.MAX,
-    mimlength: ATTRIBUTE_LAST_NAME_LENGTH.MIN,
+    minlength: ATTRIBUTE_LAST_NAME_LENGTH.MIN,
     required: true,
     trim: true,
     type: String,
@@ -54,7 +54,7 @@ export class Client
 
   @Prop({
     maxlength: ATTRIBUTE_NAME_LENGTH.MAX,
-    mimlength: ATTRIBUTE_NAME_LENGTH.MIN,
+    minlength: ATTRIBUTE_NAME_LENGTH.MIN,
     required: true,
     trim: true,
     type: String,
@@ -63,7 +63,7 @@ export class Client
 
   @Prop({
     maxlength: ATTRIBUTE_PHONE_NUMBER_LENGTH.MAX,
-    mimlength: ATTRIBUTE_PHONE_NUMBER_LENGTH.MIN,
+    minlength: ATTRIBUTE_PHONE_NUMBER_LENGTH.MIN,
     trim: true,
     type: String,
   })

@@ -14,7 +14,6 @@ import {
 import { Colorist, ColoristDocument } from './schemas';
 import { ClientService } from '../client/client.service';
 import { SheetService } from '../sheet/sheet.service';
-import { HairServiceService } from '../hair-service/hair-service.service';
 import { BadCredentialsException } from '../auth/errors';
 
 @Injectable()
@@ -28,8 +27,6 @@ export class ColoristService extends AbstractService<
     private readonly configService: ConfigService,
     @Inject(forwardRef(() => ClientService))
     private readonly clientService: ClientService,
-    @Inject(forwardRef(() => HairServiceService))
-    private readonly hairServiceService: HairServiceService,
     @Inject(forwardRef(() => SheetService))
     private readonly sheetService: SheetService,
   ) {
@@ -42,7 +39,7 @@ export class ColoristService extends AbstractService<
    *
    * If it's not correct, it throws.
    *
-   * @param {strint} inputPassword
+   * @param {string} inputPassword
    * @param {string} coloristPassword Colorist encrypted password in database
    * @throws {BadCredentialsException}
    */
@@ -128,7 +125,6 @@ export class ColoristService extends AbstractService<
     try {
       await this.deleteOne({ _id }, session);
       await this.clientService.deleteMany({ coloristId: _id }, session);
-      await this.hairServiceService.deleteMany({ coloristId: _id }, session);
       await this.sheetService.deleteMany({ coloristId: _id }, session);
 
       await session.commitTransaction();

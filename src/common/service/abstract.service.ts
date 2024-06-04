@@ -68,7 +68,6 @@ export abstract class AbstractService<
    * @param {T} parentService Service to make the update with
    * @param {string} parentId The parent's id which we are going to update
    * @param {keyof D} attributeNameOnParent The parent's attribute where we will add the new child's id
-   * @param {ClientSession} session Mongodb session
    * @returns {Promise<DocumentType>} The created document
    */
   async createAndUpdateParent<
@@ -80,17 +79,11 @@ export abstract class AbstractService<
     parentService: T,
     parentId: string,
     attributeNameOnParent: keyof D,
-    session?: ClientSession,
   ): Promise<DocumentType> {
     await this.assertParentExist<K, D, T>(parentId, parentService);
 
-    // if we don't receive a session, we start one.
-    let isLocalMongoDBSession = false;
-    if (!session) {
-      isLocalMongoDBSession = true;
-      session = await this.model.startSession();
-      session.startTransaction();
-    }
+    const session = await this.model.startSession();
+    session.startTransaction();
 
     try {
       const newDocument = await this.create(createData, session);
@@ -102,10 +95,7 @@ export abstract class AbstractService<
         session,
       );
 
-      // only commit the transaction if it's local.
-      if (isLocalMongoDBSession) {
-        await session.commitTransaction();
-      }
+      await session.commitTransaction();
       return newDocument;
     } catch (error) {
       this.logger.error('Could not create the new child Document.', {
@@ -118,10 +108,7 @@ export abstract class AbstractService<
         `Something went wrong when creating the ${this.model.modelName} document`,
       );
     } finally {
-      // only end the session if it's local.
-      if (isLocalMongoDBSession) {
-        await session.endSession();
-      }
+      await session.endSession();
     }
   }
 

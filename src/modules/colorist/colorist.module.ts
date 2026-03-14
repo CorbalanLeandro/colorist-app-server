@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { Colorist, ColoristSchema } from './schemas';
@@ -11,8 +11,8 @@ import { SheetModule } from '../sheet/sheet.module';
   controllers: [ColoristController],
   exports: [ColoristService],
   imports: [
-    forwardRef(() => ClientModule),
-    forwardRef(() => SheetModule),
+    ClientModule,
+    SheetModule,
     MongooseModule.forFeature([
       { name: Colorist.name, schema: ColoristSchema },
     ]),

@@ -1,7 +1,6 @@
 import { DeleteResult, UpdateResult } from 'mongodb';
 
 import {
-  AnyKeys,
   ClientSession,
   Document,
   FilterQuery,
@@ -12,7 +11,6 @@ import {
 } from 'mongoose';
 
 import {
-  BadRequestException,
   InternalServerErrorException,
   Logger,
   NotFoundException,
@@ -56,59 +54,6 @@ export abstract class AbstractService<
       throw new InternalServerErrorException(
         `Could not create a ${this.model.modelName}`,
       );
-    }
-  }
-
-  /**
-   * Creates a document and updates the Parent document to have this new document as child
-   * on the given attribute.
-   *
-   * @async
-   * @param {CreateInterface} createData Data to create the child document
-   * @param {T} parentService Service to make the update with
-   * @param {string} parentId The parent's id which we are going to update
-   * @param {keyof D} attributeNameOnParent The parent's attribute where we will add the new child's id
-   * @returns {Promise<DocumentType>} The created document
-   */
-  async createAndUpdateParent<
-    K,
-    D extends Document,
-    T extends AbstractService<K, D>,
-  >(
-    createData: CreateInterface,
-    parentService: T,
-    parentId: string,
-    attributeNameOnParent: keyof D,
-  ): Promise<DocumentType> {
-    await this.assertParentExist<K, D, T>(parentId, parentService);
-
-    const session = await this.model.startSession();
-    session.startTransaction();
-
-    try {
-      const newDocument = await this.create(createData, session);
-      const { _id: newDocumentId } = newDocument;
-
-      await parentService.updateOne(
-        { _id: parentId },
-        { $push: { [attributeNameOnParent]: newDocumentId } as AnyKeys<D> },
-        session,
-      );
-
-      await session.commitTransaction();
-      return newDocument;
-    } catch (error) {
-      this.logger.error('Could not create the new child Document.', {
-        createData,
-        error,
-      });
-
-      await session.abortTransaction();
-      throw new InternalServerErrorException(
-        `Something went wrong when creating the ${this.model.modelName} document`,
-      );
-    } finally {
-      await session.endSession();
     }
   }
 
@@ -348,37 +293,6 @@ export abstract class AbstractService<
     }
 
     return updateResult;
-  }
-
-  /**
-   * If parent does not exists, throws a bad request exception
-   *
-   * @async
-   * @param {string} parentId
-   * @param {T} parentService
-   */
-  protected async assertParentExist<
-    K,
-    D extends Document,
-    T extends AbstractService<K, D>,
-  >(parentId: string, parentService: T): Promise<void> {
-    let parentExists: boolean;
-
-    try {
-      parentExists = await parentService.exists({ _id: parentId });
-    } catch (error) {
-      this.logger.error('Could not assert parent exists.', {
-        error,
-        modelName: this.model.modelName,
-        parentId,
-      });
-
-      throw new InternalServerErrorException('Could not assert parent exists.');
-    }
-
-    if (!parentExists) {
-      throw new BadRequestException('Parent does not exists.');
-    }
   }
 
   /**

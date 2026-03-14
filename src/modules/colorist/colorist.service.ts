@@ -1,4 +1,4 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
 import { Model } from 'mongoose';
@@ -25,9 +25,7 @@ export class ColoristService extends AbstractService<
     @InjectModel(Colorist.name)
     protected model: Model<ColoristDocument>,
     private readonly configService: ConfigService,
-    @Inject(forwardRef(() => ClientService))
     private readonly clientService: ClientService,
-    @Inject(forwardRef(() => SheetService))
     private readonly sheetService: SheetService,
   ) {
     super(ColoristService.name, model);

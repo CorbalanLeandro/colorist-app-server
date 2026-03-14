@@ -16,13 +16,13 @@ describe('ColoristService', () => {
         {
           provide: getModelToken(Colorist.name),
           useValue: {
+            create: jest.fn(),
+            deleteMany: jest.fn(),
+            deleteOne: jest.fn(),
             find: jest.fn(),
             findOne: jest.fn(),
-            create: jest.fn(),
-            deleteOne: jest.fn(),
-            deleteMany: jest.fn(),
-            updateOne: jest.fn(),
             updateMany: jest.fn(),
+            updateOne: jest.fn(),
           },
         },
         {

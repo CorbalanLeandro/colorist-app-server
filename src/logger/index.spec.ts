@@ -37,7 +37,6 @@ describe('ReqCompleteCheckerMiddleware', () => {
     (errorProperty) => {
       const mockError = new Error('mock-error');
       mockError.stack = undefined;
-      const mockErrorString = mockError.toString();
 
       const loggerErrorSpy = jest
         .spyOn(ConsoleLogger.prototype, 'error')

@@ -18,12 +18,7 @@ import { DeleteResult, UpdateResult } from 'mongodb';
 
 import { AbstractServiceFake } from './__fixtures__/abstract.service.fake';
 
-import {
-  FakeDocument,
-  FakeSymbol,
-  IFake,
-  ModelFake,
-} from './__fixtures__/model.fake';
+import { FakeDocument, FakeSymbol, IFake } from './__fixtures__/model.fake';
 
 const mockFakeDocument: IFake = {
   description: 'mock-description',

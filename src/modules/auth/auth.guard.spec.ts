@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
+import { ColoristService } from '../colorist/colorist.service';
 
 describe('AuthGuard', () => {
   let guard: AuthGuard;
@@ -22,6 +23,12 @@ describe('AuthGuard', () => {
           useValue: {},
         },
         Reflector,
+        {
+          provide: ColoristService,
+          useValue: {
+            findOne: jest.fn(),
+          },
+        },
       ],
     }).compile();
 

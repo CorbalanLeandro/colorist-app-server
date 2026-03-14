@@ -14,6 +14,7 @@ import { SheetModule } from '../sheet/sheet.module';
 import { ClientModule } from '../client/client.module';
 import { ColoristModule } from '../colorist/colorist.module';
 import { AuthModule } from '../auth/auth.module';
+import { HealthModule } from '../health/health.module';
 import { LoggingInterceptor } from '../../common/interceptors/logging.interceptor';
 import { throttlerGetTracker } from '../../common/guards';
 
@@ -40,6 +41,7 @@ import { throttlerGetTracker } from '../../common/guards';
       }),
     }),
     AuthModule,
+    HealthModule,
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

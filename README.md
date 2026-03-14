@@ -42,6 +42,7 @@ The server uses JWT authentication with a 14-day token expiration.
 
 - `POST /api/colorist` - Create a new colorist
 - `POST /api/auth/sign-in` - Sign in and obtain access token
+- `GET /api/health` - Health check (excluded from rate limiting)
 
 ### Protected Endpoints
 

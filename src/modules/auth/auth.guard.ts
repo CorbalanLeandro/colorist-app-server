@@ -7,7 +7,6 @@ import {
 
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 
 import {
@@ -17,6 +16,7 @@ import {
 } from './constants';
 
 import { IJWTPayload } from './interfaces';
+import { ColoristService } from '../colorist/colorist.service';
 
 declare module 'express' {
   interface Request {
@@ -31,9 +31,9 @@ export class AuthGuard implements CanActivate {
   private readonly logger = new Logger(AuthGuard.name);
 
   constructor(
-    private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector,
+    private readonly coloristService: ColoristService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -56,8 +56,15 @@ export class AuthGuard implements CanActivate {
     try {
       const payload = await this.jwtService.verifyAsync<IJWTPayload>(token);
 
-      // 💡 We're assigning the payload.sub to the request object here
-      // so that we can access it in our route handlers
+      const colorist = await this.coloristService.findOne(
+        { _id: payload.sub },
+        { jwtVersion: 1 },
+      );
+
+      if (payload.jwtVersion !== colorist.jwtVersion) {
+        return false;
+      }
+
       request['coloristId'] = payload.sub;
       request['coloristEmail'] = payload.email;
       request['coloristUsername'] = payload.username;

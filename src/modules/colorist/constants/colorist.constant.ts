@@ -13,5 +13,6 @@ export enum COLORIST_PASSWORD_LENGTH {
 export const COLORIST_BASE_PROJECTIONS: Partial<
   Record<keyof IColorist, boolean>
 > = {
+  jwtVersion: false,
   password: false,
 };

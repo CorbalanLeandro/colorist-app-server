@@ -83,6 +83,13 @@ export class Colorist implements IColoristAttributes {
     },
   })
   username: string;
+
+  @Prop({
+    default: 1,
+    required: true,
+    type: Number,
+  })
+  jwtVersion: number;
 }
 
 export const ColoristSchema = SchemaFactory.createForClass(Colorist);

@@ -33,6 +33,7 @@ export class AuthService {
         _id: coloristId,
         password: coloristPassword,
         email: coloristEmail,
+        jwtVersion: coloristJwtVersion,
         username: coloristUsername,
       } = await this.findColorist(emailOrUsername);
 
@@ -41,6 +42,7 @@ export class AuthService {
       return {
         access_token: await this.jwtService.signAsync({
           email: coloristEmail,
+          jwtVersion: coloristJwtVersion,
           sub: coloristId,
           username: coloristUsername,
         }),
@@ -83,6 +85,7 @@ export class AuthService {
       },
       {
         email: true,
+        jwtVersion: true,
         password: true,
         username: true,
       },

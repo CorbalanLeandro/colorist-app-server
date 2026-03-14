@@ -16,27 +16,29 @@ export type FakeDocument = IFake & Document;
  * Fake class to use on every model.
  */
 export class ModelFake {
-  static async create() {
+  modelName = 'FakeDocument';
+
+  async create() {
     throw new NotImplementedError('create');
   }
 
-  static async deleteOne() {
+  async deleteOne() {
     throw new NotImplementedError('deleteOne');
   }
 
-  static async deleteMany() {
+  async deleteMany() {
     throw new NotImplementedError('deleteMany');
   }
 
-  static async find() {
+  async find() {
     throw new NotImplementedError('find');
   }
 
-  static async findOne() {
+  async findOne() {
     throw new NotImplementedError('findOne');
   }
 
-  static async updateOne() {
+  async updateOne() {
     throw new NotImplementedError('updateOne');
   }
 }

@@ -1,4 +1,5 @@
 import { ConsoleLogger } from '@nestjs/common';
+import { inspect } from 'util';
 
 import { CustomLogger } from '.';
 
@@ -25,7 +26,7 @@ describe('ReqCompleteCheckerMiddleware', () => {
       logger.error(mockMessage, { [errorProperty]: mockError, mockParam });
 
       expect(loggerErrorSpy).toHaveBeenCalledWith(mockMessage, {
-        [errorProperty]: mockStack,
+        [errorProperty]: inspect(mockError),
         mockParam,
       });
     },
@@ -45,7 +46,7 @@ describe('ReqCompleteCheckerMiddleware', () => {
       logger.error(mockMessage, { [errorProperty]: mockError, mockParam });
 
       expect(loggerErrorSpy).toHaveBeenCalledWith(mockMessage, {
-        [errorProperty]: mockErrorString,
+        [errorProperty]: inspect(mockError),
         mockParam,
       });
     },

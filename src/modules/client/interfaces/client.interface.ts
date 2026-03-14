@@ -1,7 +1,5 @@
 import { IBasicDocument, IBasicQueryDto, IColoristId } from '../../../common';
 
-import { ISheet } from '../../sheet/interfaces';
-
 export interface IClientId {
   clientId: string;
 }
@@ -13,23 +11,9 @@ export interface IClientAttributes extends IColoristId {
   phoneNumber?: string;
 }
 
-export interface IClientObjectIdAttributes {
-  sheets: ISheet[];
-}
+export interface IClient extends IClientAttributes, IBasicDocument {}
 
-interface IClientDtoObjectIdAttributes {
-  sheets: ISheet[];
-}
-
-export interface IClient
-  extends IClientAttributes,
-    IClientObjectIdAttributes,
-    IBasicDocument {}
-
-export interface IClientDto
-  extends IClientAttributes,
-    IClientDtoObjectIdAttributes,
-    IBasicDocument {}
+export interface IClientDto extends IClientAttributes, IBasicDocument {}
 
 /**
  * when creating a client, we will always have the sheets array empty.

@@ -42,7 +42,6 @@ import {
 
 import { SheetDocument } from './schemas';
 import { ColoristId } from '../auth/decorators';
-import { SHEET_POPULATE_OPTIONS } from './constants';
 import { ISheet } from './interfaces';
 
 @ApiTags('Sheet')
@@ -70,14 +69,10 @@ export class SheetController {
     @ParamMongoId(PARAM_ID) _id: string,
     @ColoristId() coloristId: string,
   ): Promise<SheetDocument> {
-    return this.sheetService.findOne(
-      {
-        _id,
-        coloristId,
-      },
-      undefined,
-      SHEET_POPULATE_OPTIONS,
-    );
+    return this.sheetService.findOne({
+      _id,
+      coloristId,
+    });
   }
 
   @ApiOperationFindAll(SheetDto, 'Finds all the sheets by client id')
@@ -98,7 +93,6 @@ export class SheetController {
       undefined,
       {
         limit,
-        ...SHEET_POPULATE_OPTIONS,
         skip,
       },
     );

@@ -33,7 +33,6 @@ import {
 
 import { ClientDocument } from './schemas';
 import { ColoristId } from '../auth/decorators';
-import { CLIENT_POPULATE_OPTIONS } from './constants';
 
 @ApiTags('Client')
 @ApiBearerAuth()
@@ -82,7 +81,6 @@ export class ClientController {
       },
       undefined,
       {
-        ...CLIENT_POPULATE_OPTIONS,
         limit,
         skip,
       },
@@ -96,14 +94,10 @@ export class ClientController {
     @ParamMongoId(PARAM_ID) _id: string,
     @ColoristId() coloristId: string,
   ): Promise<ClientDocument> {
-    return this.clientService.findOne(
-      {
-        _id,
-        coloristId,
-      },
-      undefined,
-      CLIENT_POPULATE_OPTIONS,
-    );
+    return this.clientService.findOne({
+      _id,
+      coloristId,
+    });
   }
 
   @ApiOperationUpdateOneById()

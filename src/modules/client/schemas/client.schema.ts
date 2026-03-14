@@ -1,9 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import {
-  Schema as MongooseSchema,
-  ValidatorProps,
-  HydratedDocument,
-} from 'mongoose';
+import { ValidatorProps, HydratedDocument } from 'mongoose';
 
 import {
   ATTRIBUTE_EMAIL_LENGTH,
@@ -13,24 +9,15 @@ import {
   ColoristIdSchema,
 } from '../../../common';
 
-import {
-  IClient,
-  IClientAttributes,
-  IClientObjectIdAttributes,
-} from '../interfaces';
-import { Sheet } from '../../sheet/schemas';
+import { IClient, IClientAttributes } from '../interfaces';
 import { isEmail } from 'class-validator';
-import { ISheet } from '../../sheet/interfaces';
 
 export type ClientDocument = HydratedDocument<IClient>;
 
 @Schema({
   timestamps: true,
 })
-export class Client
-  extends ColoristIdSchema
-  implements IClientAttributes, IClientObjectIdAttributes
-{
+export class Client extends ColoristIdSchema implements IClientAttributes {
   @Prop({
     maxlength: ATTRIBUTE_EMAIL_LENGTH.MAX,
     minlength: ATTRIBUTE_EMAIL_LENGTH.MIN,
@@ -68,17 +55,6 @@ export class Client
     type: String,
   })
   phoneNumber?: string;
-
-  @Prop({
-    type: [
-      {
-        ref: Sheet.name,
-        required: true,
-        type: MongooseSchema.Types.ObjectId,
-      },
-    ],
-  })
-  sheets: ISheet[];
 }
 
 export const ClientSchema = SchemaFactory.createForClass(Client);

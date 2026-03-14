@@ -78,7 +78,7 @@ export class SheetController {
   @ApiOperationFindAll(SheetDto, 'Finds all the sheets by client id')
   @ApiMongoIdParam('clientId')
   @Get(`client/:clientId`)
-  async findAllBySheet(
+  async findAllSheetsByClientId(
     @ParamMongoId('clientId') clientId: string,
     @Query() query: FindSheetsQueryDto,
     @ColoristId() coloristId: string,

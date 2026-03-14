@@ -1,5 +1,6 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
 import { Public } from './decorators';
 import { ColoristSignInDto } from '../colorist/dtos';
@@ -22,6 +23,7 @@ export class AuthController {
     type: SignInResponse,
   })
   @HttpCode(HttpStatus.OK)
+  @Throttle({ short: {} })
   @Post('sign-in')
   async signIn(@Body() signInData: ColoristSignInDto): Promise<SignInResponse> {
     return this.authService.signIn(signInData);

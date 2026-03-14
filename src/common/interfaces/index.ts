@@ -38,13 +38,17 @@ export interface ICustomApiProperty extends IRequired {
   isArray?: boolean;
 }
 
-export interface ICustomApiPropertyDto
-  extends Omit<ICustomApiProperty, 'example' | 'description'> {
+export interface ICustomApiPropertyDto extends Omit<
+  ICustomApiProperty,
+  'example' | 'description'
+> {
   dto: IClass;
 }
 
-export interface ICustomMongoApiProperty
-  extends Omit<ICustomApiProperty, 'example' | 'description'> {
+export interface ICustomMongoApiProperty extends Omit<
+  ICustomApiProperty,
+  'example' | 'description'
+> {
   referenceName: string;
 }
 

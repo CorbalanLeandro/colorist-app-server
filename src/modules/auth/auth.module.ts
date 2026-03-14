@@ -15,12 +15,18 @@ import { AuthController } from './auth.controller';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('auth.jwt.secret'),
-        signOptions: {
-          expiresIn: configService.get<string>('auth.jwt.expiresIn'),
-        },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const secret = configService.getOrThrow<string>('auth.jwt.secret');
+        const expiresIn =
+          configService.getOrThrow<string>('auth.jwt.expiresIn');
+
+        return {
+          secret,
+          signOptions: {
+            expiresIn: expiresIn as any,
+          },
+        };
+      },
     }),
   ],
   providers: [

@@ -3,9 +3,9 @@ import { DeleteResult, UpdateResult } from 'mongodb';
 import {
   ClientSession,
   Document,
-  FilterQuery,
   Model,
   ProjectionType,
+  QueryFilter,
   QueryOptions,
   UpdateQuery,
 } from 'mongoose';
@@ -18,7 +18,7 @@ import {
 
 export abstract class AbstractService<
   CreateInterface,
-  DocumentType extends Document,
+  DocumentType extends Document<unknown>,
 > {
   protected constructor(
     protected readonly name: string,
@@ -59,12 +59,12 @@ export abstract class AbstractService<
 
   /**
    * @async
-   * @param {FilterQuery<DocumentType>} filter
+   * @param {QueryFilter<DocumentType>} filter
    * @param {ClientSession} session Mongodb session
    * @returns {Promise<DeleteResult>}
    */
   async deleteOne(
-    filter: FilterQuery<DocumentType>,
+    filter: QueryFilter<DocumentType>,
     session?: ClientSession,
   ): Promise<DeleteResult> {
     let deleteResult: DeleteResult;
@@ -97,12 +97,12 @@ export abstract class AbstractService<
 
   /**
    * @async
-   * @param {FilterQuery<DocumentType>} filter
+   * @param {QueryFilter<DocumentType>} filter
    * @param {ClientSession} session Mongodb session
    * @returns {Promise<DeleteResult>}
    */
   async deleteMany(
-    filter: FilterQuery<DocumentType>,
+    filter: QueryFilter<DocumentType>,
     session?: ClientSession,
   ): Promise<DeleteResult> {
     try {
@@ -126,22 +126,22 @@ export abstract class AbstractService<
 
   /**
    * @async
-   * @param {FilterQuery<DocumentType>} filter
+   * @param {QueryFilter<DocumentType>} filter
    * @returns {Promise<boolean>} True if exists.
    */
-  async exists(filter: FilterQuery<DocumentType>): Promise<boolean> {
+  async exists(filter: QueryFilter<DocumentType>): Promise<boolean> {
     return (await this.model.exists(filter)) != null;
   }
 
   /**
    * @async
-   * @param {FilterQuery<DocumentType>} filter
+   * @param {QueryFilter<DocumentType>} filter
    * @param {ProjectionType<DocumentType>} projection
    * @param {QueryOptions<DocumentType>} options
    * @returns {Promise<DocumentType[]>}
    */
   async find(
-    filter: FilterQuery<DocumentType> = {},
+    filter: QueryFilter<DocumentType> = {},
     projection?: ProjectionType<DocumentType>,
     options?: QueryOptions<DocumentType>,
   ): Promise<DocumentType[]> {
@@ -165,13 +165,13 @@ export abstract class AbstractService<
 
   /**
    * @async
-   * @param {FilterQuery<DocumentType>} filter
+   * @param {QueryFilter<DocumentType>} filter
    * @param {ProjectionType<DocumentType>} projection
    * @param {QueryOptions<DocumentType>} options
    * @returns {Promise<DocumentType>}
    */
   async findOne(
-    filter: FilterQuery<DocumentType>,
+    filter: QueryFilter<DocumentType>,
     projection?: ProjectionType<DocumentType>,
     options?: QueryOptions<DocumentType>,
   ): Promise<DocumentType> {
@@ -207,13 +207,13 @@ export abstract class AbstractService<
 
   /**
    * @async
-   * @param {FilterQuery<DocumentType>} filter
+   * @param {QueryFilter<DocumentType>} filter
    * @param {UpdateQuery<DocumentType>} updateQuery
    * @param {ClientSession} session Mongodb session
    * @returns {Promise<UpdateResult>}
    */
   async updateMany(
-    filter: FilterQuery<DocumentType>,
+    filter: QueryFilter<DocumentType>,
     updateQuery: UpdateQuery<DocumentType>,
     session?: ClientSession,
   ): Promise<UpdateResult> {
@@ -246,13 +246,13 @@ export abstract class AbstractService<
 
   /**
    * @async
-   * @param {FilterQuery<DocumentType>} filter
+   * @param {QueryFilter<DocumentType>} filter
    * @param {UpdateQuery<DocumentType>} updateQuery
    * @param {ClientSession} session Mongodb session
    * @returns {Promise<UpdateResult>}
    */
   async updateOne(
-    filter: FilterQuery<DocumentType>,
+    filter: QueryFilter<DocumentType>,
     updateQuery: UpdateQuery<DocumentType>,
     session?: ClientSession,
   ): Promise<UpdateResult> {

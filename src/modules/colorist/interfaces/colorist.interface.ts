@@ -17,7 +17,8 @@ type IColoristAttributesWithoutJWTVersion = Omit<
 >;
 
 export interface IColoristDto
-  extends Omit<IColoristAttributes, 'password' | 'jwtVersion'>,
+  extends
+    Omit<IColoristAttributes, 'password' | 'jwtVersion'>,
     IBasicDocument {}
 
 /**
@@ -31,8 +32,7 @@ export type ICreateColorist = IColoristAttributesWithoutJWTVersion;
 export type ICreateColoristDto = IColoristAttributesWithoutJWTVersion;
 
 export interface ICreateColoristResponseDto
-  extends Omit<ICreateColorist, 'password'>,
-    IBasicDocument {}
+  extends Omit<ICreateColorist, 'password'>, IBasicDocument {}
 
 export interface IColoristSignInDto {
   emailOrUsername: string;

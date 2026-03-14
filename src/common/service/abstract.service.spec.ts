@@ -7,9 +7,9 @@ import {
 } from '@nestjs/common';
 
 import {
-  FilterQuery,
   Model,
   ProjectionType,
+  QueryFilter,
   QueryOptions,
   UpdateQuery,
 } from 'mongoose';
@@ -25,7 +25,7 @@ const mockFakeDocument: IFake = {
   name: 'mock-name',
 };
 
-const mockFilter: FilterQuery<FakeDocument> = { _id: 'mock-id' };
+const mockFilter: QueryFilter<FakeDocument> = { _id: 'mock-id' };
 const mockProjection: ProjectionType<FakeDocument> = { name: true };
 const mockOptions: QueryOptions<FakeDocument> = { lean: true };
 

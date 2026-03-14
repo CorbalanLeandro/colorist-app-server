@@ -48,8 +48,6 @@ import { throttlerGetTracker } from '../../common/guards';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('db.uri'),
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
       }),
     }),
     ClientModule,

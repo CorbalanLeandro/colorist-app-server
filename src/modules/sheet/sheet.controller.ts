@@ -83,19 +83,13 @@ export class SheetController {
     @Query() query: FindSheetsQueryDto,
     @ColoristId() coloristId: string,
   ): Promise<SheetDocument[]> {
-    const { limit, skip } = query;
+    const { limit, skip, sort } = query;
 
-    return this.sheetService.find(
-      {
-        clientId,
-        coloristId,
-      },
-      undefined,
-      {
-        limit,
-        skip,
-      },
-    );
+    return this.sheetService.findByClientId(clientId, coloristId, {
+      limit,
+      skip,
+      sort,
+    });
   }
 
   @ApiOperationUpdateOneById()

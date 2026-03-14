@@ -1,11 +1,17 @@
-import { ApiProperty, IntersectionType, PartialType } from '@nestjs/swagger';
-import { ArrayMaxSize, IsMongoId } from 'class-validator';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  IntersectionType,
+  PartialType,
+} from '@nestjs/swagger';
+import { ArrayMaxSize, IsEnum, IsMongoId, IsOptional } from 'class-validator';
 
 import {
   ApiPropertyDto,
   BasicDocumentDto,
   BasicQueryDto,
   ColoristIdDto,
+  SortDirection,
 } from '../../../common';
 
 import {
@@ -53,7 +59,16 @@ export class SheetDto
 
 export class FindSheetsQueryDto
   extends BasicQueryDto
-  implements IFindSheetsQueryDto {}
+  implements IFindSheetsQueryDto
+{
+  @ApiPropertyOptional({
+    description: 'Sort sheets by date',
+    enum: SortDirection,
+  })
+  @IsOptional()
+  @IsEnum(SortDirection)
+  sort?: SortDirection;
+}
 
 export class ChangeClientDto implements IChangeClientDto {
   @ApiProperty({

@@ -1,4 +1,9 @@
-import { IBasicDocument, IBasicQueryDto, IColoristId } from '../../../common';
+import {
+  IBasicDocument,
+  IBasicQueryDto,
+  IColoristId,
+  SortDirection,
+} from '../../../common';
 import { IClientId } from '../../client/interfaces';
 import { IHairService } from './hair-service.interface';
 
@@ -17,7 +22,9 @@ export type ICreateSheet = ISheetAttributes;
 
 export type ICreateSheetDto = Omit<ICreateSheet, 'coloristId'>;
 
-export type IFindSheetsQueryDto = IBasicQueryDto;
+export interface IFindSheetsQueryDto extends IBasicQueryDto {
+  sort?: SortDirection;
+}
 
 export interface IDeleteSheet extends IColoristId, ISheetId, IClientId {}
 

@@ -1,3 +1,5 @@
+import { SortDirection } from '../constants';
+
 export interface ITimestamps {
   createdAt: Date;
   updatedAt: Date;
@@ -53,4 +55,10 @@ export interface IApiResult {
 export interface IBasicQueryDto {
   limit?: number;
   skip?: number;
+}
+
+export interface IPaginationOptions {
+  limit?: number;
+  skip?: number;
+  sort?: SortDirection;
 }

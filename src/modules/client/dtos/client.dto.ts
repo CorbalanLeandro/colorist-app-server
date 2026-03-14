@@ -7,7 +7,6 @@ import {
 import {
   ATTRIBUTE_LAST_NAME_LENGTH,
   ATTRIBUTE_NAME_LENGTH,
-  ApiPropertyDto,
   ApiPropertyEmail,
   ApiPropertyLastName,
   ApiPropertyName,
@@ -23,8 +22,6 @@ import {
   IFindClientsQueryDto,
 } from '../interfaces';
 
-import { ISheet } from '../../sheet/interfaces';
-import { SheetDto } from '../../sheet/dtos';
 import { IsOptional, MaxLength } from 'class-validator';
 
 export class CreateClientDto implements ICreateClientDto {
@@ -47,11 +44,7 @@ export class UpdateClientDto
 
 export class ClientDto
   extends IntersectionType(CreateClientDto, BasicDocumentDto, ColoristIdDto)
-  implements IClientDto
-{
-  @ApiPropertyDto({ dto: SheetDto, isArray: true })
-  sheets: ISheet[];
-}
+  implements IClientDto {}
 
 export class FindClientsQueryDto
   extends BasicQueryDto

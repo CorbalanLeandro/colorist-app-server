@@ -1,7 +1,6 @@
 import { PopulateOptions } from 'mongoose';
 
 import { IColorist } from '../interfaces';
-import { CLIENT_POPULATE_OPTIONS } from '../../client/constants';
 
 export enum COLORIST_HAIR_SALON_NAME_LENGTH {
   MIN = 3,
@@ -16,7 +15,6 @@ export enum COLORIST_PASSWORD_LENGTH {
 export const COLORIST_POPULATE_OPTIONS: { populate: PopulateOptions } = {
   populate: {
     path: 'clients',
-    ...CLIENT_POPULATE_OPTIONS,
   },
 };
 

@@ -6,6 +6,11 @@ export const isMongoIdPropValidator: ValidateOpts<unknown> = {
   validator: (value: unknown) => isMongoId(value),
 };
 
+export enum SortDirection {
+  ASC = 'asc',
+  DESC = 'desc',
+}
+
 export const PARAM_ID = 'id';
 
 export enum ATTRIBUTE_NAME_LENGTH {

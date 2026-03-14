@@ -12,7 +12,7 @@ import { SheetModule } from '../sheet/sheet.module';
   exports: [ClientService],
   imports: [
     forwardRef(() => ColoristModule),
-    forwardRef(() => SheetModule),
+    SheetModule,
     MongooseModule.forFeature([{ name: Client.name, schema: ClientSchema }]),
   ],
   providers: [ClientService],

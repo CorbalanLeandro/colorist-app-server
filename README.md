@@ -170,6 +170,76 @@ http://localhost:<PORT>/api/docs
 
 ---
 
+## Local Setup
+
+### Prerequisites
+
+- Node.js (v18+)
+- MongoDB (local or remote instance)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone <repository-url>
+
+# Install dependencies
+npm install
+```
+
+### Configuration
+
+Create a `.env` file in the root directory:
+
+```env
+# Server
+ENV=development
+PORT=3000
+
+# Database
+DB_URL=mongodb://localhost:27017
+DB_NAME=colorist-app
+DB_PARAMS=authSource=admin
+
+# JWT
+JWT_SECRET=your-secret-key
+JWT_EXPIRES_IN=14d
+
+# Security
+PASSWORD_SALT=your-random-salt-value
+```
+
+### Running the App
+
+```bash
+# Development (with hot reload)
+npm run dev
+
+# Production
+npm run build
+npm start
+```
+
+The server will start at `http://localhost:3000/api`
+
+### Running Tests
+
+```bash
+# Unit tests
+npm run test
+
+# Unit tests with watch mode
+npm run test:watch
+
+# Tests with coverage
+npm run test:cov
+
+# E2E tests
+npm run test:e2e
+```
+
+---
+
 ## Quick Start Guide
 
 1. **Create your colorist account**

@@ -21,11 +21,11 @@ export interface IAppConfig {
   };
   throttle: {
     auth: {
-      limit: string;
-      ttl: string;
+      limit: number;
+      ttlMs: number;
     };
-    limit: string;
-    ttl: string;
+    limit: number;
+    ttlMs: number;
   };
 }
 
@@ -54,11 +54,11 @@ export default (): IAppConfig => {
     },
     throttle: {
       auth: {
-        limit: demandEnv('THROTTLE_AUTH_LIMIT', '5'),
-        ttl: demandEnv('THROTTLE_AUTH_TTL', '60000'),
+        limit: parseInt(demandEnv('THROTTLE_AUTH_LIMIT', '5'), 10),
+        ttlMs: parseInt(demandEnv('THROTTLE_AUTH_TTL', '60000'), 10),
       },
-      limit: demandEnv('THROTTLE_LIMIT', '100'),
-      ttl: demandEnv('THROTTLE_TTL', '60000'),
+      limit: parseInt(demandEnv('THROTTLE_LIMIT', '100'), 10),
+      ttlMs: parseInt(demandEnv('THROTTLE_TTL', '60000'), 10),
     },
   };
 };

@@ -27,26 +27,14 @@ import { throttlerGetTracker } from '../../common/guards';
         skipIf: () => configService.get<string>('app.env') !== ENVIRONMENT.PROD,
         throttlers: [
           {
-            limit: parseInt(
-              configService.get<string>('throttle.limit', '100'),
-              10,
-            ),
+            limit: configService.get<number>('throttle.limit', 100),
             name: 'default',
-            ttl: parseInt(
-              configService.get<string>('throttle.ttl', '60000'),
-              10,
-            ),
+            ttl: configService.get<number>('throttle.ttlMs', 60000),
           },
           {
-            limit: parseInt(
-              configService.get<string>('throttle.auth.limit', '5'),
-              10,
-            ),
+            limit: configService.get<number>('throttle.auth.limit', 5),
             name: 'short',
-            ttl: parseInt(
-              configService.get<string>('throttle.auth.ttl', '60000'),
-              10,
-            ),
+            ttl: configService.get<number>('throttle.auth.ttlMs', 60000),
           },
         ],
       }),

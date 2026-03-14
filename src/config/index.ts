@@ -19,6 +19,14 @@ export interface IAppConfig {
     uri: string;
     url: string;
   };
+  throttle: {
+    auth: {
+      limit: string;
+      ttl: string;
+    };
+    limit: string;
+    ttl: string;
+  };
 }
 
 export default (): IAppConfig => {
@@ -43,6 +51,14 @@ export default (): IAppConfig => {
       params: dbParams,
       uri: `${dbUrl}/${dbName}?${dbParams}`,
       url: dbUrl,
+    },
+    throttle: {
+      auth: {
+        limit: demandEnv('THROTTLE_AUTH_LIMIT', '5'),
+        ttl: demandEnv('THROTTLE_AUTH_TTL', '60000'),
+      },
+      limit: demandEnv('THROTTLE_LIMIT', '100'),
+      ttl: demandEnv('THROTTLE_TTL', '60000'),
     },
   };
 };

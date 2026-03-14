@@ -15,6 +15,12 @@ async function bootstrap(): Promise<void> {
 
   app.setGlobalPrefix(APP_GLOBAL_PREFIX);
 
+  const httpAdapter = app.getHttpAdapter();
+  const instance = httpAdapter.getInstance();
+  if ('set' in instance) {
+    instance.set('trust proxy', 1);
+  }
+
   app.useGlobalPipes(
     new ValidationPipe({
       forbidNonWhitelisted: true,

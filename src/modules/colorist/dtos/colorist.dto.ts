@@ -11,7 +11,6 @@ import { IsAlphanumeric, Length, IsOptional } from 'class-validator';
 import {
   ATTRIBUTE_EMAIL_LENGTH,
   ATTRIBUTE_USERNAME_LENGTH,
-  ApiPropertyDto,
   ApiPropertyEmail,
   ApiPropertyLastName,
   ApiPropertyName,
@@ -27,8 +26,6 @@ import {
 } from '../interfaces';
 
 import { COLORIST_HAIR_SALON_NAME_LENGTH } from '../constants';
-import { IClientDto } from '../../client/interfaces';
-import { ClientDto } from '../../client/dtos';
 import { ApiPropertyColoristPassword } from '../decorators/colorist.decorator';
 
 export class CreateColoristDto implements ICreateColoristDto {
@@ -82,19 +79,11 @@ export class ColoristDto
     OmitType(CreateColoristDto, ['password']),
     BasicDocumentDto,
   )
-  implements IColoristDto
-{
-  @ApiPropertyDto({ dto: ClientDto, isArray: true })
-  clients: IClientDto[];
-}
+  implements IColoristDto {}
 
 export class CreateColoristResponseDto
   extends IntersectionType(ColoristDto, BasicDocumentDto)
-  implements ICreateColoristResponseDto
-{
-  @ApiPropertyDto({ dto: ClientDto, isArray: true })
-  clients: IClientDto[];
-}
+  implements ICreateColoristResponseDto {}
 
 export class ColoristSignInDto implements IColoristSignInDto {
   @ApiProperty({

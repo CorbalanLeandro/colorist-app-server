@@ -1,5 +1,4 @@
 import { IBasicDocument, IColoristId } from '../../../common';
-import { IClient, IClientDto } from '../../client/interfaces';
 
 export interface IColoristAttributes {
   email: string;
@@ -10,22 +9,10 @@ export interface IColoristAttributes {
   username: string;
 }
 
-export interface IColoristObjectIdAttributes {
-  clients: IClient[];
-}
-
-interface IColoristDtoObjectIdAttributes {
-  clients: IClientDto[];
-}
-
-export interface IColorist
-  extends IColoristAttributes,
-    IColoristObjectIdAttributes,
-    IBasicDocument {}
+export interface IColorist extends IColoristAttributes, IBasicDocument {}
 
 export interface IColoristDto
   extends Omit<IColoristAttributes, 'password'>,
-    IColoristDtoObjectIdAttributes,
     IBasicDocument {}
 
 /**
@@ -40,9 +27,7 @@ export type ICreateColoristDto = IColoristAttributes;
 
 export interface ICreateColoristResponseDto
   extends Omit<ICreateColorist, 'password'>,
-    IBasicDocument {
-  clients: IClientDto[];
-}
+    IBasicDocument {}
 
 export interface IColoristSignInDto {
   emailOrUsername: string;

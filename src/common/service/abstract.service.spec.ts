@@ -18,12 +18,7 @@ import { DeleteResult, UpdateResult } from 'mongodb';
 
 import { AbstractServiceFake } from './__fixtures__/abstract.service.fake';
 
-import {
-  FakeDocument,
-  FakeSymbol,
-  IFake,
-  ModelFake,
-} from './__fixtures__/model.fake';
+import { FakeDocument, FakeSymbol, IFake } from './__fixtures__/model.fake';
 
 const mockFakeDocument: IFake = {
   description: 'mock-description',
@@ -37,12 +32,26 @@ const mockOptions: QueryOptions<FakeDocument> = { lean: true };
 describe('AbstractService', () => {
   let service: AbstractServiceFake;
   let model: Model<FakeDocument>;
+  let mockSave: jest.Mock;
 
   beforeEach(async () => {
+    mockSave = jest.fn();
+
+    const mockModel: any = jest.fn().mockImplementation(() => ({
+      save: mockSave,
+    }));
+    mockModel.modelName = 'FakeDocument';
+    mockModel.find = jest.fn();
+    mockModel.findOne = jest.fn();
+    mockModel.deleteOne = jest.fn();
+    mockModel.deleteMany = jest.fn();
+    mockModel.updateOne = jest.fn();
+    mockModel.updateMany = jest.fn();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AbstractServiceFake,
-        { provide: getModelToken(FakeSymbol), useValue: ModelFake },
+        { provide: getModelToken(FakeSymbol), useValue: mockModel },
       ],
     }).compile();
 
@@ -51,28 +60,22 @@ describe('AbstractService', () => {
   });
 
   describe('create', () => {
-    let modelCreateSpy: jest.SpyInstance;
-
-    beforeEach(() => {
-      modelCreateSpy = jest.spyOn(model, 'create');
-    });
-
     it('should create a document', async () => {
-      modelCreateSpy.mockResolvedValueOnce(mockFakeDocument);
+      mockSave.mockResolvedValueOnce(mockFakeDocument);
 
       const document = await service.create(mockFakeDocument);
 
       expect(document).toEqual(mockFakeDocument);
-      expect(modelCreateSpy).toHaveBeenCalledWith(mockFakeDocument);
+      expect(mockSave).toHaveBeenCalled();
     });
 
     it('should throw if an error occurs', async () => {
-      modelCreateSpy.mockRejectedValueOnce(new Error());
+      mockSave.mockRejectedValueOnce(new Error());
 
       await expect(service.create(mockFakeDocument)).rejects.toThrow(
         InternalServerErrorException,
       );
-      expect(modelCreateSpy).toHaveBeenCalledWith(mockFakeDocument);
+      expect(mockSave).toHaveBeenCalled();
     });
   });
 
@@ -91,7 +94,10 @@ describe('AbstractService', () => {
       const deleteResult = await service.deleteOne(mockFilter);
 
       expect(deleteResult).toEqual(mockDeleteResult);
-      expect(modelDeleteOneSpy).toHaveBeenCalledWith(mockFilter);
+      expect(modelDeleteOneSpy).toHaveBeenCalledWith(
+        mockFilter,
+        expect.anything(),
+      );
     });
 
     it('should throw if an error occurs', async () => {
@@ -100,7 +106,10 @@ describe('AbstractService', () => {
       await expect(service.deleteOne(mockFilter)).rejects.toThrow(
         InternalServerErrorException,
       );
-      expect(modelDeleteOneSpy).toHaveBeenCalledWith(mockFilter);
+      expect(modelDeleteOneSpy).toHaveBeenCalledWith(
+        mockFilter,
+        expect.anything(),
+      );
     });
 
     it('should throw if no document is found to be deleted', async () => {
@@ -111,7 +120,10 @@ describe('AbstractService', () => {
       await expect(service.deleteOne(mockFilter)).rejects.toThrow(
         NotFoundException,
       );
-      expect(modelDeleteOneSpy).toHaveBeenCalledWith(mockFilter);
+      expect(modelDeleteOneSpy).toHaveBeenCalledWith(
+        mockFilter,
+        expect.anything(),
+      );
     });
   });
 
@@ -130,7 +142,10 @@ describe('AbstractService', () => {
       const deleteResult = await service.deleteMany(mockFilter);
 
       expect(deleteResult).toEqual(mockDeleteResult);
-      expect(modelDeleteManySpy).toHaveBeenCalledWith(mockFilter);
+      expect(modelDeleteManySpy).toHaveBeenCalledWith(
+        mockFilter,
+        expect.anything(),
+      );
     });
 
     it('should throw if an error occurs', async () => {
@@ -139,7 +154,10 @@ describe('AbstractService', () => {
       await expect(service.deleteMany(mockFilter)).rejects.toThrow(
         InternalServerErrorException,
       );
-      expect(modelDeleteManySpy).toHaveBeenCalledWith(mockFilter);
+      expect(modelDeleteManySpy).toHaveBeenCalledWith(
+        mockFilter,
+        expect.anything(),
+      );
     });
   });
 

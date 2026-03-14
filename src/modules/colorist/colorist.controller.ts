@@ -27,10 +27,7 @@ import {
 
 import { ColoristDocument } from './schemas';
 
-import {
-  COLORIST_BASE_PROJECTIONS,
-  COLORIST_POPULATE_OPTIONS,
-} from './constants';
+import { COLORIST_BASE_PROJECTIONS } from './constants';
 
 import { ColoristId, Public } from '../auth/decorators';
 import { ICreateColoristResponseDto } from './interfaces';
@@ -61,7 +58,6 @@ export class ColoristController {
         _id: coloristId,
       },
       COLORIST_BASE_PROJECTIONS,
-      COLORIST_POPULATE_OPTIONS,
     );
   }
 

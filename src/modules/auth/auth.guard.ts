@@ -20,7 +20,9 @@ import { IJWTPayload } from './interfaces';
 
 declare module 'express' {
   interface Request {
+    coloristEmail: string;
     coloristId: string;
+    coloristUsername: string;
   }
 }
 
@@ -57,6 +59,8 @@ export class AuthGuard implements CanActivate {
       // 💡 We're assigning the payload.sub to the request object here
       // so that we can access it in our route handlers
       request['coloristId'] = payload.sub;
+      request['coloristEmail'] = payload.email;
+      request['coloristUsername'] = payload.username;
     } catch (error: any) {
       // only log unexpected errors
       if (

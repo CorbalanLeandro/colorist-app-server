@@ -29,13 +29,21 @@ export class AuthService {
     const { emailOrUsername, password } = signInData;
 
     try {
-      const { _id: coloristId, password: coloristPassword } =
-        await this.findColorist(emailOrUsername);
+      const {
+        _id: coloristId,
+        password: coloristPassword,
+        email: coloristEmail,
+        username: coloristUsername,
+      } = await this.findColorist(emailOrUsername);
 
       this.coloristService.assertPassword(password, coloristPassword);
 
       return {
-        access_token: await this.jwtService.signAsync({ sub: coloristId }),
+        access_token: await this.jwtService.signAsync({
+          email: coloristEmail,
+          sub: coloristId,
+          username: coloristUsername,
+        }),
       };
     } catch (error) {
       this.logger.error('Could not sign in', {
@@ -74,7 +82,9 @@ export class AuthService {
         ],
       },
       {
+        email: true,
         password: true,
+        username: true,
       },
     );
   }

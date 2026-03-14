@@ -21,11 +21,12 @@ export class Client extends ColoristIdSchema implements IClientAttributes {
   @Prop({
     maxlength: ATTRIBUTE_EMAIL_LENGTH.MAX,
     minlength: ATTRIBUTE_EMAIL_LENGTH.MIN,
+    nullable: true,
     trim: true,
     type: String,
     validate: {
       message: (props: ValidatorProps) => `${props.value} is an invalid email`,
-      validator: (value: unknown) => isEmail(value),
+      validator: (value: unknown) => value == null || isEmail(value),
     },
   })
   email?: string;
@@ -51,6 +52,7 @@ export class Client extends ColoristIdSchema implements IClientAttributes {
   @Prop({
     maxlength: ATTRIBUTE_PHONE_NUMBER_LENGTH.MAX,
     minlength: ATTRIBUTE_PHONE_NUMBER_LENGTH.MIN,
+    nullable: true,
     trim: true,
     type: String,
   })

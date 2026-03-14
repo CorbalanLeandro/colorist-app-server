@@ -88,7 +88,7 @@ export class CreateColoristResponseDto
 export class ColoristSignInDto implements IColoristSignInDto {
   @ApiProperty({
     description: 'Value to find the colorist',
-    examples: ['CarlaColor', 'carla@gmail.com'],
+    example: 'carla@gmail.com',
     maxLength: ATTRIBUTE_EMAIL_LENGTH.MAX,
     minLength: ATTRIBUTE_EMAIL_LENGTH.MIN,
   })

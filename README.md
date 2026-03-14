@@ -8,13 +8,13 @@ Unit and e2e tests are made with [Jest](https://jestjs.io/) but it's not complet
 
 ## Herarchy
 
-<b>Colorist</b>: The main entity is the Colorist, this entity represents the app users and they will have as child the clients. The username and email must be unique and are immutables.
+<b>Colorist</b>: The main entity is the Colorist, this entity represents the app users. The username and email must be unique and are immutables.
 
-<b>Client</b>: As the entity name implies, these are the Colorist's clients. As part or their entity properties will have the colorist's id to identify which one it belongs to. The Client children are the sheets.
+<b>Client</b>: As the entity name implies, these are the Colorist's clients. Each client has the colorist's id to identify which colorist it belongs to.
 
-<b>Sheet</b>: The Sheet entity is the hair services container and each sheet can only belong to one client. It have the client's and colorist's id that belongs to.
+<b>Sheet</b>: The Sheet entity is the hair services container. Each sheet belongs to one client (has clientId) and can only belong to one client.
 
-<b>Hair Service</b>: This entity has no children and have the client's service information. It have the sheet's, client's and colorist's id that belongs to.
+<b>Hair Service</b>: This entity has no children and contains the client's service information. It's embedded within the Sheet document.
 
 ## Authentication
 
@@ -45,4 +45,4 @@ Each API have example data and the schemas for the requests and responses.
    - Find a specific client's sheets information [GET /api/sheet/client/:clientId](https://colorist-app-server-production.up.railway.app/api/sheet/client/clientId)
    - Find a specific hair service information [GET /api/hair-service/:hair-serviceId](https://colorist-app-server-production.up.railway.app/api/hair-service/hair-serviceId)
    - Find a specific sheet's hair services information [GET /api/hair-service/sheet/:sheetId](https://colorist-app-server-production.up.railway.app/api/hair-service/sheet/sheetId)
-8. Each delete API will not only remove the document itself, also the document children. For example, if a client is deleted, also the client's sheets and hair services will be removed.
+8. Each delete API will not only remove the document itself, also the document children. For example, if a client is deleted, also the client's sheets (and their embedded hair services) will be removed. If a colorist is deleted, all their clients, sheets and hair services will be removed.

@@ -19,10 +19,14 @@ describe('AppController (e2e)', () => {
     await app.close();
   });
 
-  it('/api (GET)', () => {
+  it('/health (GET)', () => {
     return request(app.getHttpServer())
-      .get('/api')
+      .get('/health')
       .expect(200)
-      .expect('Hello World!');
+      .expect((res) => {
+        expect(res.body).toHaveProperty('status');
+        expect(res.body).toHaveProperty('info');
+        expect(res.body.info.database).toHaveProperty('status');
+      });
   });
 });

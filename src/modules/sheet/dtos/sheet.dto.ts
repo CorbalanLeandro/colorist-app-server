@@ -48,7 +48,7 @@ export class CreateSheetDto implements ICreateSheetDto {
 
   @ApiProperty({
     description: 'Sheet date',
-    example: '2023-05-29',
+    example: '2023-05-29T00:00:00.000Z',
   })
   @IsDate()
   date: Date;

@@ -12,7 +12,7 @@ export interface ISheetId {
 }
 
 export interface ISheetAttributes extends IColoristId, IClientId {
-  date: string;
+  date: Date;
   hairServices: IHairService[];
 }
 

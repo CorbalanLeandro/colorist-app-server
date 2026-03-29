@@ -4,7 +4,13 @@ import {
   IntersectionType,
   PartialType,
 } from '@nestjs/swagger';
-import { ArrayMaxSize, IsEnum, IsMongoId, IsOptional } from 'class-validator';
+import {
+  ArrayMaxSize,
+  IsDate,
+  IsEnum,
+  IsMongoId,
+  IsOptional,
+} from 'class-validator';
 
 import {
   ApiPropertyDto,
@@ -22,7 +28,6 @@ import {
   ISheet,
 } from '../interfaces';
 
-import { IsSheetDate } from '../decorators';
 import { SHEET_MAX_HAIR_SERVICES } from '../constants';
 import { HairServiceDto } from './hair-service.dto';
 
@@ -42,11 +47,11 @@ export class CreateSheetDto implements ICreateSheetDto {
   clientId: string;
 
   @ApiProperty({
-    description: 'date attribute, format dd/MM/yyyy',
-    example: '29/05/2023',
+    description: 'Sheet date',
+    example: '2023-05-29T00:00:00.000Z',
   })
-  @IsSheetDate()
-  date: string;
+  @IsDate()
+  date: Date;
 }
 
 export class UpdateSheetDto

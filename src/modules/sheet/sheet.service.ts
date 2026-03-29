@@ -3,11 +3,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UpdateResult } from 'mongodb';
 
-import {
-  AbstractService,
-  IPaginationOptions,
-  SortDirection,
-} from '../../common';
+import { AbstractService, IPaginationOptions } from '../../common';
 
 import {
   IChangeClient,
@@ -35,27 +31,9 @@ export class SheetService extends AbstractService<ICreateSheet, SheetDocument> {
     const filter = { clientId, coloristId };
     const { limit, skip, sort } = options ?? {};
 
-    if (sort) {
-      return this.model.aggregate([
-        { $match: filter },
-        {
-          $addFields: {
-            dateAsDate: {
-              $dateFromString: {
-                dateString: '$date',
-                format: '%d/%m/%Y',
-              },
-            },
-          },
-        },
-        { $sort: { dateAsDate: sort === SortDirection.ASC ? 1 : -1 } },
-        { $limit: limit ?? 0 },
-        { $skip: skip ?? 0 },
-        { $project: { dateAsDate: 0 } },
-      ]);
-    }
+    const sortByDate = sort ? { date: sort } : undefined;
 
-    return this.find(filter, undefined, { limit, skip });
+    return this.find(filter, undefined, { limit, skip, sort: sortByDate });
   }
 
   async changeClient({

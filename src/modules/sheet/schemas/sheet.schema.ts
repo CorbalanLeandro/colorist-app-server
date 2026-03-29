@@ -1,10 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ValidatorProps, HydratedDocument } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 
 import { ColoristIdSchema, isMongoIdPropValidator } from '../../../common';
 import { IHairService, ISheet, ISheetAttributes } from '../interfaces';
-import { SHEET_DATE_FORMAT, SHEET_MAX_HAIR_SERVICES } from '../constants';
-import { isSheetDate } from '../utils';
+import { SHEET_MAX_HAIR_SERVICES } from '../constants';
 import { HairServiceSchema } from './hair-service.schema';
 
 export type SheetDocument = HydratedDocument<ISheet>;
@@ -22,15 +21,9 @@ export class Sheet extends ColoristIdSchema implements ISheetAttributes {
 
   @Prop({
     required: true,
-    trim: true,
-    type: String,
-    validate: {
-      message: (props: ValidatorProps) =>
-        `${props.value} is an invalid date format. Must be ${SHEET_DATE_FORMAT}`,
-      validator: (value: unknown) => isSheetDate(value),
-    },
+    type: Date,
   })
-  date: string;
+  date: Date;
 
   @Prop({
     type: [HairServiceSchema],

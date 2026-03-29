@@ -6,7 +6,7 @@ import {
 } from '@nestjs/swagger';
 import {
   ArrayMaxSize,
-  IsDate,
+  IsDateString,
   IsEnum,
   IsMongoId,
   IsOptional,
@@ -50,7 +50,7 @@ export class CreateSheetDto implements ICreateSheetDto {
     description: 'Sheet date',
     example: '2023-05-29T00:00:00.000Z',
   })
-  @IsDate()
+  @IsDateString()
   date: Date;
 }
 

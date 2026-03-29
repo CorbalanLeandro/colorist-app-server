@@ -23,7 +23,7 @@ export class AuthController {
     type: SignInResponse,
   })
   @HttpCode(HttpStatus.OK)
-  @Throttle({ short: {} })
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @Post('sign-in')
   async signIn(@Body() signInData: ColoristSignInDto): Promise<SignInResponse> {
     return this.authService.signIn(signInData);

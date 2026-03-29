@@ -20,10 +20,6 @@ export interface IAppConfig {
     url: string;
   };
   throttle: {
-    auth: {
-      limit: number;
-      ttlMs: number;
-    };
     limit: number;
     ttlMs: number;
   };
@@ -53,10 +49,6 @@ export default (): IAppConfig => {
       url: dbUrl,
     },
     throttle: {
-      auth: {
-        limit: parseInt(demandEnv('THROTTLE_AUTH_LIMIT', '5'), 10),
-        ttlMs: parseInt(demandEnv('THROTTLE_AUTH_TTL', '60000'), 10),
-      },
       limit: parseInt(demandEnv('THROTTLE_LIMIT', '100'), 10),
       ttlMs: parseInt(demandEnv('THROTTLE_TTL', '60000'), 10),
     },

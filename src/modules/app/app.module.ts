@@ -32,11 +32,6 @@ import { throttlerGetTracker } from '../../common/guards';
             name: 'default',
             ttl: configService.get<number>('throttle.ttlMs', 60000),
           },
-          {
-            limit: configService.get<number>('throttle.auth.limit', 5),
-            name: 'short',
-            ttl: configService.get<number>('throttle.auth.ttlMs', 60000),
-          },
         ],
       }),
     }),

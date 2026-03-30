@@ -1,4 +1,5 @@
 import {
+  ApiProperty,
   ApiPropertyOptional,
   IntersectionType,
   PartialType,
@@ -14,12 +15,16 @@ import {
   BasicDocumentDto,
   BasicQueryWithSkipDto,
   ColoristIdDto,
+  CursorQueryDto,
+  CursorResponseDto,
 } from '../../../common';
 
 import {
-  ICreateClientDto,
   IClientDto,
+  ICreateClientDto,
+  IFindClientsCursorQueryDto,
   IFindClientsQueryDto,
+  IClientCursorResponseDto,
 } from '../interfaces';
 
 import { IsOptional, MaxLength } from 'class-validator';
@@ -67,4 +72,39 @@ export class FindClientsQueryDto
   @IsOptional()
   @MaxLength(ATTRIBUTE_LAST_NAME_LENGTH.MAX)
   lastName?: string;
+}
+
+export class FindClientsCursorQueryDto
+  extends CursorQueryDto
+  implements IFindClientsCursorQueryDto
+{
+  @ApiPropertyOptional({
+    description:
+      'name attribute to filter. "jo" will return "Jonathan", "John", etc.',
+    example: 'Jo',
+  })
+  @IsOptional()
+  @MaxLength(ATTRIBUTE_NAME_LENGTH.MAX)
+  name?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'last name attribute to filter. "do" will return "Doe", "Donaric", etc.',
+    example: 'Do',
+  })
+  @IsOptional()
+  @MaxLength(ATTRIBUTE_LAST_NAME_LENGTH.MAX)
+  lastName?: string;
+}
+
+export class ClientCursorResponseDto
+  extends CursorResponseDto<ClientDto>
+  implements IClientCursorResponseDto
+{
+  @ApiProperty({
+    description: 'List of clients',
+    isArray: true,
+    type: ClientDto,
+  })
+  data: ClientDto[];
 }

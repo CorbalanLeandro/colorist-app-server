@@ -13,14 +13,15 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ClientService } from './client.service';
 
 import {
+  ClientCursorResponseDto,
   CreateClientDto,
   ClientDto,
-  FindClientsQueryDto,
+  FindClientsCursorQueryDto,
   UpdateClientDto,
 } from './dtos';
 
 import {
-  ApiOperationFindAll,
+  ApiOperationFindAllWithCursor,
   ApiOperationCreate,
   ApiOperationFindOneById,
   ApiMongoIdParam,
@@ -52,39 +53,23 @@ export class ClientController {
     });
   }
 
-  @ApiOperationFindAll(
-    ClientDto,
+  @ApiOperationFindAllWithCursor(
+    ClientCursorResponseDto,
     'Finds all the clients that meet the filtering criteria',
   )
   @Get()
-  async findAll(
-    @Query() query: FindClientsQueryDto,
+  async findAllColoristClients(
+    @Query() query: FindClientsCursorQueryDto,
     @ColoristId() coloristId: string,
-  ): Promise<ClientDocument[]> {
-    const { lastName, limit, name, skip } = query;
+  ): Promise<ClientCursorResponseDto> {
+    const { cursor, lastName, limit, name } = query;
 
-    return this.clientService.find(
-      {
-        coloristId,
-        ...(name && {
-          name: {
-            $options: 'i',
-            $regex: `^${name}`,
-          },
-        }),
-        ...(lastName && {
-          lastName: {
-            $options: 'i',
-            $regex: `^${lastName}`,
-          },
-        }),
-      },
-      undefined,
-      {
-        limit,
-        skip,
-      },
-    );
+    return this.clientService.findAllColoristClients(coloristId, {
+      cursor,
+      lastName,
+      limit,
+      name,
+    });
   }
 
   @ApiOperationFindOneById(ClientDto)

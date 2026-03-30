@@ -27,10 +27,10 @@ export class SheetService extends AbstractService<ICreateSheet, SheetDocument> {
   async findAllSheetsByClientId(
     clientId: string,
     coloristId: string,
-    options?: IFindAllSheetsByClientIdOptions,
+    options: IFindAllSheetsByClientIdOptions,
   ): Promise<ICursorResponse<SheetDocument>> {
-    const limit = options?.limit ?? 20;
-    const cursorFilter = this.getCursorFilter(options?.cursor);
+    const { cursor, limit, sort: sortDirection } = options;
+    const cursorFilter = this.getCursorFilter(cursor);
 
     const filter: QueryFilter<SheetDocument> = {
       clientId,
@@ -40,8 +40,8 @@ export class SheetService extends AbstractService<ICreateSheet, SheetDocument> {
 
     const sort: Record<string, SortDirection> = {
       /* eslint-disable sort-keys */
-      date: options?.sort ?? SortDirection.DESC,
-      _id: options?.sort ?? SortDirection.DESC,
+      date: sortDirection ?? SortDirection.DESC,
+      _id: sortDirection ?? SortDirection.DESC,
       /* eslint-enable sort-keys */
     };
 

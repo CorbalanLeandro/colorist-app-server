@@ -1,4 +1,9 @@
-import { IBasicDocument, IBasicQueryDto, IColoristId } from '../../../common';
+import {
+  ICursorResponse,
+  IBasicDocument,
+  IBasicQueryDto,
+  IColoristId,
+} from '../../../common';
 
 export interface IClientId {
   clientId: string;
@@ -29,3 +34,11 @@ export interface IFindClientsQueryDto extends IBasicQueryDto {
   lastName?: string;
   name?: string;
 }
+
+export interface IFindClientsCursorQueryDto extends IBasicQueryDto {
+  cursor?: string;
+  lastName?: string;
+  name?: string;
+}
+
+export type IClientCursorResponseDto = ICursorResponse<IClientDto>;

@@ -1,6 +1,6 @@
 import {
+  ICursorResponse,
   IBasicDocument,
-  IBasicQueryDto,
   IColoristId,
   SortDirection,
 } from '../../../common';
@@ -22,9 +22,18 @@ export type ICreateSheet = ISheetAttributes;
 
 export type ICreateSheetDto = Omit<ICreateSheet, 'coloristId'>;
 
-export interface IFindSheetsQueryDto extends IBasicQueryDto {
+export interface IFindAllSheetsByClientIdOptions {
+  cursor?: string;
+  limit?: number;
   sort?: SortDirection;
 }
+
+export interface IFindSheetsCursorQueryDto {
+  cursor?: string;
+  limit?: number;
+  sort?: SortDirection;
+}
+export type ISheetCursorResponseDto = ICursorResponse<ISheet>;
 
 export interface IDeleteSheet extends IColoristId, ISheetId, IClientId {}
 

@@ -39,6 +39,21 @@ export const ApiOperationFindAll = (
     }),
   );
 
+export const ApiOperationFindAllWithCursor = (
+  responseDto: IClass,
+  operationDescription: string,
+): ReturnType<typeof applyDecorators> =>
+  applyDecorators(
+    ApiOperation({
+      description: operationDescription,
+      summary: 'Finds the documents with cursor pagination.',
+    }),
+    ApiOkResponse({
+      description: 'Paginated documents response with cursor.',
+      type: responseDto,
+    }),
+  );
+
 export const ApiOperationFindOneById = (
   foundDto: IClass,
 ): ReturnType<typeof applyDecorators> =>

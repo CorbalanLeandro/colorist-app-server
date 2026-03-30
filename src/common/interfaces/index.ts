@@ -58,7 +58,21 @@ export interface IApiResult {
 
 export interface IBasicQueryDto {
   limit?: number;
+}
+
+export interface IBasicQueryWithSkipDto extends IBasicQueryDto {
   skip?: number;
+}
+
+export interface ICursorQueryDto {
+  cursor?: string;
+  limit?: number;
+}
+
+export interface ICursorResponse<T> {
+  data: T[];
+  hasMore: boolean;
+  nextCursor?: string;
 }
 
 export interface IPaginationOptions {

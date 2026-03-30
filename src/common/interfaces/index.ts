@@ -57,16 +57,15 @@ export interface IApiResult {
 }
 
 export interface IBasicQueryDto {
-  limit?: number;
+  limit: number;
 }
 
 export interface IBasicQueryWithSkipDto extends IBasicQueryDto {
   skip?: number;
 }
 
-export interface ICursorQueryDto {
+export interface ICursorQueryDto extends IBasicQueryDto {
   cursor?: string;
-  limit?: number;
 }
 
 export interface ICursorResponse<T> {

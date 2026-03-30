@@ -24,13 +24,13 @@ export type ICreateSheetDto = Omit<ICreateSheet, 'coloristId'>;
 
 export interface IFindAllSheetsByClientIdOptions {
   cursor?: string;
-  limit?: number;
+  limit: number;
   sort?: SortDirection;
 }
 
 export interface IFindSheetsCursorQueryDto {
   cursor?: string;
-  limit?: number;
+  limit: number;
   sort?: SortDirection;
 }
 export type ISheetCursorResponseDto = ICursorResponse<ISheet>;

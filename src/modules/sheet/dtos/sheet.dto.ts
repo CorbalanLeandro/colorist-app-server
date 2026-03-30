@@ -15,17 +15,19 @@ import {
 import {
   ApiPropertyDto,
   BasicDocumentDto,
-  BasicQueryDto,
   ColoristIdDto,
+  CursorQueryDto,
+  CursorResponseDto,
   SortDirection,
 } from '../../../common';
 
 import {
   IChangeClientDto,
   ICreateSheetDto,
-  IFindSheetsQueryDto,
+  IFindSheetsCursorQueryDto,
   IHairService,
   ISheet,
+  ISheetCursorResponseDto,
 } from '../interfaces';
 
 import { SHEET_MAX_HAIR_SERVICES } from '../constants';
@@ -62,9 +64,9 @@ export class SheetDto
   extends IntersectionType(CreateSheetDto, BasicDocumentDto, ColoristIdDto)
   implements ISheet {}
 
-export class FindSheetsQueryDto
-  extends BasicQueryDto
-  implements IFindSheetsQueryDto
+export class FindSheetsCursorQueryDto
+  extends CursorQueryDto
+  implements IFindSheetsCursorQueryDto
 {
   @ApiPropertyOptional({
     description: 'Sort sheets by date',
@@ -73,6 +75,18 @@ export class FindSheetsQueryDto
   @IsOptional()
   @IsEnum(SortDirection)
   sort?: SortDirection;
+}
+
+export class SheetCursorResponseDto
+  extends CursorResponseDto<SheetDto>
+  implements ISheetCursorResponseDto
+{
+  @ApiProperty({
+    description: 'List of sheets',
+    isArray: true,
+    type: SheetDto,
+  })
+  data: SheetDto[];
 }
 
 export class ChangeClientDto implements IChangeClientDto {

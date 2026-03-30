@@ -12,7 +12,7 @@ import {
   ApiPropertyName,
   ApiPropertyPhoneNumber,
   BasicDocumentDto,
-  BasicQueryDto,
+  BasicQueryWithSkipDto,
   ColoristIdDto,
 } from '../../../common';
 
@@ -47,7 +47,7 @@ export class ClientDto
   implements IClientDto {}
 
 export class FindClientsQueryDto
-  extends BasicQueryDto
+  extends BasicQueryWithSkipDto
   implements IFindClientsQueryDto
 {
   @ApiPropertyOptional({

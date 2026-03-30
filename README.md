@@ -84,14 +84,14 @@ Authorization: Bearer <your-token>
 
 ### Sheet
 
-| Method | Endpoint                            | Description                                                            |
-| ------ | ----------------------------------- | ---------------------------------------------------------------------- |
-| POST   | `/api/sheet`                        | Create a new sheet with hair services                                  |
-| GET    | `/api/sheet/:sheetId`               | Get specific sheet                                                     |
-| GET    | `/api/sheet/client/:clientId`       | Get all sheets for a client (supports `limit`, `skip`, `sort` by date) |
-| PATCH  | `/api/sheet/:sheetId`               | Update sheet                                                           |
-| PATCH  | `/api/sheet/change-client/:sheetId` | Move sheet to another client                                           |
-| DELETE | `/api/sheet/:sheetId`               | Delete sheet (cascades to hair services)                               |
+| Method | Endpoint                            | Description                                                              |
+| ------ | ----------------------------------- | ------------------------------------------------------------------------ |
+| POST   | `/api/sheet`                        | Create a new sheet with hair services                                    |
+| GET    | `/api/sheet/:sheetId`               | Get specific sheet                                                       |
+| GET    | `/api/sheet/client/:clientId`       | Get all sheets for a client (cursor pagination, supports `sort` by date) |
+| PATCH  | `/api/sheet/:sheetId`               | Update sheet                                                             |
+| PATCH  | `/api/sheet/change-client/:sheetId` | Move sheet to another client                                             |
+| DELETE | `/api/sheet/:sheetId`               | Delete sheet (cascades to hair services)                                 |
 
 ### Hair Service
 
@@ -107,16 +107,34 @@ Hair services are created and managed within the Sheet. When creating or updatin
 
 ### Pagination
 
-The following endpoints support pagination:
+#### Offset Pagination (skip-based)
 
 - `GET /api/client` - Get all clients
+
+| Parameter | Description                           |
+| --------- | ------------------------------------- |
+| `limit`   | Limit number of results (default: 20) |
+| `skip`    | Skip results for pagination           |
+
+#### Cursor Pagination
+
 - `GET /api/sheet/client/:clientId` - Get all sheets for a client
 
-| Parameter | Description                                 |
-| --------- | ------------------------------------------- |
-| `limit`   | Limit number of results (default: 20)       |
-| `skip`    | Skip results for pagination                 |
-| `sort`    | Sort by date (`ASC` or `DESC`) - sheet only |
+| Parameter | Description                                                           |
+| --------- | --------------------------------------------------------------------- |
+| `limit`   | Limit number of results (default: 20, max: 100)                       |
+| `cursor`  | Base64-encoded cursor for pagination (format: `date\|_id`)            |
+| `sort`    | Sort by date (`ASC` or `DESC`, default: `DESC`) - also sorts by `_id` |
+
+The response includes:
+
+| Field        | Description                                            |
+| ------------ | ------------------------------------------------------ |
+| `data`       | Array of items                                         |
+| `hasMore`    | Boolean indicating if there are more results           |
+| `nextCursor` | Cursor string for next page (null if hasMore is false) |
+
+To fetch the next page, pass the `nextCursor` value as the `cursor` parameter in the next request.
 
 ### Client Filters
 
@@ -282,7 +300,6 @@ npm run test:e2e
    Pass `CLIENT_ID` in the body. Save the returned `_id` as `SHEET_ID`.
 
 6. **Query your data**
-
    - Get your profile: `GET /api/colorist`
    - Get all clients: `GET /api/client`
    - Get a specific client: `GET /api/client/:CLIENT_ID`

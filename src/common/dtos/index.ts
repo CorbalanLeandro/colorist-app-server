@@ -10,12 +10,16 @@ import {
   IsMongoId,
   IsOptional,
   IsPositive,
+  IsString,
 } from 'class-validator';
 
 import {
   IApiResult,
   IBasicDocument,
   IBasicQueryDto,
+  IBasicQueryWithSkipDto,
+  ICursorQueryDto,
+  ICursorResponse,
   IColoristId,
   IId,
   ITimestamps,
@@ -93,7 +97,12 @@ export abstract class BasicQueryDto implements IBasicQueryDto {
   @IsQueryPositiveNumber()
   @Transform(({ value }) => Number(value))
   limit?: number;
+}
 
+export abstract class BasicQueryWithSkipDto
+  extends BasicQueryDto
+  implements IBasicQueryWithSkipDto
+{
   @ApiPropertyOptional({
     description: 'skip attribute (positive number with no decimals)',
     example: 10,
@@ -102,4 +111,38 @@ export abstract class BasicQueryDto implements IBasicQueryDto {
   @IsQueryPositiveNumber()
   @Transform(({ value }) => Number(value))
   skip?: number;
+}
+
+export abstract class CursorQueryDto
+  extends BasicQueryDto
+  implements ICursorQueryDto
+{
+  @ApiPropertyOptional({
+    description: 'Cursor for pagination (base64 encoded)',
+    example:
+      'MjAyMy0wNS0yOVQwMDowMDowMC4wMDBafDYxOTNlNDU4MjRlYzA0MDYyNGFmNTA5ZA==',
+  })
+  @IsOptional()
+  @IsString()
+  cursor?: string;
+}
+
+export abstract class CursorResponseDto<T> implements ICursorResponse<T> {
+  @ApiProperty({
+    description: 'List of items',
+    isArray: true,
+  })
+  data: T[];
+
+  @ApiPropertyOptional({
+    description: 'Next cursor for pagination',
+  })
+  nextCursor?: string;
+
+  @ApiProperty({
+    description: 'Indicates if there are more results to fetch',
+    example: true,
+  })
+  @IsBoolean()
+  hasMore: boolean;
 }

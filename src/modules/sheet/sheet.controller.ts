@@ -19,7 +19,7 @@ import { SheetService } from './sheet.service';
 
 import {
   ApiOperationCreate,
-  ApiOperationFindAll,
+  ApiOperationFindAllWithCursor,
   ApiMongoIdParam,
   PARAM_ID,
   ParamMongoId,
@@ -35,7 +35,8 @@ import {
 import {
   ChangeClientDto,
   CreateSheetDto,
-  FindSheetsQueryDto,
+  FindSheetsCursorQueryDto,
+  SheetCursorResponseDto,
   SheetDto,
   UpdateSheetDto,
 } from './dtos';
@@ -75,19 +76,22 @@ export class SheetController {
     });
   }
 
-  @ApiOperationFindAll(SheetDto, 'Finds all the sheets by client id')
+  @ApiOperationFindAllWithCursor(
+    SheetCursorResponseDto,
+    'Finds all the sheets by client id with cursor pagination',
+  )
   @ApiMongoIdParam('clientId')
   @Get(`client/:clientId`)
   async findAllSheetsByClientId(
     @ParamMongoId('clientId') clientId: string,
-    @Query() query: FindSheetsQueryDto,
+    @Query() query: FindSheetsCursorQueryDto,
     @ColoristId() coloristId: string,
-  ): Promise<SheetDocument[]> {
-    const { limit, skip, sort } = query;
+  ): Promise<SheetCursorResponseDto> {
+    const { cursor, limit, sort } = query;
 
-    return this.sheetService.findByClientId(clientId, coloristId, {
+    return this.sheetService.findAllSheetsByClientId(clientId, coloristId, {
+      cursor,
       limit,
-      skip,
       sort,
     });
   }

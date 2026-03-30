@@ -90,13 +90,15 @@ export class ColoristIdDto implements IColoristId {
 
 export abstract class BasicQueryDto implements IBasicQueryDto {
   @ApiPropertyOptional({
+    default: 10,
     description: 'limit attribute (positive number with no decimals)',
     example: 10,
+    type: Number,
   })
   @IsOptional()
   @IsQueryPositiveNumber()
   @Transform(({ value }) => Number(value))
-  limit?: number;
+  limit = 10;
 }
 
 export abstract class BasicQueryWithSkipDto

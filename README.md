@@ -74,13 +74,13 @@ Authorization: Bearer <your-token>
 
 ### Client
 
-| Method | Endpoint                | Description                                            |
-| ------ | ----------------------- | ------------------------------------------------------ |
-| POST   | `/api/client`           | Create a new client                                    |
-| GET    | `/api/client`           | Get all clients (supports filters: `name`, `lastName`) |
-| GET    | `/api/client/:clientId` | Get specific client                                    |
-| PATCH  | `/api/client/:clientId` | Update client                                          |
-| DELETE | `/api/client/:clientId` | Delete client (cascades to sheets and hair services)   |
+| Method | Endpoint                | Description                                                               |
+| ------ | ----------------------- | ------------------------------------------------------------------------- |
+| POST   | `/api/client`           | Create a new client                                                       |
+| GET    | `/api/client`           | Get all clients (cursor pagination, supports filters: `name`, `lastName`) |
+| GET    | `/api/client/:clientId` | Get specific client                                                       |
+| PATCH  | `/api/client/:clientId` | Update client                                                             |
+| DELETE | `/api/client/:clientId` | Delete client (cascades to sheets and hair services)                      |
 
 ### Sheet
 
@@ -107,24 +107,16 @@ Hair services are created and managed within the Sheet. When creating or updatin
 
 ### Pagination
 
-#### Offset Pagination (skip-based)
-
-- `GET /api/client` - Get all clients
-
-| Parameter | Description                           |
-| --------- | ------------------------------------- |
-| `limit`   | Limit number of results (default: 20) |
-| `skip`    | Skip results for pagination           |
-
 #### Cursor Pagination
 
+- `GET /api/client` - Get all clients
 - `GET /api/sheet/client/:clientId` - Get all sheets for a client
 
-| Parameter | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `limit`   | Limit number of results (default: 20, max: 100)                       |
-| `cursor`  | Base64-encoded cursor for pagination (format: `date\|_id`)            |
-| `sort`    | Sort by date (`ASC` or `DESC`, default: `DESC`) - also sorts by `_id` |
+| Parameter | Description                                                                         |
+| --------- | ----------------------------------------------------------------------------------- | ----------------------------------- |
+| `limit`   | Limit number of results (default: 20, max: 100)                                     |
+| `cursor`  | Base64-encoded cursor for pagination (format: `date                                 | \_id`for sheets,`\_id` for clients) |
+| `sort`    | Sort by date (`ASC` or `DESC`, default: `DESC`) - also sorts by `_id` (sheets only) |
 
 The response includes:
 
@@ -156,7 +148,7 @@ When deleting an entity, all associated data is automatically removed:
 
 ## Security Features
 
-- **JWT Authentication** - Secure token-based auth with 1-day expiration
+- **JWT Authentication** - Secure token-based auth with 14-day expiration
 - **Helmet** - Security headers middleware
 - **CORS** - Cross-Origin Resource Sharing enabled
 - **Rate Limiting** - Throttler to prevent brute-force attacks
@@ -226,6 +218,10 @@ JWT_EXPIRES_IN=14d
 
 # Security
 PASSWORD_SALT=your-random-salt-value
+
+# Rate Limiting
+THROTTLE_LIMIT=100
+THROTTLE_TTL=60000
 ```
 
 ### Running the App

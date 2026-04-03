@@ -15,8 +15,6 @@ lerna-debug.log*
 .DS_Store
 
 # Files
-yarn.lock
-package-lock.json
 .env
 
 # Tests
